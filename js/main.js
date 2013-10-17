@@ -29,16 +29,16 @@ jQuery(document).ready(function($){
 
 	//TITLE
 	//change preview on keyup
-	$('input#title.listen').keyup(function(){
+	$('input#title').keyup(function(){
 		$('#preview .content .title').text($(this).val());
 	});
-	$('#preview .content .title').text($('input#title.listen').val());
+	$('#preview .content .title').text($('input#title').val());
 	
 	//DESCRIPTION
-	$('textarea#description.listen').keyup(function(){
+	$('textarea#description').keyup(function(){
 		$('#preview .content .description').text($(this).val());
 	});
-	$('#preview .content .description').text($('textarea#description.listen').val());
+	$('#preview .content .description').text($('textarea#description').val());
     
 	// COPY BUTTONS
 	$(".trksit-copy-btn").on('click', function (e) {
