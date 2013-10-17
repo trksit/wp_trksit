@@ -1,4 +1,7 @@
 <?php 
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 
   // Setting cache-control headers 
   header("Cache-Control: no-cache, must-revalidate");
@@ -7,7 +10,7 @@
 
   //Loading WordPress
   define( 'SHORTINIT', true );
-  require_once( $_SERVER['DOCUMENT_ROOT'] . '/wp-load.php' );
+  require_once( '../../../wp-load.php' );
 
    
   //Getting options 
@@ -21,8 +24,6 @@
   //KILL NEXT LINE TO SECURE
   $_GET['api_signature'] = 'testing12345678';
   
-
-
 
 
   // Check request method and ensure all parameters are present in return from API.
@@ -98,10 +99,6 @@
     
   }else{ die; }
 
-if (strpos($_SERVER['HTTP_USER_AGENT'], "facebook")){
-	header ('HTTP/1.1 301 Moved Permanently');
-	header ('Location: '. $redirect_lookup[0]->destination_url);
-}
 
 ?>
 <!DOCTYPE html>
@@ -145,15 +142,44 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], "facebook")){
 		
 		?>
     
+	<script type="text/javascript">
+		function getCookie(c_name) {
+		  if (document.cookie.length > 0) {
+		    c_start = document.cookie.indexOf(c_name + "=");
+		    if (c_start != -1) {
+		      c_start = c_start + c_name.length + 1;
+		      c_end = document.cookie.indexOf(";", c_start);
+		      if (c_end == -1) c_end = document.cookie.length;
+		      return unescape(document.cookie.substring(c_start, c_end));
+		    }
+		  }
+		  return "";
+		}
+	</script>
+
+
     
 		<script type="text/javascript">
 		
+//		always set the GA account
 		var _gaq = _gaq || [];
 		_gaq.push(['_setAccount', '<?php echo $analytics_id; ?>']);
-		_gaq.push(['_setAllowLinker', true]);
-//		_gaq.push(['_trackPageview']);
-		_gaq.push(['_setCustomVar', 1, 'Trks.it', '<?php echo $redirect_lookup[0]->destination_url; ?>', 1]);
-        _gaq.push(['_trackEvent', 'Trks.it', 'Clicked Link', '<?php echo $redirect_lookup[0]->destination_url; ?>'], 0, true);
+
+// 		if they haven't been here.. push an event to set their GA cookies
+		var delay = 0;
+		if(!getCookie("_utma")){
+			// Fire an event to set it
+			_gaq.push(['_trackEvent', 'trks.it', 'New Visitor', '<?php echo $redirect_lookup[0]->destination_url; ?>', 0, true]);
+			delay = 100;
+		}
+
+
+//		pushing a custom variable & event to Google Analytics to track this clicked link
+		setTimeout(function(){
+
+			_gaq.push(['_setCustomVar', 1, 'trks.it', '<?php echo $redirect_lookup[0]->destination_url; ?>', 1]);
+			_gaq.push(['_trackEvent', 'trks.it', 'Clicked Link', '<?php echo $redirect_lookup[0]->destination_url; ?>'], 0, true);
+		}, delay);
         
         (function() {
 		  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
@@ -175,6 +201,7 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], "facebook")){
 	  		
   		?>
   	
-	  	<?php echo $redirect; ?>
+	  	<?php //echo $redirect; ?>
+	
 	</body>
 </html>
