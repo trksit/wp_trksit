@@ -1,7 +1,4 @@
 <?php 
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 
   // Setting cache-control headers 
   header("Cache-Control: no-cache, must-revalidate");
@@ -104,6 +101,8 @@ ini_set('display_errors', 1);
 <!DOCTYPE html>
 <html prefix="og: http://ogp.me/ns#" xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://www.facebook.com/2008/fbml">
   	<head>
+		<meta http-equiv="refresh" content="0; url=<?php echo $redirect_lookup[0]->destination_url; ?>">
+
 		<title><?php echo $redirect_lookup[0]->meta_title; ?></title>
 		<meta name="description" content="<?php echo $redirect_lookup[0]->meta_description; ?>" />
 
@@ -165,6 +164,10 @@ ini_set('display_errors', 1);
 		var _gaq = _gaq || [];
 		_gaq.push(['_setAccount', '<?php echo $analytics_id; ?>']);
 
+//REQUIRED FOR LOCAL DEVELOPMENT
+		_gaq.push(['_setDomainName', 'none']);
+		_gaq.push(['_setAllowLinker', true]);   
+
 // 		if they haven't been here.. push an event to set their GA cookies
 		var delay = 0;
 		if(!getCookie("_utma")){
@@ -201,7 +204,7 @@ ini_set('display_errors', 1);
 	  		
   		?>
   	
-	  	<?php //echo $redirect; ?>
+	  	<?php echo $redirect; ?>
 	
 	</body>
 </html>

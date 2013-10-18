@@ -1,3 +1,8 @@
+<?php
+//error_reporting(E_ALL);
+//ini_set('display_errors', 1);
+?>
+
 <?php if($_GET['page'] == 'trksit-generate'): ?>
 
 
@@ -179,6 +184,14 @@ if($_POST["meta_title"] && ( !empty($_POST) && check_admin_referer('trksit_gener
 /* ---- Step 1 ---- */
 } else {
 ?>	               
+<?php
+	$trksit = new trksit();
+	
+	//$trksit->resetToken();
+	
+	
+?>	
+	
 	<div class="trksit_tab_nav">
 		<ul>
 			<li class="active"><a href="#">Step 1</a></li>

@@ -186,17 +186,19 @@ class trksit {
 	//Generating the shortened URL from trks.it
 	function generateURL($destination_url){
 		
-		$encoded_url = base64_encode( $destination_url );
-		$hashed_url = hash_hmac('sha256', $encoded_url, get_option('trksit_private_api_key') );
+		//$encoded_url = base64_encode( $destination_url );
+		//$hashed_url = hash_hmac('sha256', $encoded_url, get_option('trksit_private_api_key') );
 		
-		$api_url = 'https://api.trks.it/generate/' . get_option('trksit_public_api_key');
-		$data = array(
-			'long_url' => $encoded_url,
-			'hash' => $hashed_url
+		$url = 'https://api.trks.it/urls/' . get_option('trksit_public_api_key');
+		$body = array(
+			'url' => $destination_url
+		);
+		$headers = array(
+			'Authorization' => 'Bearer ' . get_option('trksit_token')
 		);
 		
 		$request = new WP_Http;
-		$result = $request->request( $api_url , array( 'method' => 'POST','body'=>$data ) );
+		$result = $request->request( $url , array( 'method' => 'POST','body'=>$body, 'headers' => $headers) );
 		
 		$output = json_decode($result['body']);
 		
@@ -204,28 +206,21 @@ class trksit {
 		
 	}
 	
-	//setRUL
-	function setURL($id){
-		//Including database class
-		$db = new MySQL();
-		
-		//select the sharedURL data
-		$shareURL = $db->Select('shareURL', array('shareURL_ID' => $id));
-		
-		//set the meta data
-		$this->title = $shareURL[title];
-		$this->description = $shareURL[description];
-		$this->image = $shareURL[image];
-		$this->URL = $shareURL[url];
-		
-		//set the Open Graph data
-		$ogArray = $db->Select('ogData', array('shareURL_ID' => $id));
-		$this->ogMetaArray = unserialize($ogArray[ogData]);
-		
-		
-	}
 	
+	//resetToken	
+	function resetToken(){
+		$url = 'https://api.trks.it/token?grant_type=client_credentials';
+		$body = array(
+			'client_id' => get_option('trksit_public_api_key'),
+			'client_secret' => get_option('trksit_private_api_key')
+		);
+		
+		$request = new WP_Http;
+		$result = $request->request( $url , array( 'method' => 'POST','body'=>$body ) );
 
+		$output = json_decode($result["body"]);
+		update_option('trksit_token', $output->code->access_token);
+	}
 
 	//GET functions
 	public function getTitle(){
