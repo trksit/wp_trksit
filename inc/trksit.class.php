@@ -224,7 +224,7 @@ class trksit {
 		$result = $request->request( $url , array( 'method' => 'POST','body'=>$body ) );
 
 		$output = json_decode($result["body"]);
-		var_dump($output);
+		
 		update_option('trksit_token', $output->code->access_token);
 		update_option('trksit_token_expires', $output->code->expires);
 	}
