@@ -1,0 +1,11 @@
+Make sure TRKS.IT redirect works <-- wasn't working on the call
+
+Add script that goes on every link (for hubspot & marketo code) <-- this script would fire on every shortened link
+
+edit/delete scripts <-- Cav
+
+shoot a virtual pageview <-- need for remarketing
+
+
+Change the analytics default code to doubleclick code <-- need for remarketing
+--- TEST THIS: make sure it fires a pageview, event, and custom variable for a site that doesn't use the doubleclick code as default

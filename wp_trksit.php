@@ -96,6 +96,7 @@
 		update_option('trksit_jquery', 0);
 		update_option('trksit_redirect_delay', 500);
 		update_option('trksit_token', '');
+		update_option('trksit_token_expires', 1);
         
 		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
     		

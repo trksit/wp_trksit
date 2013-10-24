@@ -185,10 +185,13 @@ if($_POST["meta_title"] && ( !empty($_POST) && check_admin_referer('trksit_gener
 } else {
 ?>	               
 <?php
-	$trksit = new trksit();
+	//if now is after when it expires
+	if(time() > get_option('trksit_token_expires')){
+		$trksit = new trksit();
+		$trksit->resetToken();
+	}	
 	
-	//$trksit->resetToken();
-	
+
 	
 ?>	
 	

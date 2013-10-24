@@ -87,12 +87,13 @@ class trksit {
 		//Save the data to the database and get back the ID
 		$shareURL_ID = $this->saveURL($wpdb, $postArray);
 		
+		//DEVELOPMENT: Need to put the UTM tags on this
 		$longURL = plugins_url( 'trksit_go.php?url_id=' . $shareURL_ID, dirname(__FILE__) );
 		
 		//shorten the URL
 		$shortURL = $this->generateURL($longURL);
 
-		$shortURL = "trks.it/" . $shortURL->msg;
+		$shortURL = "trks.it/" . $shortURL;
 
 		//set the updateArray & whereArray for the shortened URL
 		$updateArray = array('trksit_url' => $shortURL);
@@ -202,14 +203,18 @@ class trksit {
 		
 		$output = json_decode($result['body']);
 		
-		return $output; 
+		if($output->error){
+			return $output->error;
+		} else {
+			return $output->msg;
+		}
 		
 	}
 	
 	
 	//resetToken	
 	function resetToken(){
-		$url = 'https://api.trks.it/token?grant_type=client_credentials';
+		$url = 'https://api.trks.it/token?grant_type=creds';
 		$body = array(
 			'client_id' => get_option('trksit_public_api_key'),
 			'client_secret' => get_option('trksit_private_api_key')
@@ -219,7 +224,31 @@ class trksit {
 		$result = $request->request( $url , array( 'method' => 'POST','body'=>$body ) );
 
 		$output = json_decode($result["body"]);
+		var_dump($output);
 		update_option('trksit_token', $output->code->access_token);
+		update_option('trksit_token_expires', $output->code->expires);
+	}
+	
+	//checkToken	
+	function checkToken(){
+		$url = 'https://api.trks.it/token?grant_type=authorization';
+		$body = array(
+			'client_id' => get_option('trksit_public_api_key'),
+			'client_secret' => get_option('trksit_private_api_key'),
+			'Authorization' => get_option('trksit_token')
+		);
+		
+		$request = new WP_Http;
+		$result = $request->request( $url , array( 'method' => 'POST','body'=>$body ) );
+
+		$output = json_decode($result["body"]);
+		
+		if($output->error){
+			return $output->error;
+		} else {
+			return true;
+		}
+
 	}
 
 	//GET functions
