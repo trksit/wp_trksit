@@ -190,7 +190,7 @@ if($_POST["meta_title"] && ( !empty($_POST) && check_admin_referer('trksit_gener
 		$trksit = new trksit();
 		$trksit->resetToken();
 	}	
-	echo hi;
+
 
 	
 ?>	

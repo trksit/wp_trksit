@@ -4,7 +4,7 @@
 	Plugin URI: http://get.trks.it?utm_source=WordPress%20Admin%20Link
 	Description: Ever wonder how many people click links that lead to 3rd party sites from your social media platforms? Trks.it is a WordPress plugin for tracking social media engagement.
 	Author: Arsham Mirshah, Deyonte Wilkinson, Derek Cavaliero
-	Version: 1.1
+	Version: 1.0
 	Author URI: http://get.trks.it?utm_source=WordPress%20Admin%20Link
 	*/
 
@@ -176,7 +176,7 @@ function github_plugin_updater_init() {
 	        'requires' => '1.1', // which version of WordPress does your plugin require?
 	        'tested' => '3.6.1', // which version of WordPress is your plugin tested up to?
 	        'readme' => 'README.md', // which file to use as the readme for the version number
-	        'access_token' => '4538d800ebdad2b6022e58da4e21decceed076f6', 
+	        'access_token' => '', 
 	    );
     new WP_GitHub_Updater($config);
 }
