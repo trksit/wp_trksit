@@ -154,7 +154,7 @@
     
 /*
  * UPDATING the plugin automatically
- */    
+ */  
 add_action( 'init', 'github_plugin_updater_init' );
 function github_plugin_updater_init() {
 
@@ -162,26 +162,24 @@ function github_plugin_updater_init() {
 	
 	define( 'WP_GITHUB_FORCE_UPDATE', true );
 
-	// note the use of is_admin() to double check that this is happening in the admin
-	if ( is_admin() ) { 
-	
-		$config = array(
-			'slug' => plugin_basename( __FILE__ ),
-			'proper_folder_name' => 'github-updater',
-			'api_url' => 'https://api.github.com/repos/jkudish/WordPress-GitHub-Plugin-Updater',
-			'raw_url' => 'https://raw.github.com/jkudish/WordPress-GitHub-Plugin-Updater/master',
-			'github_url' => 'https://github.com/jkudish/WordPress-GitHub-Plugin-Updater',
-			'zip_url' => 'https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/archive/master.zip',
-			'sslverify' => true,
-			'requires' => '3.0',
-			'tested' => '3.3',
-			'readme' => 'README.md',
-			'access_token' => '',
-		);
-		
-		new WP_GitHub_Updater( $config );
-	
-	}
+//	'access_token' => '4538d800ebdad2b6022e58da4e21decceed076f6';
+
+	if (is_admin()) { // note the use of is_admin() to double check that this is happening in the admin
+	    $config = array(
+	        'slug' => plugin_basename(__FILE__), // this is the slug of your plugin
+	        'proper_folder_name' => 'wp_trksit', // this is the name of the folder your plugin lives in
+	        'api_url' => 'https://api.github.com/repos/trksit/wp_trksit', // the github API url of your github repo
+	        'raw_url' => 'https://raw.github.com/trksit/wp_trksit/master', // the github raw url of your github repo
+	        'github_url' => 'https://github.com/trksit/wp_trksit', // the github url of your github repo
+	        'zip_url' => 'https://github.com/trksit/wp_trksit/archive/master.zip', // the zip url of the github repo
+	        'sslverify' => false,
+	        'requires' => '1.01', // which version of WordPress does your plugin require?
+	        'tested' => '3.6.1', // which version of WordPress is your plugin tested up to?
+	        'readme' => 'README.md', // which file to use as the readme for the version number
+	        'access_token' => '', 
+	    );
+    new WP_GitHub_Updater($config);
+}
 
 }
     
