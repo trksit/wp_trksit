@@ -173,10 +173,10 @@ function github_plugin_updater_init() {
 	        'github_url' => 'https://github.com/trksit/wp_trksit', // the github url of your github repo
 	        'zip_url' => 'https://github.com/trksit/wp_trksit/archive/master.zip', // the zip url of the github repo
 	        'sslverify' => false,
-	        'requires' => '1.01', // which version of WordPress does your plugin require?
+	        'requires' => '1.1', // which version of WordPress does your plugin require?
 	        'tested' => '3.6.1', // which version of WordPress is your plugin tested up to?
 	        'readme' => 'README.md', // which file to use as the readme for the version number
-	        'access_token' => '', 
+	        'access_token' => '4538d800ebdad2b6022e58da4e21decceed076f6', 
 	    );
     new WP_GitHub_Updater($config);
 }
