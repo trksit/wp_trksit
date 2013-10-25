@@ -19,7 +19,7 @@ if($_POST["meta_title"] && ( !empty($_POST) && check_admin_referer('trksit_gener
 ?>
 	<div class="trksit_tab_nav">
 		<ul>
-			<li><a href="/wp-admin/admin.php?page=trksit-generate">Step 1</a></li>
+			<li><a href="./admin.php?page=trksit-generate">Step 1</a></li>
 			<li><a href="#">Step 2</a></li>
 			<li class="active"><a href="#">Step 3</a></li>
 		</ul>
@@ -39,7 +39,7 @@ if($_POST["meta_title"] && ( !empty($_POST) && check_admin_referer('trksit_gener
 ?>
 	<div class="trksit_tab_nav">
 		<ul>
-			<li><a href="/wp-admin/admin.php?page=trksit-generate&url=<?php echo urlencode($_POST['destination_url']);?>">Step 1</a></li>
+			<li><a href="./admin.php?page=trksit-generate&url=<?php echo urlencode($_POST['destination_url']);?>">Step 1</a></li>
 			<li class="active"><a href="#">Step 2</a></li>
 			<li><a href="#">Step 3</a></li>
 		</ul>
