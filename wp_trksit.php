@@ -162,7 +162,7 @@ function github_plugin_updater_init() {
 	
 	define( 'WP_GITHUB_FORCE_UPDATE', true );
 
-//	'access_token' => '4538d800ebdad2b6022e58da4e21decceed076f6';
+//	'access_token' => 'a79ace3570fb404be974830dc9d72a81703c3561'
 
 	if (is_admin()) { // note the use of is_admin() to double check that this is happening in the admin
 	    $config = array(
@@ -175,8 +175,7 @@ function github_plugin_updater_init() {
 	        'sslverify' => false,
 	        'requires' => '1.1', // which version of WordPress does your plugin require?
 	        'tested' => '3.7', // which version of WordPress is your plugin tested up to?
-	        'readme' => 'README.md', // which file to use as the readme for the version number
-	        'access_token' => 'a79ace3570fb404be974830dc9d72a81703c3561', 
+	        'readme' => 'README.md'
 	    );
     new WP_GitHub_Updater($config);
 }
