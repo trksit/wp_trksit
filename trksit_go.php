@@ -165,8 +165,8 @@
 		_gaq.push(['_setAccount', '<?php echo $analytics_id; ?>']);
 
 //REQUIRED FOR LOCAL DEVELOPMENT
-		_gaq.push(['_setDomainName', 'none']);
-		_gaq.push(['_setAllowLinker', true]);   
+//		_gaq.push(['_setDomainName', 'none']);
+//		_gaq.push(['_setAllowLinker', true]);   
 
 // 		if they haven't been here.. push an event to set their GA cookies
 		var delay = 0;

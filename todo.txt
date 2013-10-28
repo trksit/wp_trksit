@@ -1,5 +1,3 @@
-Make sure TRKS.IT redirect works <-- wasn't working on the call
-
 Add script that goes on every link (for hubspot & marketo code) <-- this script would fire on every shortened link
 
 edit/delete scripts <-- Cav

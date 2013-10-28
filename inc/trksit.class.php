@@ -87,8 +87,8 @@ class trksit {
 		//Save the data to the database and get back the ID
 		$shareURL_ID = $this->saveURL($wpdb, $postArray);
 		
-		//DEVELOPMENT: Need to put the UTM tags on this
-		$longURL = plugins_url( 'trksit_go.php?url_id=' . $shareURL_ID, dirname(__FILE__) );
+		//Build the longURL with query string params
+		$longURL = plugins_url( 'trksit_go.php?utm_source='.$postArray['source'].'&utm_medium='.$postArray['medium'].'&utm_campaign='.$postArray['campaign'].'&url_id=' . $shareURL_ID, dirname(__FILE__) );
 		
 		//shorten the URL
 		$shortURL = $this->generateURL($longURL);
