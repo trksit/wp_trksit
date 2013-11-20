@@ -14,8 +14,10 @@
 if($_POST["meta_title"] && ( !empty($_POST) && check_admin_referer('trksit_generate_url','trksit_generate_step2') )){
 		
 	$trksit = new trksit();
+	if(time() > get_option('trksit_token_expires')){
+		$trksit->resetToken();
+	}	
 	$shortURL = $trksit->shortenURL($_POST);
-
 ?>
 	<div class="trksit_tab_nav">
 		<ul>
@@ -32,8 +34,12 @@ if($_POST["meta_title"] && ( !empty($_POST) && check_admin_referer('trksit_gener
 <?php
 /* ---- Step 2 ---- */
 } else if($_POST['destination_url'] && ( !empty($_POST) && check_admin_referer('trksit_generate_url','trksit_generate_step1') )){
-
+	
 	$trksit = new trksit();
+	//if now is after when it expires
+	if(time() > get_option('trksit_token_expires')){
+		$trksit->resetToken();
+	}	
 	$trksit->parseURL($_POST['destination_url']);	
 	
 ?>
@@ -191,8 +197,6 @@ if($_POST["meta_title"] && ( !empty($_POST) && check_admin_referer('trksit_gener
 		$trksit->resetToken();
 	}	
 
-
-	
 ?>	
 	
 	<div class="trksit_tab_nav">

@@ -1,5 +1,11 @@
 <?php
-
+//attempt to disable gzip compression. WordPress' HTTP API causes known issues when getting back content with varied content-length. If the server has mod_deflate enabled, WordPress will tell the requested server to send back a deflated request which causes character encoding issues e.g. two characters to be inserted when getting back a json request. This is an issue on Windows machines using WAMP but is possibly a problem with all servers. Also because the content is 'chunked', which causes problems where the content length is unknown
+//@http://wordpress.stackexchange.com/questions/10088/how-do-i-troubleshoot-responses-with-wp-http-api
+@ini_set('zlib.output_compression', 'Off');
+@ini_set('output_buffering', 'Off');
+@ini_set('output_handler', '');
+@apache_setenv('no-gzip', 1);
+		
 class trksit {
 	public $imgArray = array();		//Images array
 	public $metaArray = array();	//Meta Tags Array
@@ -91,10 +97,9 @@ class trksit {
 		$longURL = plugins_url( 'trksit_go.php?utm_source='.$postArray['source'].'&utm_medium='.$postArray['medium'].'&utm_campaign='.$postArray['campaign'].'&url_id=' . $shareURL_ID, dirname(__FILE__) );
 		
 		//shorten the URL
-		$shortURL = $this->generateURL($longURL);
-
-		$shortURL = "trks.it/" . $shortURL;
-
+		$shortURL = $this->generateURL($longURL,$postArray);
+		$shortURL = "https://trks.it/" . $shortURL;
+		
 		//set the updateArray & whereArray for the shortened URL
 		$updateArray = array('trksit_url' => $shortURL);
 		$whereArray = array('url_id' => $shareURL_ID);
@@ -185,24 +190,44 @@ class trksit {
 	
 	
 	//Generating the shortened URL from trks.it
-	function generateURL($destination_url){
+	function generateURL($long_url,$data){
 		
-		//$encoded_url = base64_encode( $destination_url );
-		//$hashed_url = hash_hmac('sha256', $encoded_url, get_option('trksit_private_api_key') );
+		$url = 'https://api.trks.it/urls';
 		
-		$url = 'https://api.trks.it/urls/' . get_option('trksit_public_api_key');
 		$body = array(
-			'url' => $destination_url
+			'client_id' => get_option('trksit_public_api_key'),
+			'url' => $long_url,
+			'destination_url' => $data['destination_url'],
+			'image'=> $data['meta_image'],
+			'title' => $data['meta_title'],
+			'description' => $data['meta_description']
 		);
+		//pass the og data to trks.it
+		foreach($data as $key => $value){
+			//If the input name has "og:", then store it in the open graph array
+			if( strstr($key, "og:") )
+				$ogArray[$key] = $value;
+		}
+		
+		$body["og_data"] = $ogArray;
+		
 		$headers = array(
 			'Authorization' => 'Bearer ' . get_option('trksit_token')
 		);
 		
 		$request = new WP_Http;
 		$result = $request->request( $url , array( 'method' => 'POST','body'=>$body, 'headers' => $headers) );
-		
 		$output = json_decode($result['body']);
-		
+
+		//if the wp_http cannot get the json data without weird, encoded characters, this may be because wp_http added padding to the body
+		if( !$output ){
+			//remove lines
+			$result['body'] = preg_replace("@[\\r|\\n|\\t]+@", "", $result['body']);
+			//remove padding @http://forrst.com/posts/PHP_Convert_JSONP_to_JSON-mcv
+			$result['body'] = preg_replace('/.+?({.+}).+/','$1',$result['body']);
+			$output = json_decode($result['body']);
+		}
+
 		if($output->error){
 			return $output->error;
 		} else {
@@ -221,12 +246,27 @@ class trksit {
 		);
 		
 		$request = new WP_Http;
-		$result = $request->request( $url , array( 'method' => 'POST','body'=>$body ) );
-
-		$output = json_decode($result["body"]);
+		$result = $request->request( $url , array( 'method' => 'POST','body'=>$body,'headers'=>array('Content-Type'=>' application/x-www-form-urlencoded') ) );
+		
+		//rebuild the response body to remove any extra characters before the json string
+		/*$response = explode('{',$result['body'],2);
+		$response = "{".$response[1];
+		$response = explode('}',$response,2);
+		$response = $response[0]."}}";*/
+		$output = json_decode($result['body']);
+		
+		//if the wp_http cannot get the json data without weird, encoded characters, this may be because wp_http added padding to the body
+		if( !$output ){
+			//remove lines
+			$result['body'] = preg_replace("@[\\r|\\n|\\t]+@", "", $result['body']);
+			//remove padding @http://forrst.com/posts/PHP_Convert_JSONP_to_JSON-mcv
+			$result['body'] = preg_replace('/.+?({.+}).+/','$1',$result['body']);
+			$output = json_decode($result['body']);
+		}
 		
 		update_option('trksit_token', $output->code->access_token);
 		update_option('trksit_token_expires', $output->code->expires);
+		return $output;
 	}
 	
 	//checkToken	

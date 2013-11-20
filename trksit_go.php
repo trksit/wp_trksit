@@ -1,8 +1,9 @@
 <?php 
 
   // Setting cache-control headers 
-  header("Cache-Control: no-cache, must-revalidate");
-  header("Expires: Tue, 01 Jan 1980 1:00:00 GMT");
+  header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
+  header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0',false);
+  header("Pragma: no-cache");
 
 
   //Loading WordPress
