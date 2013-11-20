@@ -5,7 +5,6 @@
 
 <?php if($_GET['page'] == 'trksit-generate'): ?>
 
-
 <div class="wrap" id="trksit-wrap"><!--wrap-->
 <h2 class="trksit-header top"><img src="<?php echo plugins_url( '/wp_trksit/img/trksit-icon-36x36.png' , dirname(__FILE__) ); ?>" class="trksit-header-icon" /><?php echo __( 'Generate a New Trks.it URL', 'trksit_menu' ); ?></h2>
 

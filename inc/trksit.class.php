@@ -211,13 +211,28 @@ class trksit {
 		$body["og_data"] = $ogArray;
 		
 		$headers = array(
-			'Authorization' => 'Bearer ' . get_option('trksit_token')
+			'Authorization' => 'Bearer ' . get_option('trksit_token'),
+			'Content-Type' => 'application/x-www-form-urlencoded'
 		);
 		
 		$request = new WP_Http;
 		$result = $request->request( $url , array( 'method' => 'POST','body'=>$body, 'headers' => $headers) );
+		
+		//sometimes the API returns a 404 when the og_data is sent, so resend the data to shorten URL without the og data
+		if( $result['reponse']['code'] != 201 ){
+			unset($body['og_data']);
+			
+			$headers = array(
+				'Authorization' => 'Bearer ' . get_option('trksit_token'),
+				'Content-Type' => 'application/x-www-form-urlencoded'
+			);
+			
+			$request2 = new WP_Http;
+			$result2 = $request->request( $url , array( 'method' => 'POST','body'=>$body, 'headers' => $headers) );
+			$result = $result2;
+		}
+		
 		$output = json_decode($result['body']);
-
 		//if the wp_http cannot get the json data without weird, encoded characters, this may be because wp_http added padding to the body
 		if( !$output ){
 			//remove lines
