@@ -1,10 +1,9 @@
 <?php
-//attempt to disable gzip compression. WordPress' HTTP API causes known issues when getting back content with varied content-length. If the server has mod_deflate enabled, WordPress will tell the requested server to send back a deflated request which causes character encoding issues e.g. two characters to be inserted when getting back a json request. This is an issue on Windows machines using WAMP but is possibly a problem with all servers. Also because the content is 'chunked', which causes problems where the content length is unknown
+/*attempt to disable gzip compression. WordPress' HTTP API causes known issues when getting back content with varied content-length.*/
 //@http://wordpress.stackexchange.com/questions/10088/how-do-i-troubleshoot-responses-with-wp-http-api
 @ini_set('zlib.output_compression', 'Off');
 @ini_set('output_buffering', 'Off');
 @ini_set('output_handler', '');
-@apache_setenv('no-gzip', 1);
 		
 class trksit {
 	public $imgArray = array();		//Images array
