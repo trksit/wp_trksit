@@ -15,7 +15,11 @@ class trksit {
 	public $image;					//og:image ?
 	public $URL;					//og:url ?
 	
+	private $api; 					//trks.it api
 	
+	function __construct(){
+		$this->api = "https://api.trks.it";
+	}
 	//Parse the given URL & get...
 	//title, meta desctipion, open graph fields, and all images.
 	function parseURL($url) {
@@ -191,7 +195,7 @@ class trksit {
 	//Generating the shortened URL from trks.it
 	function generateURL($long_url,$data){
 		
-		$url = 'https://api.trks.it/urls';
+		$url = $this->api.'/urls';
 		
 		$body = array(
 			'client_id' => get_option('trksit_public_api_key'),
@@ -235,11 +239,7 @@ class trksit {
 		$output = json_decode($result['body']);
 		//if the wp_http cannot get the json data without weird, encoded characters, this may be because wp_http added padding to the body
 		if( !$output ){
-			//remove lines
-			$result['body'] = preg_replace("@[\\r|\\n|\\t]+@", "", $result['body']);
-			//remove padding @http://forrst.com/posts/PHP_Convert_JSONP_to_JSON-mcv
-			$result['body'] = preg_replace('/.+?({.+}).+/','$1',$result['body']);
-			$output = json_decode($result['body']);
+			$output = json_decode($this->removePadding($result['body']));
 		}
 
 		if($output->error){
@@ -253,7 +253,7 @@ class trksit {
 	
 	//resetToken	
 	function resetToken(){
-		$url = 'https://api.trks.it/token?grant_type=creds';
+		$url = $this->api.'/token?grant_type=creds';
 		$body = array(
 			'client_id' => get_option('trksit_public_api_key'),
 			'client_secret' => get_option('trksit_private_api_key')
@@ -271,11 +271,7 @@ class trksit {
 		
 		//if the wp_http cannot get the json data without weird, encoded characters, this may be because wp_http added padding to the body
 		if( !$output ){
-			//remove lines
-			$result['body'] = preg_replace("@[\\r|\\n|\\t]+@", "", $result['body']);
-			//remove padding @http://forrst.com/posts/PHP_Convert_JSONP_to_JSON-mcv
-			$result['body'] = preg_replace('/.+?({.+}).+/','$1',$result['body']);
-			$output = json_decode($result['body']);
+			$output = json_decode($this->removePadding($result['body']));
 		}
 		
 		update_option('trksit_token', $output->code->access_token);
@@ -285,7 +281,7 @@ class trksit {
 	
 	//checkToken	
 	function checkToken(){
-		$url = 'https://api.trks.it/token?grant_type=authorization';
+		$url = $this->api.'/token?grant_type=authorization';
 		$body = array(
 			'client_id' => get_option('trksit_public_api_key'),
 			'client_secret' => get_option('trksit_private_api_key'),
@@ -297,12 +293,95 @@ class trksit {
 
 		$output = json_decode($result["body"]);
 		
+		//if the wp_http cannot get the json data without weird, encoded characters, this may be because wp_http added padding to the body
+		if( !$output ){
+			$output = json_decode($this->removePadding($result['body']));
+		}
+		
 		if($output->error){
 			return $output->error;
 		} else {
 			return true;
 		}
 
+	}
+	
+	//get the hits for the links
+	function getAnalytics($start_date = null,$end_date = null,$short_url = null){
+		global $wpdb;
+		//set the URL parameters needed to query the API
+		$url_parameters = array(
+			'start_date'=>(isset($start_date)?$start_date:date('Y-m-d')),
+			'end_date'=>(isset($end_date)?$end_date:date('Y-m-d'))
+		);
+		//set the headers
+		$headers = array(
+			'Authorization' => 'Bearer ' . get_option('trksit_token')
+		);
+			
+		//set the base URL to query the API for analytics info
+		$url = $this->api.'/clients/'.get_option('trksit_public_api_key').'/urls';
+		
+		if( isset($short_url) ){
+			$url .= '/'.$short_url;
+		}
+		
+		$request = new WP_Http;
+		$result = $request->request( $url.'?'.http_build_query($url_parameters) , array( 'method' => 'GET','body'=>$body, 'headers' => $headers) );
+		
+		$output = json_decode($result['body']);
+		
+		if( !$output ){
+			$output = json_decode($this->removePadding($result['body']));
+		}
+		echo var_dump($output);
+		if( $output->status === 200 ){
+			$data = array();
+			foreach($output->hit_dates as $hit ){
+				$data[] = array('y'=>$hit['hit_date'],'a'=>$hit['hits']);
+			}
+			$data = json_encode($data);
+			
+			echo "<script>
+			//JS for line graph
+			var graph = new Morris.Line({
+				// ID of the element in which to draw the chart.
+				element: 'trks_hits',
+				// Chart data records -- each entry in this array corresponds to a point on
+				// the chart.
+				data:[],
+				// The name of the data record attribute that contains x-values.
+				xkey: 'year',
+				// A list of names of data record attributes that contain y-values.
+				ykeys: ['value'],
+				// Labels for the ykeys -- will be displayed when you hover over the
+				// chart.
+				labels: ['Hits'],
+				xLabels:'day',
+				pointStrokeColors: '#000000',
+				dateFormat: function(x){
+					var date = new Date(x)
+					return moment(date).format('MM/DD/YY');
+				},
+				xLabelFormat:function(x){
+					var date = new Date(x)
+					return moment(date).format('MM/DD/YY');
+				}
+			});
+			
+			graph.setData($data);</script>";
+		}
+	}
+	
+	//remove the padding by wp_http that causes padding to be added to a JSON request
+	function removePadding($data){
+		//if the wp_http cannot get the json data without weird, encoded characters, this may be because wp_http added padding to the body
+		//remove lines
+		$data = preg_replace("@[\\r|\\n|\\t]+@", "", $data);
+		//remove padding @http://forrst.com/posts/PHP_Convert_JSONP_to_JSON-mcv
+		$data = preg_replace('/.+?({.+}).+/','$1',$data);
+		
+		return $data;
 	}
 
 	//GET functions

@@ -3,7 +3,7 @@
 	Plugin Name: Trks.it for WordPress
 	Plugin URI: http://get.trks.it?utm_source=WordPress%20Admin%20Link
 	Description: Ever wonder how many people click links that lead to 3rd party sites from your social media platforms? Trks.it is a WordPress plugin for tracking social media engagement.
-	Author: Arsham Mirshah, Deyonte Wilkinson, Derek Cavaliero
+	Author: Arsham Mirshah, De'Yonte Wilkinson, Derek Cavaliero
 	Version: 1.2
 	Author URI: http://get.trks.it?utm_source=WordPress%20Admin%20Link
 	*/
@@ -28,19 +28,20 @@
 				wp_enqueue_script( 'trksit-bootstrap-js', false, array('jquery') );
 				wp_enqueue_script( 'trksit-zclip-js', false, array('jquery') );
 				wp_enqueue_script( 'trksit-validation-js', false, array('jquery') );
-        wp_enqueue_script( 'jquery-image-picker', plugins_url( '/wp_trksit/js/image-picker.min.js' , dirname(__FILE__) ) );
+				wp_enqueue_script( 'jquery-image-picker', plugins_url( '/wp_trksit/js/image-picker.min.js' , dirname(__FILE__) ) );
 				wp_enqueue_script( 'trksit-main-js', false, array('jquery') );
       
 			}
 	    if($_GET['page'] == 'trksit-dashboard'){
-					
-				wp_enqueue_script( 'jquery-flot', plugins_url( '/wp_trksit/js/jquery.flot.pkg.js' , dirname(__FILE__) ) );
+				wp_enqueue_style( 'morris-js',plugins_url( '/wp_trksit/js/morris.js/morris.css'),'','0.4.3' );
+				wp_enqueue_script( 'raphael-js', plugins_url( '/wp_trksit/js/raphael-min.js') , '','2.1.2' );
+				wp_enqueue_script( 'morris-js', plugins_url( '/wp_trksit/js/morris.js/morris.min.js'),'','0.4.3' );
+				wp_enqueue_script( 'moment-js', plugins_url( '/wp_trksit/js/moment.js'),'','2.4.0' );
 				//wp_enqueue_script( 'trksit-dashboard', plugins_url( '/wp_trksit/js/dashboard.js' , dirname(__FILE__) ) );
 			
 			}
 	    if($_GET['page'] == 'trksit-generate'){
 			
-				
 				wp_register_script( 'trksit-generate-js', plugins_url( '/wp_trksit/js/generate.js' , dirname(__FILE__) ) );
 				wp_enqueue_script( 'trksit-generate-js' );
 			}	

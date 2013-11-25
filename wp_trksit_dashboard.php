@@ -10,13 +10,21 @@ if($_GET['view'] == 'link-detail' && is_numeric($_GET['linkid'])){
       $url_details = $wpdb->get_results( "SELECT * FROM " . $wpdb->prefix . "trksit_urls WHERE url_id = " . $link_id . "" );
       if(count($url_details === 1)){
       
-      $trksit = new trksit();
+		$trksit = new trksit();
 	    $trksit->parseURL($url_details[0]->destination_url);	
-      $og_data = unserialize ( $url_details[0]->og_data );
-?>         
+		$og_data = unserialize ( $url_details[0]->og_data );
+		$date = $url_details[0]->date_created;
+		$trksit_url = $url_details[0]->trksit_url;
+?>       
 <h2 class="trksit-header top"><img src="<?php echo plugins_url( '/wp_trksit/img/trksit-icon-36x36.png' , dirname(__FILE__) ); ?>" class="trksit-header-icon" /><?php echo __( 'Trks.it - Details for Link ID #' . $url_details[0]->url_id, 'trksit_menu' ); ?></h2>
 
+	<div id="trks_hits"></div>
+	<?php 
+	$trksit_slug = explode('/',$trksit_url);
+	$trksit->getAnalytics($date,'',$trksit_slug[2]);
+	?>
   <div class="trksit_tab_nav"></div>
+  
 	<form class="trksit-form"  method="post">	
 	<div class="trksit_col left">
 		
