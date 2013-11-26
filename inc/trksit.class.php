@@ -262,13 +262,13 @@ class trksit {
 		$request = new WP_Http;
 		$result = $request->request( $url , array( 'method' => 'POST','body'=>$body,'headers'=>array('Content-Type'=>' application/x-www-form-urlencoded') ) );
 		
-		//rebuild the response body to remove any extra characters before the json string
-		/*$response = explode('{',$result['body'],2);
-		$response = "{".$response[1];
-		$response = explode('}',$response,2);
-		$response = $response[0]."}}";*/
-		$output = json_decode($result['body']);
+		//check if wp_http has thrown an error message
+		if( $result instanceof WP_Error ){
+			echo $result->get_error_message();
+			exit;
+		}
 		
+		$output = json_decode($result['body']);
 		//if the wp_http cannot get the json data without weird, encoded characters, this may be because wp_http added padding to the body
 		if( !$output ){
 			$output = json_decode($this->removePadding($result['body']));
@@ -276,6 +276,7 @@ class trksit {
 		
 		update_option('trksit_token', $output->code->access_token);
 		update_option('trksit_token_expires', $output->code->expires);
+		
 		return $output;
 	}
 	
@@ -290,7 +291,12 @@ class trksit {
 		
 		$request = new WP_Http;
 		$result = $request->request( $url , array( 'method' => 'POST','body'=>$body ) );
-
+		
+		//check if wp_http has thrown an error message
+		if( $result instanceof WP_Error ){
+			echo $result->get_error_message();
+			exit;
+		}
 		$output = json_decode($result["body"]);
 		
 		//if the wp_http cannot get the json data without weird, encoded characters, this may be because wp_http added padding to the body
@@ -328,6 +334,12 @@ class trksit {
 		
 		$request = new WP_Http;
 		$result = $request->request( $url.'?'.http_build_query($url_parameters) , array( 'method' => 'GET','body'=>$body, 'headers' => $headers) );
+		
+		//check if wp_http has thrown an error message
+		if( $result instanceof WP_Error ){
+			echo $result->get_error_message();
+			exit;
+		}
 		
 		$output = json_decode($result['body']);
 		
