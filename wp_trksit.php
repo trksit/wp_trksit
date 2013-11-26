@@ -33,10 +33,10 @@
       
 			}
 	    if($_GET['page'] == 'trksit-dashboard'){
-				wp_enqueue_style( 'morris-js',plugins_url( '/wp_trksit/js/morris.js/morris.css'),'','0.4.3' );
-				wp_enqueue_script( 'raphael-js', plugins_url( '/wp_trksit/js/raphael-min.js') , '','2.1.2' );
-				wp_enqueue_script( 'morris-js', plugins_url( '/wp_trksit/js/morris.js/morris.min.js'),'','0.4.3' );
-				wp_enqueue_script( 'moment-js', plugins_url( '/wp_trksit/js/moment.js'),'','2.4.0' );
+				wp_enqueue_style( 'morris-js', '//cdnjs.cloudflare.com/ajax/libs/morris.js/0.4.3/morris.css','','0.4.3' );
+				wp_enqueue_script( 'raphael-js', '//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.2/raphael-min.js' , '','2.1.2' );
+				wp_enqueue_script( 'morris-js', '//cdnjs.cloudflare.com/ajax/libs/morris.js/0.4.3/morris.js','','0.4.3' );
+				wp_enqueue_script( 'moment-js', '//cdnjs.cloudflare.com/ajax/libs/moment.js/2.4.0/moment.min.js','','2.4.0' );
 				//wp_enqueue_script( 'trksit-dashboard', plugins_url( '/wp_trksit/js/dashboard.js' , dirname(__FILE__) ) );
 			
 			}

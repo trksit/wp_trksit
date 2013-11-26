@@ -317,8 +317,9 @@ class trksit {
 		global $wpdb;
 		//set the URL parameters needed to query the API
 		$url_parameters = array(
-			'start_date'=>(isset($start_date)?$start_date:date('Y-m-d')),
-			'end_date'=>(isset($end_date)?$end_date:date('Y-m-d'))
+			'start_date'=>(!empty($start_date)?$start_date:date('Y-m-d')),
+			'end_date'=>(!empty($end_date)?$end_date:date('Y-m-d')),
+			'hits'=>''
 		);
 		//set the headers
 		$headers = array(
@@ -329,9 +330,9 @@ class trksit {
 		$url = $this->api.'/clients/'.get_option('trksit_public_api_key').'/urls';
 		
 		if( isset($short_url) ){
-			$url .= '/'.$short_url;
+			$trksit_slug = explode('/',$short_url);
+			$url .= '/'.$trksit_slug[3];
 		}
-		
 		$request = new WP_Http;
 		$result = $request->request( $url.'?'.http_build_query($url_parameters) , array( 'method' => 'GET','body'=>$body, 'headers' => $headers) );
 		
@@ -342,32 +343,23 @@ class trksit {
 		}
 		
 		$output = json_decode($result['body']);
-		
 		if( !$output ){
 			$output = json_decode($this->removePadding($result['body']));
 		}
-		echo var_dump($output);
-		if( $output->status === 200 ){
+		
+		if( $result['response']['code'] === 200 ){
 			$data = array();
 			foreach($output->hit_dates as $hit ){
-				$data[] = array('y'=>$hit['hit_date'],'a'=>$hit['hits']);
+				$data[] = array('day'=>$hit->hit_date,'hits'=>$hit->hits);
 			}
 			$data = json_encode($data);
-			
 			echo "<script>
 			//JS for line graph
 			var graph = new Morris.Line({
-				// ID of the element in which to draw the chart.
 				element: 'trks_hits',
-				// Chart data records -- each entry in this array corresponds to a point on
-				// the chart.
-				data:[],
-				// The name of the data record attribute that contains x-values.
-				xkey: 'year',
-				// A list of names of data record attributes that contain y-values.
-				ykeys: ['value'],
-				// Labels for the ykeys -- will be displayed when you hover over the
-				// chart.
+				resize: true,
+				xkey: 'day',
+				ykeys: ['hits'],
 				labels: ['Hits'],
 				xLabels:'day',
 				pointStrokeColors: '#000000',
@@ -382,6 +374,10 @@ class trksit {
 			});
 			
 			graph.setData($data);</script>";
+		} elseif( $result['response']['code'] === 204 ) {// no hit data
+		
+		} else {
+			echo $output->msg;
 		}
 	}
 	
