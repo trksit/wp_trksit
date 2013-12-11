@@ -24,9 +24,17 @@ class trksit {
 	//title, meta desctipion, open graph fields, and all images.
 	function parseURL($url) {
 		
+		//load WordPress HTTP to load url
+		$wp_http = new WP_Http();
+		$get_page = $wp_http->request( $url, array( 'method' => 'GET') );
+		if( isset( $get_page['body'] ) )
+			$get_page = $get_page['body'];
+		else
+			_e("Cannot get page information from the url $url");
+			
 		//dom loading
 		$dom = new domDocument;
-		@$dom->loadHTML(file_get_contents($url));
+		@$dom->loadHTML($get_page);
 		$dom->preserveWhiteSpace = false;
 		
 		//Getting OG meta data

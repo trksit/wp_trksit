@@ -56,16 +56,16 @@
         //echo 'Update the current hit record and redirect to (' . $redirect_lookup[0]->destination_url . ').';
         
         $update_results = $wpdb->query(
-                            $wpdb->prepare(
-                              "
-                              UPDATE " . $wpdb->prefix ."trksit_hits 
-                              SET hit_count = hit_count + 1 
-                              WHERE url_id = %d 
-                              AND hit_date = %s
-                              ",
-                              $url_id, $today
-                            )
-                          );
+			$wpdb->prepare(
+			  "
+			  UPDATE " . $wpdb->prefix ."trksit_hits 
+			  SET hit_count = hit_count + 1 
+			  WHERE url_id = %d 
+			  AND hit_date = %s
+			  ",
+			  $url_id, $today
+			)
+		);
                       
         if($update_results){
           $redirect = '<script type="text/javascript">setTimeout(function(){window.location.href = "' . $redirect_lookup[0]->destination_url . '"},' . $redirect_delay . ');</script>';    
