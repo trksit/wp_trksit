@@ -15,12 +15,19 @@ if($_GET['view'] == 'link-detail' && is_numeric($_GET['linkid'])){
 		$og_data = unserialize ( $url_details[0]->og_data );
 		$date = $url_details[0]->date_created;
 		$trksit_url = $url_details[0]->trksit_url;
+		if( isset($_GET['trksit_start_date']) AND !empty($_GET['trksit_start_date']) AND isset($_GET['trksit_end_date']) AND !empty($_GET['trksit_end_date']) ){
+			$start_date = date('Y-m-d',strtotime($_GET['trksit_start_date']));
+			$end_date = date('Y-m-d',strtotime($_GET['trksit_end_date']));
+	  }else{
+	    $start_date = date('Y-m-d',strtotime("last week"));
+	    $end_date = date('Y-m-d', time());
+	  }
 ?>       
 		<h2 class="trksit-header top"><img src="<?php echo plugins_url( '/wp_trksit/img/trksit-icon-36x36.png' , dirname(__FILE__) ); ?>" class="trksit-header-icon" /><?php echo __( 'Trks.it - Details for Link ID #' . $url_details[0]->url_id, 'trksit_menu' ); ?></h2>
 
 			<div id="trks_hits"></div>
 			<?php 
-			$trksit->getAnalytics($date,'',$trksit_url);
+			$trksit->getAnalytics($start_date,$end_date,$link_id);
 			?>
 		  <div class="trksit_tab_nav"></div>
 		  
@@ -138,13 +145,13 @@ if($_GET['view'] == 'link-detail' && is_numeric($_GET['linkid'])){
 			<h2><?php _e('Sharing Preview'); ?></h2>
 				
 			<div id="preview">
-					<div class="image"><img src="<?php echo ($og_data['og:image']) ? $og_data['og:image'] : $url_details[0]->meta_image; ?>"></div>
-					<div class="content">
-						<label for="title"><div class="title"><?php echo ($og_data['og:title']) ? $og_data['og:title'] : $url_details[0]->meta_title; ?></div></label>
-						<div class="url"><?php echo substr($url_details[0]->destination_url, 0, 38); if(strlen($url_details[0]->destination_url) > 40){echo "...";}?></div>
-						<label for="description"><div class="description"><?php echo ($og_data['og:description']) ? $og_data['og:description'] : $url_details[0]->meta_description; ?></div></label>
-					</div><div class="clear"></div>
-				</div><!-- #preview -->
+				<div class="image"><img src="<?php echo ($og_data['og:image']) ? $og_data['og:image'] : $url_details[0]->meta_image; ?>"></div>
+				<div class="content">
+					<label for="title"><div class="title"><?php echo ($og_data['og:title']) ? $og_data['og:title'] : $url_details[0]->meta_title; ?></div></label>
+					<div class="url"><?php echo substr($url_details[0]->destination_url, 0, 38); if(strlen($url_details[0]->destination_url) > 40){echo "...";}?></div>
+					<label for="description"><div class="description"><?php echo ($og_data['og:description']) ? $og_data['og:description'] : $url_details[0]->meta_description; ?></div></label>
+				</div><div class="clear"></div>
+			</div><!-- #preview -->
 			
 			<?php 
 			  if($og_data['og:image'] || $og_data['og:title'] || $og_data['og:description']){
@@ -190,168 +197,92 @@ else if($_GET['page'] == 'trksit-dashboard'){
 ?>
 	<h2 class="trksit-header top"><img src="<?php echo plugins_url( '/wp_trksit/img/trksit-icon-36x36.png' , dirname(__FILE__) ); ?>" class="trksit-header-icon" /><?php echo __( 'Trks.it Dashboard', 'trksit_menu' ); ?></h2>
 	<?php
+		if( isset($_GET['trksit_start_date']) AND !empty($_GET['trksit_start_date']) AND isset($_GET['trksit_end_date']) AND !empty($_GET['trksit_end_date']) ){
+			$start_date = date('Y-m-d',strtotime($_GET['trksit_start_date']));
+			$end_date = date('Y-m-d',strtotime($_GET['trksit_end_date']));
+	  }else{
+	    $start_date = date('Y-m-d',strtotime("last week"));
+	    $end_date = date('Y-m-d', time());
+	  }
+	  //get the date of the last week so we can select all links created within the past week
+	  $last_week = date('Y-m-d',strtotime("last week"));
+	  $today = date('Y-m-d', time());
+
 		$timeline_points = $wpdb->get_results( "SELECT date_created FROM " . $wpdb->prefix . "trksit_urls LIMIT 1" );
 		if( count($timeline_points) === 1){
 			$date = $timeline_points[0]->date_created;
 			?>
+			<form action="<?php echo trksit_current_page();?>" class="wp-core-ui" method="GET">
+				<input type="hidden" name="page" value="trksit-dashboard">
+				<div class="trksit_date">
+					<label for="trksit_start_date"><?php _e('Start Date'); ?></label>
+					<input type="text" id="trksit_start_date" name="trksit_start_date">
+				</div>
+				<div class="trksit_date">
+					<label for="trksit_end_date"><?php _e('End Date'); ?></label>
+					<input type="text" id="trksit_end_date" name="trksit_end_date">
+				</div>
+				<input type="submit" value="Update" class="button button-primary button-large">
+			</form>
 			<div id="trks_hits"></div>
+			
 			<?php
 			$trksit = new trksit();
-			$trksit->getAnalytics($date,'');
+			$trksit->getAnalytics($start_date,$end_date);
 		}
-	  /*$timeline_points = $wpdb->get_results( "SELECT * FROM " . $wpdb->prefix . "trksit_hits WHERE url_id = 2" );
+		$table_data = $wpdb->get_results("SELECT *,(SELECT COALESCE(SUM(tkhits.hit_count),0) as hit_total FROM ".$wpdb->prefix."trksit_hits tkhits WHERE tku.url_id = tkhits.url_id AND tkhits.hit_date BETWEEN '$start_date' AND '$end_date') AS hit_total FROM ".$wpdb->prefix."trksit_urls tku WHERE tku.url_id IN(SELECT DISTINCT tkhits.url_id FROM ".$wpdb->prefix."trksit_hits tkhits WHERE tku.url_id = tkhits.url_id AND tkhits.hit_date BETWEEN '$start_date' AND '$end_date') ORDER BY hit_total DESC");
 
-	  //print_r($timeline_points);
-
-	  $points = '';
-	  $count = 1;
-	  $point_count = count($timeline_points);
-	  
-	  foreach($timeline_points as $timeline_point){
-		
-		$timestamp = (int)(strtotime($timeline_point->hit_date)*1000);
-		$timeline_point->hit_date = (int)$timestamp;
-		
-		$timeline_converted[] = array(
-		  $timestamp => $timeline_point->hit_count
-		);
-		
-		$points .= "[" . $timeline_point->hit_date . ", " . $timeline_point->hit_count . "]";
-		
-		if($count != $point_count){
-		  $points .= ',';
-		}
-		
-		$count++;    
-		
-	  }
-	  
-	  $graph_json = '[' . $points . ']';
-	*/
+		if( count($table_data) >= 1 ):
 	?>
-	<script type="text/javascript">
 
-	jQuery(document).ready(function($) {
-		
-		var graphData = [{
-				data: <?php echo $graph_json; ?>,
-				color: '#21759b',
-				points: { radius: 3, fillColor: '#21759b' }
-			}];
-		
-		$.plot($('#graph-lines'), graphData, {
-			series: {
-				points: {
-					show: true,
-					radius: 5
-				},
-				lines: {
-					show: true
-				},
-				shadowSize: 0
-			},
-			grid: {
-				color: '#646464',
-				borderColor: 'transparent',
-				borderWidth: 20,
-				hoverable: true
-			},
-			xaxis: {
-				tickColor: 'transparent',
-				tickDecimals: 0,
-				mode: "time",  
-				timeformat: "%m/%d/%y",  
-				minTickSize: [10, "day"]
-			},
-			yaxis: {
-				tickSize: 10
-			}
-		});
-
-		function showTooltip(x, y, contents) {
-			$('<div id="tooltip">' + contents + '<span class="nip"></span></div>').css({
-				top: y - 50,
-				left: x - 80
-			}).appendTo('body').fadeIn();
-		}
-
-		var previousPoint = null;
-
-		$('#graph-lines').bind('plothover', function (event, pos, item) {
-			if (item) {
-				if (previousPoint != item.dataIndex) {
-					previousPoint = item.dataIndex;
-					$('#tooltip').remove();
-					var x = item.datapoint[0],
-						y = item.datapoint[1];
-					var hitdate = new Date(x);
-						showTooltip(item.pageX, item.pageY, y + ' hits on ' + (hitdate.getUTCMonth() + 1) + "/" + hitdate.getUTCDate() + "/" + hitdate.getUTCFullYear());
-				}
-			} else {
-				$('#tooltip').remove();
-				previousPoint = null;
-			}
-		});
-		
-	});
-	</script>
-
-	<!--<div id="graph-wrapper"><div class="graph-container"><div id="graph-lines"></div></div></div>-->
-
-	<table class="wp-list-table widefat fixed">
-	  <thead>
-		<tr>
-			<th class="sortable desc" width="120"><a href="#"><span><?php _e('Created'); ?></span><span class="sorting-indicator"></span></a></th>
-		  <th class="sortable desc" width="60"><a href="#"><span><?php _e('Hits'); ?></span><span class="sorting-indicator"></span></a></th>
-			<th width="80"><?php _e('Trks.it URL'); ?></th>
-		  <th width="50"></th>
-			<th><?php _e('Destination URL'); ?></th>      
-			<th><?php _e('Campaign'); ?></th>
-			<th><?php _e('Source'); ?></th>
-			<th><?php _e('Medium'); ?></th>
-			<th width="80"></th>
-		</tr>
-	  </thead>
-	  <tbody>
-	  <?php 
-		
-		$table_data = $wpdb->get_results( "SELECT * FROM " . $wpdb->prefix . "trksit_urls ORDER BY date_created DESC, url_id DESC" );
-		
-		if(count($table_data)){
-		
-			foreach($table_data as $table_row){
-			
-			$datetime = strtotime($table_row->date_created);
-			$date_created = date('M j, Y', $datetime);
-			$details_nonce = wp_create_nonce('trksit-view-details');
-			$details_link = 'admin.php?page=trksit-dashboard&view=link-detail&linkid=' . $table_row->url_id . '&_wpnonce=' . $details_nonce; 
-	  ?>
-			<tr>
-			  <td><?php echo $date_created; ?></td>
-			  <td><?php echo mt_rand ( 0, 100 ); ?></td>
-			  <td>
-				<a href="//<?php echo $table_row->trksit_url; ?>" target="_blank" class="trksit-link" id="trksit-link-<?php echo $table_row->url_id; ?>"><?php echo str_replace("https://", "", $table_row->trksit_url); ?></a> 
-			  </td>
-			  <td><span class="copy-btn-wrap"><a class="trksit-copy-btn" id="trks-copy-btn-<?php echo $table_row->url_id; ?>" data-trksit-link="<?php echo $table_row->trksit_url; ?>">Copy</a></span></td>
-			  <td class="truncate"><a href="<?php echo $table_row->destination_url; ?>" target="_blank"><?php echo $table_row->destination_url; ?></a></td>
-
-			  <td><?php echo stripslashes($table_row->campaign); ?></td>
-				<td><?php echo stripslashes($table_row->source); ?></td>
-				<td><?php echo stripslashes($table_row->medium); ?></td>
-				<td class="details"><a href="<?php echo $details_link; ?>">View Details</a></td>
-			</tr>
-	  <?php 
-		 }
-		}else{
-	  ?>
-			<tr>
-				<td colspan="7"><?php _e('You haven\'t created a Trks.it URL yet...'); ?> <a href="/wp-admin/admin.php?page=trksit-generate"><?php _e('Create one now!'); ?></a></td>
-			</tr>		
-	  <?php 
-		}
-	  ?>
-	  </tbody>
-	</table>
+			<div id="trks_dashboard_par" style="display: none;">
+			<table class="wp-list-table widefat fixed" id="trks_dashboard" style="width: 100%;display:table;white-space:nowrap;overflow: hidden;">
+			  <thead>
+				<tr>
+					<th class="sortable desc" width="120"><a href="#"><span><?php _e('Created'); ?></span><span class="sorting-indicator"></span></a></th>
+				  <th class="sortable desc" width="60"><a href="#"><span><?php _e('Hits'); ?></span><span class="sorting-indicator"></span></a></th>
+					<th width="80"><?php _e('Trks.it URL'); ?></th>
+				  <th width="50"></th>
+					<th id="trks_it_destination" width="60"><?php _e('Destination URL'); ?></th>      
+					<th><?php _e('Campaign'); ?></th>
+					<th><?php _e('Source'); ?></th>
+					<th><?php _e('Medium'); ?></th>
+					<th width="80"></th>
+				</tr>
+			  </thead>
+			  <tbody>
+			  <?php 
+					foreach($table_data as $table_row):
+						$datetime = strtotime($table_row->date_created);
+						$date_created = date('M j, Y', $datetime);
+						$details_nonce = wp_create_nonce('trksit-view-details');
+						$details_link = 'admin.php?page=trksit-dashboard&view=link-detail&linkid=' . $table_row->url_id . '&_wpnonce=' . $details_nonce; 
+			  ?>
+						<tr>
+						  <td class="trks_it_date"><?php _e($date_created); ?></td>
+						  <td class="trks_it_hits"><?php _e($table_row->hit_total); ?></td>
+						  <td class="trks_it_url">
+								<a href="<?php echo $table_row->trksit_url; ?>?preview=true" target="_blank" class="trksit-link" id="trksit-link-<?php echo $table_row->url_id; ?>"><?php echo str_replace("https://", "", $table_row->trksit_url); ?></a> 
+						  </td>
+						  <td class="trks_it_copy">
+						  	<span class="copy-btn-wrap"><a class="trksit-copy-btn" id="trks-copy-btn-<?php echo $table_row->url_id; ?>" data-trksit-link="//<?php echo $table_row->trksit_url; ?>"><?php _e('Copy');?></a></span>
+					  	</td>
+						  <td class="truncate trks_it_destination">
+						  	<a href="<?php echo $table_row->destination_url; ?>" target="_blank"><?php echo $table_row->destination_url; ?></a>
+					  	</td>
+						  <td class="trks_it_campaign"><?php _e(stripslashes($table_row->campaign)); ?></td>
+							<td class="trks_it_source"><?php _e(stripslashes($table_row->source)); ?></td>
+							<td class="trks_it_medium"><?php _e(stripslashes($table_row->medium)); ?></td>
+							<td class="trks_it_details"><a href="<?php echo $details_link; ?>"><?php _e('View Details');?></a></td>
+						</tr>
+			  <?php endforeach;?>
+			  </tbody>
+			</table>
+		<?php 
+		else:
+			_e('You haven\'t created a Trks.it URL yet...'); ?> <a href="/wp-admin/admin.php?page=trksit-generate"><?php _e('Create one now!'); ?></a>
+	  <?php endif;?>	  
+	</div>
 	<?php 
 }
 ?>

@@ -321,72 +321,59 @@ class trksit {
 	}
 	
 	//get the hits for the links
-	function getAnalytics($start_date = null,$end_date = null,$short_url = null){
+	function getAnalytics($start_date = null,$end_date = null,$short_url_id = null){
 		global $wpdb;
-		//set the URL parameters needed to query the API
-		$url_parameters = array(
-			'start_date'=>(!empty($start_date)?$start_date:date('Y-m-d')),
-			'end_date'=>(!empty($end_date)?$end_date:date('Y-m-d')),
-			'hits'=>''
-		);
-		//set the headers
-		$headers = array(
-			'Authorization' => 'Bearer ' . get_option('trksit_token')
-		);
-			
-		//set the base URL to query the API for analytics info
-		$url = $this->api.'/clients/'.get_option('trksit_public_api_key').'/urls';
-		
-		if( isset($short_url) ){
-			$trksit_slug = explode('/',$short_url);
-			$url .= '/'.$trksit_slug[3];
+
+		//select the hit counts based on start and end dates
+		if( is_null($short_url) AND is_null($start_date) AND is_null($end_date) ){
+			$hits = $wpdb->get_results('SELECT *,(SELECT COALESCE(SUM(hit_count),0) as hit_count FROM '.$wpdb->prefix.'trksit_hits WHERE wp_trksit_hits.hit_date = v.hit_date) AS hit_count from (SELECT adddate("1970-01-01",t4.i*10000 + t3.i*1000 + t2.i*100 + t1.i*10 + t0.i) hit_date from (SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t0,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t1,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t2,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t3,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t4) v WHERE v.hit_date BETWEEN "'.$start_date.'" AND "'.$end_date.'" ORDER BY v.hit_date',OBJECT);
+		}elseif( is_null($short_url) AND !is_null($start_date) AND !is_null($end_date) ){
+			$hits = $wpdb->get_results('SELECT *,(SELECT COALESCE(SUM(hit_count),0) as hit_count FROM '.$wpdb->prefix.'trksit_hits WHERE wp_trksit_hits.hit_date = v.hit_date) AS hit_count from (SELECT adddate("1970-01-01",t4.i*10000 + t3.i*1000 + t2.i*100 + t1.i*10 + t0.i) hit_date from (SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t0,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t1,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t2,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t3,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t4) v WHERE v.hit_date BETWEEN "'.$start_date.'" AND "'.$end_date.'" ORDER BY v.hit_date',OBJECT);
+		}elseif( !is_null($short_url) AND is_null($start_date) AND is_null($end_date) ){
+			$hits = $wpdb->get_results('SELECT *,(SELECT COALESCE(SUM(hit_count),0) as hit_count FROM '.$wpdb->prefix.'trksit_hits WHERE wp_trksit_hits.hit_date = v.hit_date AND url_id = '.$short_url_id.') AS hit_count from (SELECT adddate("1970-01-01",t4.i*10000 + t3.i*1000 + t2.i*100 + t1.i*10 + t0.i) hit_date from (SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t0,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t1,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t2,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t3,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t4) v WHERE v.hit_date BETWEEN "'.$start_date.'" AND "'.$end_date.'" ORDER BY v.hit_date',OBJECT);
+		}elseif( !is_null($short_url) AND !is_null($start_date) AND !is_null($end_date) ){
+			$hits = $wpdb->get_results('SELECT *,(SELECT COALESCE(SUM(hit_count),0) as hit_count FROM '.$wpdb->prefix.'trksit_hits WHERE wp_trksit_hits.hit_date = v.hit_date AND url_id = '.$short_url_id.') AS hit_count from (SELECT adddate("1970-01-01",t4.i*10000 + t3.i*1000 + t2.i*100 + t1.i*10 + t0.i) hit_date from (SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t0,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t1,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t2,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t3,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t4) v WHERE v.hit_date BETWEEN "'.$start_date.'" AND "'.$end_date.'" ORDER BY v.hit_date',OBJECT);
 		}
-		$request = new WP_Http;
-		$result = $request->request( $url.'?'.http_build_query($url_parameters) , array( 'method' => 'GET','body'=>$body, 'headers' => $headers) );
-		
-		//check if wp_http has thrown an error message
-		if( $result instanceof WP_Error ){
-			echo $result->get_error_message();
-			exit;
-		}
-		
-		$output = json_decode($result['body']);
-		if( !$output ){
-			$output = json_decode($this->removePadding($result['body']));
-		}
-		
-		if( $result['response']['code'] === 200 ){
-			$data = array();
-			foreach($output->hit_dates as $hit ){
-				$data[] = array('day'=>$hit->hit_date,'hits'=>$hit->hits);
+
+		$data = null;
+		foreach( $hits as $hit ){
+			if( is_null($data) ){
+				$data = "{ day: '".$hit->hit_date."', hits: ".$hit->hit_count."},";
+			}else{
+				$data .= "{ day: '".$hit->hit_date."', hits: ".$hit->hit_count."},";
 			}
-			$data = json_encode($data);
-			echo "<script>
-			//JS for line graph
-			var graph = new Morris.Line({
-				element: 'trks_hits',
-				resize: true,
-				xkey: 'day',
-				ykeys: ['hits'],
-				labels: ['Hits'],
-				xLabels:'day',
-				pointStrokeColors: '#000000',
-				dateFormat: function(x){
-					var date = new Date(x)
-					return moment(date).format('MM/DD/YY');
-				},
-				xLabelFormat:function(x){
-					var date = new Date(x)
-					return moment(date).format('MM/DD/YY');
-				}
-			});
-			
-			graph.setData($data);</script>";
-		} elseif( $result['response']['code'] === 204 ) {// no hit data
-		
-		} else {
-			echo $output->msg;
 		}
+		echo "<script>
+		//JS for line graph
+		var graph = new Morris.Line({
+			element: 'trks_hits',
+			data: [
+				$data
+			],
+			xkey: 'day',
+			ykeys: ['hits'],
+			labels: ['Hits'],
+			xLabels:'day',
+			resize: true,
+      pointSize: 5,
+      smooth: false,
+      lineWidth: 2,
+      gridTextSize: 11,
+      gridTextFamily: 'Open Sans',
+      pointFillColors: ['#76bd1d'],
+      hideHover: true,
+      lineColors: ['#555555'],
+			pointStrokeColors: '#000000',
+			dateFormat: function(x){
+				var date = new Date(x)
+         return ('0' + (date.getMonth() + 1).toString()).substr(-2) + '/' + ('0' + date.getDate().toString()).substr(-2)  + '/' + (date.getFullYear().toString()).substr(2);
+			},
+			xLabelFormat:function(x){
+				var date = new Date(x)
+				return ('0' + (date.getMonth() + 1).toString()).substr(-2) + '/' + ('0' + date.getDate().toString()).substr(-2)  + '/' + (date.getFullYear().toString()).substr(2);
+			}
+		});
+		</script>";
 	}
 	
 	//remove the padding by wp_http that causes padding to be added to a JSON request

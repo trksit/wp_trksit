@@ -62,6 +62,38 @@ jQuery(document).ready(function($){
 		$jquery_options_field.val($(this).val());
 	});
 	
+	//DASHBOARD
+	//$('#trks_dashboard').css('display','none');
+	if( jQuery().dataTable ){
+		$('#trks_dashboard').dataTable({
+			"fnInitComplete": function(oSettings, json) {
+	      //$('#trks_dashboard').css('visibility','visible');
+	      $('#trks_dashboard_par').css('display','block');
+	    },
+	    "aaSorting": [[ 1, "desc" ]],
+		});
+	}
+
+	if( jQuery().datepicker ){
+		$("#trksit_start_date" ).datepicker({
+			defaultDate: "+1w",
+			changeMonth: true,
+			numberOfMonths: 1,
+			onClose: function( selectedDate ) {
+			$( "#trksit_end_date" ).datepicker( "option", "minDate", selectedDate );
+			}
+		});
+
+		$("#trksit_end_date" ).datepicker({
+			defaultDate: "+1w",
+			changeMonth: true,
+			numberOfMonths: 1,
+			onClose: function( selectedDate ) {
+			$( "#trksit_start_date" ).datepicker( "option", "maxDate", selectedDate );
+			}
+		});
+	}
 	
-	
+	//change the name of trks.it menu (change the name of the first link to Dashboard)
+	$('li#toplevel_page_trksit-dashboard a.wp-first-item').text('Dashboard');
 });

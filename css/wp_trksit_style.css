@@ -59,10 +59,43 @@
 	overflow: hidden;
 	text-overflow: ellipsis;
   }
-  td.details{
+  td.trks_it_details{
     text-align:right;
   }
   
+  th#trks_it_destination{
+  
+}
+td.trks_it_destination{
+
+}
+
+td.trks_it_medium{
+
+}
+
+table#trks_dashboard td.trks_it_date{
+  width: 100px;
+}
+table#trks_dashboard{
+  width: 100%;
+  display: table;
+  white-space:nowrap;
+  overflow: hidden;
+}
+table#trks_dashboard td{
+  overflow: hidden; /* this is what fixes the expansion */
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-wrap: break-word;
+}
+
+.dataTable td {
+  overflow: hidden; /* this is what fixes the expansion */
+  text-overflow: ellipsis; /* not supported in all browsers, but I accepted the tradeoff */
+  white-space: nowrap;
+}
+
   /* ---- Advanced Toggle ---- */
   .trksit-header #advanced-toggle{
 	float:right;
