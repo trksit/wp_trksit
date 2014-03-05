@@ -6,42 +6,51 @@
     clear:both;
   }
 
+  .clear {
+    clear: both;
+    display: block;
+    overflow: hidden;
+    visibility: hidden;
+    width: 0;
+    height: 0;
+  }
+
   /* ---- Headers ---- */
   h2.trksit-header.top{
-	margin-bottom:0px;
-	padding-top:10px;
+  margin-bottom:0px;
+  padding-top:10px;
   }
   h2.trksit-header{
   line-height:36px !important;
-	margin:0px 0px 20px 0px;
-	padding: 0px;
+  margin:0px 0px 20px 0px;
+  padding: 0px;
   }
   .trksit-header-icon{
-  	display:inline-block;
-  	margin-right:10px;
-  	float:left;
+    display:inline-block;
+    margin-right:10px;
+    float:left;
   }
 
   /* ---- Layout ---- */
   .trksit_col_full{
-	width:100%;
-	clear: both;
-	margin-top:20px;
+  width:100%;
+  clear: both;
+  margin-top:20px;
   }
   .trksit_col.left{
-	width:500px;
-	padding-right:40px;
-	float:left;
+  width:500px;
+  padding-right:40px;
+  float:left;
   }
   .trksit_col.right{
-	width:410px;
-	padding-left:40px;
-	float:left;
+  width:410px;
+  padding-left:40px;
+  float:left;
   }
   .trksit-section{
-	padding:0px 0px 20px 0px;
-	margin:0px 0px 20px 0px;
-	border-bottom:1px solid #ccc;
+  padding:0px 0px 20px 0px;
+  margin:0px 0px 20px 0px;
+  border-bottom:1px solid #ccc;
   }
 
   /* ---- Tables ---- */
@@ -50,14 +59,14 @@
     background:#f5f5f5;
   }
   #trksit-wrap .widefat td {
-  	padding:8px !important;
+    padding:8px !important;
     vertical-align: middle;
   }
   
   td.truncate{
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   }
   td.trks_it_details{
     text-align:right;
@@ -98,46 +107,46 @@ table#trks_dashboard td{
 
   /* ---- Advanced Toggle ---- */
   .trksit-header #advanced-toggle{
-	float:right;
-	margin:5px 0px !important;
+  float:right;
+  margin:5px 0px !important;
   }
   #advanced-tracking-panel{
-	width:100%;
-	display:none;
-	position: relative;
+  width:100%;
+  display:none;
+  position: relative;
   }
   
   /* ---- Add Script Button ---- */
   #add-script{
-  	float:right;
-  	margin-top:20px;
+    float:right;
+    margin-top:20px;
   }
   /* ---- Help Popovers ---- */
   
   a.trksit-help{
-	opacity:0.7;
+  opacity:0.7;
   }
   a.trksit-help:hover{
-	opacity:1;
+  opacity:1;
   }
   .popover {
-  	background-color:#333 !important;
-  	border-color:#333 !important;
+    background-color:#333 !important;
+    border-color:#333 !important;
   }
   .popover.right .arrow{
-	border-right-color: #333 !important;
+  border-right-color: #333 !important;
   }
   .popover.right .arrow:after {
-  	border-right-color:#333 !important;
+    border-right-color:#333 !important;
   }
   .popover-title {
-  	border:0px !important;
-  	background:transparent !important;
-  	color:#fff !important;
+    border:0px !important;
+    background:transparent !important;
+    color:#fff !important;
   }
   .popover-content {
-  	font-size:12px !important;
-  	color:#fff !important;
+    font-size:12px !important;
+    color:#fff !important;
   }
 
 /*========================================
@@ -145,56 +154,56 @@ table#trks_dashboard td{
   ========================================*/
 
   .trksit_tab_nav{
-	border-bottom:1px solid #ccc;
-	width:100%;
-	float:left;	
-	clear:both;
-	margin:20px 0px 30px 0px;
-	position: relative;
+  border-bottom:1px solid #ccc;
+  width:100%;
+  float:left; 
+  clear:both;
+  margin:20px 0px 30px 0px;
+  position: relative;
   }
   .trksit_tab_nav ul{
-	display:block;
-	list-style: none;
-	margin:0px 0px 0px 10px;
-	padding:0px;
-	width:100%;
-	float:left;	
-	clear:both;
+  display:block;
+  list-style: none;
+  margin:0px 0px 0px 10px;
+  padding:0px;
+  width:100%;
+  float:left; 
+  clear:both;
   }
   .trksit_tab_nav li{
-	list-style: none;
-	margin:0px 5px 0px 0px;
-	padding:0px;
+  list-style: none;
+  margin:0px 5px 0px 0px;
+  padding:0px;
   }
   .trksit_tab_nav li,
   .trksit_tab_nav a{
-	display: inline-block;
-	float:left;	
-	position: relative;
+  display: inline-block;
+  float:left; 
+  position: relative;
   }
   .trksit_tab_nav a{
-	border-radius:3px 3px 0px 0px;
-	line-height:40px;
-	font-size:14px;
-	text-transform: uppercase;
-	text-decoration: none;
-	color:#999;
-	padding:0px 20px;
-	margin-top:2px;
+  border-radius:3px 3px 0px 0px;
+  line-height:40px;
+  font-size:14px;
+  text-transform: uppercase;
+  text-decoration: none;
+  color:#999;
+  padding:0px 20px;
+  margin-top:2px;
   }
   .trksit_tab_nav a:hover{
-	color:#555;
-	background:#f5f5f5;
+  color:#555;
+  background:#f5f5f5;
   }
   .trksit_tab_nav li.active a{
-	margin-top:0px;
-	color:#555;
-	top:1px;
-	border:1px solid #ccc;
-	border-bottom-color: #fff;	
+  margin-top:0px;
+  color:#555;
+  top:1px;
+  border:1px solid #ccc;
+  border-bottom-color: #fff;  
   }
   .trksit_tab_nav li.active a:hover{
-	background:#fff;
+  background:#fff;
   }
 
 /*========================================
@@ -241,11 +250,11 @@ table#trks_dashboard td{
   
   #trksit-wrap .modal input[type="text"],
   #trksit-wrap .modal textarea{
-	  width:100%;
-	  max-width:516px;
+    width:100%;
+    max-width:516px;
   }
   #trksit-wrap .modal textarea{
-  	height:200px; 
+    height:200px; 
   }
   
   .control-group{
@@ -270,8 +279,8 @@ table#trks_dashboard td{
   .trksit-form input[type="tel"], 
   .trksit-form input[type="color"], 
   .uneditable-input {
-  	box-sizing: content-box !important;
-  	margin:0px !important;
+    box-sizing: content-box !important;
+    margin:0px !important;
   }
   .trksit_col.left textarea, 
   .trksit_col.left input[type="text"], 
@@ -289,12 +298,31 @@ table#trks_dashboard td{
   .trksit_col.left input[type="tel"], 
   .trksit_col.left input[type="color"], 
   .trksit_col.left .uneditable-input{
-	max-width:486px;
-	width:100%;
+  max-width:486px;
+  width:100%;
   }
   .trksit-form .btn {
-  	margin:0px !important;
-	height:
+    margin:0px !important;
+      display: inline-block;
+      text-decoration: none;
+      font-size: 18px;
+      line-height: 26px;
+      height: 28px;
+      margin: 0px;
+      cursor: pointer;
+      border-width: 1px;
+      border-style: solid;
+      border-radius: 3px;
+      white-space: nowrap;
+      box-sizing: border-box;
+      color: #555;
+      border-color: #CCC;
+      background: none repeat scroll 0% 0% #F7F7F7;
+      box-shadow: 0px 1px 0px #FFF inset, 0px 1px 0px rgba(0, 0, 0, 0.08);
+      vertical-align: top;
+      margin-right: 6px;
+      margin-top: 10px;
+      height: 35px;
   }
   .trksit-form .checkbox {
     width:210px;
@@ -321,8 +349,8 @@ table#trks_dashboard td{
     background-color: #f5f5f5;
   }  
   #url{
-	width:437px;
-	height:27px;
+  width:437px;
+  height:27px;
   }
   .trksit-form label.error{
    color:#b94a48;  
@@ -383,43 +411,43 @@ table#trks_dashboard td{
   GRAPH
   ========================================*/
   div#trks_hits{
-	width: 100%!important;
+  width: 100%!important;
   }
   /* Resets */
   .graph-container,
   .graph-container div,
   .graph-container a,
   .graph-container span {
-	margin: 0;
-	padding: 0;
+  margin: 0;
+  padding: 0;
   }
 
   /* Gradinet and Rounded Corners */
   #tooltip{
-	background:#464646;
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
-	border-radius: 3px;
-	color:#fff !important;
-	border: 0px !important;
+  background:#464646;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  color:#fff !important;
+  border: 0px !important;
   }
   .graph-info a {
-	background: #ffffff;
-	background: -moz-linear-gradient(top,  #ffffff 0%, #f9f9f9 100%);
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#f9f9f9));
-	background: -webkit-linear-gradient(top,  #ffffff 0%,#f9f9f9 100%);
-	background: -o-linear-gradient(top,  #ffffff 0%,#f9f9f9 100%);
-	background: -ms-linear-gradient(top,  #ffffff 0%,#f9f9f9 100%);
-	background: linear-gradient(to bottom,  #ffffff 0%,#f9f9f9 100%);
+  background: #ffffff;
+  background: -moz-linear-gradient(top,  #ffffff 0%, #f9f9f9 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#f9f9f9));
+  background: -webkit-linear-gradient(top,  #ffffff 0%,#f9f9f9 100%);
+  background: -o-linear-gradient(top,  #ffffff 0%,#f9f9f9 100%);
+  background: -ms-linear-gradient(top,  #ffffff 0%,#f9f9f9 100%);
+  background: linear-gradient(to bottom,  #ffffff 0%,#f9f9f9 100%);
   }
 
   /* Graph Container */
   #graph-wrapper{
-	padding:20px 50px;
-	margin:20px 0px;
+  padding:20px 50px;
+  margin:20px 0px;
     -webkit-box-shadow: 0px 0px 2px rgba(0,0,0,.1);
     -moz-box-shadow: 0px 0px 2px rgba(0,0,0,.1);
-    box-shadow: 0px 0px 2px rgba(0,0,0,.1);	
+    box-shadow: 0px 0px 2px rgba(0,0,0,.1); 
     background: #ffffff;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
@@ -429,80 +457,80 @@ table#trks_dashboard td{
 
   /*  Graph Container */
   .graph-container {
-	position: relative;
-	width: 100%;
-	height: 200px;
+  position: relative;
+  width: 100%;
+  height: 200px;
   }
   .graph-container > div {
-	position: absolute;
-	width: inherit;
-	height: inherit;
+  position: absolute;
+  width: inherit;
+  height: inherit;
   }
   .graph-info {
-	width: 590px;
-	margin-bottom: 10px;
+  width: 590px;
+  margin-bottom: 10px;
   }
 
   /* Text Styles */
   #tooltip, .graph-info a {
-	height: 20px;
-	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-	font-weight: bold;
-	font-size: 12px;
-	line-height: 20px;
-	color: #646464;
+  height: 20px;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: bold;
+  font-size: 12px;
+  line-height: 20px;
+  color: #646464;
   }
   .tickLabel {
-	font-weight: bold;
-	font-size: 12px;
-	color: #666;
-	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: bold;
+  font-size: 12px;
+  color: #666;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   }
 
   /* Tooltip */
   #tooltip {
-	position: absolute;
-	display: none;
-	padding: 5px 10px;
-	width:140px;
-	text-align: center;
-	border: 0px;
+  position: absolute;
+  display: none;
+  padding: 5px 10px;
+  width:140px;
+  text-align: center;
+  border: 0px;
   }
   #tooltip > .nip{
-	width: 0; 
-	height: 0; 
-	border-left: 5px solid transparent;
-	border-right: 5px solid transparent;
-	border-top: 5px solid #464646;
-	position: absolute;
-	top:30px;
-	left:50%;
-	margin-left:-5px;
+  width: 0; 
+  height: 0; 
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid #464646;
+  position: absolute;
+  top:30px;
+  left:50%;
+  margin-left:-5px;
   }
 
   /* Links */
   .graph-info a {
-	position: relative;
-	display: inline-block;
-	float: left;
-	padding: 7px 10px 5px 30px;
-	margin-right: 10px;
-	text-decoration: none;
-	cursor: default;
+  position: relative;
+  display: inline-block;
+  float: left;
+  padding: 7px 10px 5px 30px;
+  margin-right: 10px;
+  text-decoration: none;
+  cursor: default;
   }
 
   /* Color Circle for Links */
   .graph-info a:before {
-	position: absolute;
-	display: block;
-	content: '';
-	width: 8px;
-	height: 8px;
-	top: 13px;
-	left: 13px;
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
-	border-radius: 5px;
+  position: absolute;
+  display: block;
+  content: '';
+  width: 8px;
+  height: 8px;
+  top: 13px;
+  left: 13px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
   }
 
   /* Colors For each Link */
@@ -514,29 +542,29 @@ table#trks_dashboard td{
 
   /* Lines & Bars Buttons */
   #lines{
-	width: 34px;
-	height: 32px;
-	padding: 0;
-	margin-right: 0;
-	margin-left: 10px;
-	border-bottom: 2px solid #71c73e;
-	float: right;
-	cursor: pointer;
+  width: 34px;
+  height: 32px;
+  padding: 0;
+  margin-right: 0;
+  margin-left: 10px;
+  border-bottom: 2px solid #71c73e;
+  float: right;
+  cursor: pointer;
   }
   #lines.active{
-	background: #82d344;
-	background: -moz-linear-gradient(top,  #82d344 0%, #71c73e 100%);
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#82d344), color-stop(100%,#71c73e));
-	background: -webkit-linear-gradient(top,  #82d344 0%,#71c73e 100%);
-	background: -o-linear-gradient(top,  #82d344 0%,#71c73e 100%);
-	background: -ms-linear-gradient(top,  #82d344 0%,#71c73e 100%);
-	background: linear-gradient(to bottom,  #82d344 0%,#71c73e 100%);
+  background: #82d344;
+  background: -moz-linear-gradient(top,  #82d344 0%, #71c73e 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#82d344), color-stop(100%,#71c73e));
+  background: -webkit-linear-gradient(top,  #82d344 0%,#71c73e 100%);
+  background: -o-linear-gradient(top,  #82d344 0%,#71c73e 100%);
+  background: -ms-linear-gradient(top,  #82d344 0%,#71c73e 100%);
+  background: linear-gradient(to bottom,  #82d344 0%,#71c73e 100%);
   }
   #lines span{
-	display: block;
-	width: 34px;
-	height: 32px;
-	background: url('../img/lines.png') no-repeat 9px 12px;
+  display: block;
+  width: 34px;
+  height: 32px;
+  background: url('../img/lines.png') no-repeat 9px 12px;
   }
   /* Hide the First and Last Y Label */
   .yAxis .tickLabel:first-child,
@@ -545,9 +573,9 @@ table#trks_dashboard td{
   /* Clear Floats */
   .graph-info:before, .graph-info:after,
   .graph-container:before, .graph-container:after {
-	content: '';
-	display: block;
-	clear: both;
+  content: '';
+  display: block;
+  clear: both;
   }
 
 /*========================================
@@ -558,94 +586,144 @@ table#trks_dashboard td{
 
 /* ---- Share Preview ---- */
 #preview {
-	background: #f6f7f9;
-	border: 1px solid #d3dae8;
-	border-radius:3px;
-	display: block;
-	margin: 20px 0px;
-	padding: 15px;
-	width: 378px;
+  background: #f6f7f9;
+  border: 1px solid #d3dae8;
+  border-radius:3px;
+  display: block;
+  margin: 20px 0px;
+  padding: 15px;
+  width: 378px;
 }
 #preview label {
-	margin: 0;
+  margin: 0;
 }
 #preview .image {
-	width: 100px;
-	margin-right: 15px;
-	float: left;
+  width: 100px;
+  margin-right: 15px;
+  float: left;
 }
 
 #preview .image img {
-	width: 100px;
-	max-height: 100px;
-	height: auto;
-	display: block;
+  width: 100px;
+  max-height: 100px;
+  height: auto;
+  display: block;
 }
 #preview .content {
-	width: 260px;
-	float: right;
+  width: 260px;
+  float: right;
 }
 #preview .content .title {
-	color: #3b5998;
-	font-weight: bold;
-	font-size: 14px;
-	line-height: 18px;
-	padding:4px;
+  color: #3b5998;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 18px;
+  padding:4px;
 }
 #preview .content .description {
-	margin-top: 5px;
-	padding:4px;
+  margin-top: 5px;
+  padding:4px;
 }
 #preview .content .url{
-	padding:0px 4px;
+  padding:0px 4px;
 }
 #preview .content .url,
 #preview .content .description {
-	font-size: 12px;
-	line-height: 16px;
+  font-size: 12px;
+  line-height: 16px;
 }
 #preview .title:hover,
 #preview .description:hover {
-	background: #d3dae8;
-	cursor: pointer;
-	-moz-border-radius:3px;
-	-webkit-border-radius:3px;
-	border-radius:3px;
+  background: #d3dae8;
+  cursor: pointer;
+  -moz-border-radius:3px;
+  -webkit-border-radius:3px;
+  border-radius:3px;
 }
 
 /* ---- Image Picker ---- */
 ul.thumbnails.image_picker_selector {
-	overflow: auto;
-	list-style-image: none;
-	list-style-position: outside;
-	list-style-type: none;
-	padding: 0px;
-	margin: 0px; 
+  overflow: auto;
+  list-style-image: none;
+  list-style-position: outside;
+  list-style-type: none;
+  padding: 0px;
+  margin: 0px; 
 }
 ul.thumbnails.image_picker_selector li {
-	margin: 0px 9px 18px 9px;
-	float: left; 
+  margin: 0px 9px 18px 9px;
+  float: left; 
 }
 ul.thumbnails.image_picker_selector li .thumbnail {
-	padding: 6px;
-	border: 1px solid #dddddd; 
-	-moz-border-radius:3px;
-	-webkit-border-radius:3px;
-	border-radius:3px;
-	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.055);
-	-moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.055);
-	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.055);
+  padding: 6px;
+  border: 1px solid #dddddd; 
+  -moz-border-radius:3px;
+  -webkit-border-radius:3px;
+  border-radius:3px;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.055);
+  -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.055);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.055);
 }
 ul.thumbnails.image_picker_selector li .thumbnail:hover{
-	cursor:pointer;
-	border-color:#0088cc;
+  cursor:pointer;
+  border-color:#0088cc;
 }
 ul.thumbnails.image_picker_selector li .thumbnail,
 ul.thumbnails.image_picker_selector li .thumbnail img{
-	height:50px;
-	width:50px;
+  height:50px;
+  width:50px;
 }
 ul.thumbnails.image_picker_selector li .thumbnail.selected {
-	background: #d3dae8; 
-	border-color:#0088cc;
+  background: #d3dae8; 
+  border-color:#0088cc;
+}
+
+form#trksit_date_selector div.trksit_date{
+  float: left;
+  margin-right: 14px;
+}
+form#trksit_date_selector label{
+  font-weight: bold;
+  display: block;
+}
+form#trksit_date_selector input[type=submit]{
+  float: left;
+  margin-top: 17px;
+}
+
+div#trks_dashboard_length,
+div#trks_dashboard_filter{
+  float: left;
+    margin: 10px 20px 10px 0;
+}
+div#trks_dashboard_wrapper label{
+  font-weight: bold;
+}
+a#trks_dashboard_previous,
+a#trks_dashboard_next{
+  display: inline-block;
+  text-decoration: none;
+  font-size: 13px;
+  line-height: 26px;
+  height: 28px;
+  margin: 0px;
+  padding: 0px 10px 1px;
+  cursor: pointer;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 3px;
+  white-space: nowrap;
+  box-sizing: border-box;
+  color: #555;
+  border-color: #CCC;
+  background: none repeat scroll 0% 0% #F7F7F7;
+  box-shadow: 0px 1px 0px #FFF inset, 0px 1px 0px rgba(0, 0, 0, 0.08);
+  vertical-align: top;
+    margin-right: 6px;
+    margin-top: 10px;
+}
+
+div#trks_dashboard_info{
+  font-style: italic;
+  margin-top: 5px;
 }

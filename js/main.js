@@ -64,11 +64,10 @@ jQuery(document).ready(function($){
 	
 	//DASHBOARD
 	//$('#trks_dashboard').css('display','none');
+	$('#trks_dashboard_par').css('display','block');
 	if( jQuery().dataTable ){
 		$('#trks_dashboard').dataTable({
 			"fnInitComplete": function(oSettings, json) {
-	      //$('#trks_dashboard').css('visibility','visible');
-	      $('#trks_dashboard_par').css('display','block');
 	    },
 	    "aaSorting": [[ 1, "desc" ]],
 		});
@@ -95,5 +94,5 @@ jQuery(document).ready(function($){
 	}
 	
 	//change the name of trks.it menu (change the name of the first link to Dashboard)
-	$('li#toplevel_page_trksit-dashboard a.wp-first-item').text('Dashboard');
+	$('li#toplevel_page_trksit-dashboard ul.wp-submenu a.wp-first-item').text('Dashboard');
 });

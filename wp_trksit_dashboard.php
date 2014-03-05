@@ -212,7 +212,7 @@ else if($_GET['page'] == 'trksit-dashboard'){
 		if( count($timeline_points) === 1){
 			$date = $timeline_points[0]->date_created;
 			?>
-			<form action="<?php echo trksit_current_page();?>" class="wp-core-ui" method="GET">
+			<form action="<?php echo trksit_current_page();?>" class="wp-core-ui" method="GET" id="trksit_date_selector">
 				<input type="hidden" name="page" value="trksit-dashboard">
 				<div class="trksit_date">
 					<label for="trksit_start_date"><?php _e('Start Date'); ?></label>
@@ -224,6 +224,7 @@ else if($_GET['page'] == 'trksit-dashboard'){
 				</div>
 				<input type="submit" value="Update" class="button button-primary button-large">
 			</form>
+			<br class="clear">
 			<div id="trks_hits"></div>
 			
 			<?php

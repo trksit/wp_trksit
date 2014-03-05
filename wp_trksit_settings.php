@@ -123,7 +123,15 @@ if($_GET['page'] == 'trksit-settings'):
       <div class="control-group">
         <label for="trksit_redirect_delay" class="control-label"><?php _e("Redirect Delay:"); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e("Number of milliseconds to delay the redirect script. Default is 500."); ?>" data-original-title="<?php _e("Redirect Delay"); ?>"><i class="icon-question-sign"></i></a></label>
         <input type="text" name="trksit_redirect_delay" class="trksit-input-small" value="<?php echo $trksit_redirect_delay; ?>" placeholder="ig: 500" />
-      </div>      
+      </div>
+
+      <div class="control-group">
+        <label for="trksit_redirect_delay" class="control-label"><?php _e("Default Dashboard View:"); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e("The way the dashboard displays hits"); ?>" data-original-title="<?php _e("Default Dashboard View"); ?>"><i class="icon-question-sign"></i></a></label>
+        <select name="trksit_default_view" id="">
+          <option value="">Number of hits</option>
+          <option value="">Date created</option>
+        </select>
+      </div>     
       
     </div>
 		
