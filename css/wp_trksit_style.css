@@ -303,26 +303,6 @@ table#trks_dashboard td{
   }
   .trksit-form .btn {
     margin:0px !important;
-      display: inline-block;
-      text-decoration: none;
-      font-size: 18px;
-      line-height: 26px;
-      height: 28px;
-      margin: 0px;
-      cursor: pointer;
-      border-width: 1px;
-      border-style: solid;
-      border-radius: 3px;
-      white-space: nowrap;
-      box-sizing: border-box;
-      color: #555;
-      border-color: #CCC;
-      background: none repeat scroll 0% 0% #F7F7F7;
-      box-shadow: 0px 1px 0px #FFF inset, 0px 1px 0px rgba(0, 0, 0, 0.08);
-      vertical-align: top;
-      margin-right: 6px;
-      margin-top: 10px;
-      height: 35px;
   }
   .trksit-form .checkbox {
     width:210px;
@@ -682,13 +662,21 @@ form#trksit_date_selector div.trksit_date{
   float: left;
   margin-right: 14px;
 }
+form#trksit_date_selector input[type=text],
+div#trks_dashboard_filter input[type=text]{
+  height: 29px;
+  padding: 0 9px;
+}
+div#trks_dashboard_length select{
+  width: auto;
+}
 form#trksit_date_selector label{
   font-weight: bold;
   display: block;
 }
 form#trksit_date_selector input[type=submit]{
   float: left;
-  margin-top: 17px;
+  margin-top: 25px;
 }
 
 div#trks_dashboard_length,

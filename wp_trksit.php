@@ -89,7 +89,7 @@ function trksit_load_scripts() {
 		wp_register_script('trksit-main-js', plugins_url( '/wp_trksit/js/main.js', dirname(__FILE__)),array('jquery'),'1.2.1');
 		wp_register_script('jquery-image-picker', plugins_url( '/wp_trksit/js/image-picker.min.js' , dirname(__FILE__) ),array('jquery').'0.1.3',true);
 
-		//wp_enqueue_style('trksit-bootstrap');
+		wp_enqueue_style('trksit-bootstrap');
 		wp_enqueue_style('trksit-styles' );
 		wp_enqueue_script('trksit-bootstrap-js');
 		wp_enqueue_script('trksit-zclip-js');
