@@ -1,4 +1,4 @@
-~Current Version:1.2.1~
+~Current Version:1.2.2~
 
 wp_trksit
 =========
