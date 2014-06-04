@@ -18,7 +18,7 @@ class trksit {
 	private $api; 					//trks.it api
 	
 	function __construct(){
-		$this->api = "https://api.trks.it";
+		$this->api = "http://api.trksit.dev";
 	}
 	//Parse the given URL & get...
 	//title, meta desctipion, open graph fields, and all images.
@@ -26,74 +26,34 @@ class trksit {
 		
 		//load WordPress HTTP to load url
 		$wp_http = new WP_Http();
-		$get_page = $wp_http->request( $url, array( 'method' => 'GET') );
-		if( isset( $get_page['body'] ) )
-			$get_page = $get_page['body'];
-		else
-			_e("Cannot get page information from the url $url");
-			
-		//dom loading
-		$dom = new domDocument;
-		@$dom->loadHTML($get_page);
-		$dom->preserveWhiteSpace = false;
-		
-		//Getting OG meta data
-		$xpath = new DOMXPath($dom);
-		$query = '//*/meta[starts-with(@property, \'og:\')]';
-		$metas = $xpath->query($query);
-		$rmetas = array();
-		foreach ($metas as $meta) {
-		    $property = $meta->getAttribute('property');
-		    $content = $meta->getAttribute('content');
-		    $rmetas[$property] = $content;
-		}
-		$this->ogMetaArray = $rmetas;
-				
-		//if og:title exists, don't get meta title, instead set $this->title to og:title
-		if(isset($rmetas['og:title'])){
-			$this->title = $rmetas['og:title'];
-		} else {
-			//Getting title tag
-			$title = $dom->getElementsByTagName('title');
-			$this->title = $title->item(0)->nodeValue;						
-		}
-
-		//if og:description exists, don't get meta description, instead set $this->description to og:description
-		if(isset($rmetas['og:description'])) {
-			$this->description = $rmetas['og:description'];
-		} else {
-			
-			//Getting description
-			$metas = $dom->getElementsByTagName('meta');
-			
-			for ($i = 0; $i < $metas->length; $i++) {
-			    $meta = $metas->item($i);
-			    if($meta->getAttribute('name') == 'description')
-			        $this->description = $meta->getAttribute('content');
+		$url_paramaters = http_build_query(
+			array(
+					'destination_url'=>urlencode($url)
+				)
+			);
+		die($this->api."/parse/urls?".$url_paramaters);
+		$get_page = $wp_http->request( $this->api."/parse/urls?".$url_paramaters, 
+			array( 
+				'method' => 'GET',
+				'user-agent'=>'trks.it WordPress'.get_bloginfo('version'),
+				'blocking'=>false,
+				'headers'=>array(
+						'Authorization' => 'Bearer ' . get_option('trksit_token'),
+						'Content-Type' => 'application/x-www-form-urlencoded'
+					)
+				) 
+			);
+		die(var_dump($get_page));
+		if( $get_page['reponse']['code'] === 500 OR $get_page['reponse']['code'] === 400 ){
+			new WP_Error( 'broke', __( "Unable to get URL data", "trks.it" ) );
+		}elseif( $get_page['reponse']['code'] === 200 ){
+			$output = json_decode($get_page['body']);
+			//if the wp_http cannot get the json data without weird, encoded characters, this may be because wp_http added padding to the body
+			if( !$output ){
+				$output = json_decode($this->removePadding($get_page['body']));
 			}
-									
-		} 
-
-		
-		//Getting Images array     
-		$images = $dom->getElementsByTagName('img');
-		$imageArray = array();
-		
-		foreach($images as $img) {
-		    	//if the img src does NOT include an http
-		    	//it's a relative path and we need to build the path
-		    	if(!strstr($img->getAttribute('src'), '//')){
-			    	$imgHost = parse_url($url);
-			    	$imgSrc = $imgHost[scheme] . '://' . $imgHost[host] . '/' . $img->getAttribute('src');
-		    	} else {
-			    	$imgSrc = $img->getAttribute('src');
-		    	}
-		    	
-		    	array_push($imageArray, $imgSrc);
 		}
-		$this->imgArray = array_unique($imageArray);
-		//print_r($this->imgArray);
-
+		die(var_dump($output));
 	}	//END parseURL
 	
 	
