@@ -112,7 +112,7 @@ class trksit {
 		foreach($postArray as $key => $value){
 			
 			//If the input name has "og:", then store it in the open graph array
-			if(strstr($key, "og:")){
+			if(strstr($key, ":")){
 				$ogArray[$key] = $value;
 				
 			//otherwise, store it in the main array
@@ -174,7 +174,6 @@ class trksit {
 	
 	//Generating the shortened URL from trks.it
 	function generateURL($long_url,$data){
-		
 		$url = $this->api.'/urls';
 		
 		$body = array(
@@ -187,9 +186,9 @@ class trksit {
 		);
 		//pass the og data to trks.it
 		foreach($data as $key => $value){
-			$ogArray[$key] = $value;
+			if( strpos($key,':') )
+				$ogArray[$key] = $value;
 		}
-		
 		$body["og_data"] = $ogArray;
 		
 		$headers = array(
@@ -200,10 +199,9 @@ class trksit {
 		$request = new WP_Http;
 		$result = $request->request( $url , array( 'method' => 'POST','body'=>$body, 'headers' => $headers) );
 		
-		//sometimes the API returns a 404 when the og_data is sent, so resend the data to shorten URL without the og data
-		if( $result['reponse']['code'] != 201 ){
-			unset($body['og_data']);
-			
+		//sometimes the API returns a 404 when the og_data is sent, so resend the data to shorten URL with og data as string
+		if( $result['response']['code'] != 201 ){
+			$body["og_data"] = http_build_query($ogArray);
 			$headers = array(
 				'Authorization' => 'Bearer ' . get_option('trksit_token'),
 				'Content-Type' => 'application/x-www-form-urlencoded'
