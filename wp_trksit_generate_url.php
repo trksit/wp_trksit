@@ -166,10 +166,7 @@ if($_POST["meta_title"] && ( !empty($_POST) && check_admin_referer('trksit_gener
 			<select name="meta_image" id="preview-image-picker">
 				<?php
 				foreach($trksit->imgArray as $image){
-					//remove google AD pixels
-					if (strpos($image,'www.googleadservices.com') === false) {
 					echo sprintf('<option data-img-src="%s" value="%s">%s</option>', $image, $image, $image);
-					}
 				}
 				?>
 			</select>

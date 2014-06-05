@@ -25,35 +25,47 @@ class trksit {
 	function parseURL($url) {
 		
 		//load WordPress HTTP to load url
-		$wp_http = new WP_Http();
 		$url_paramaters = http_build_query(
 			array(
 					'destination_url'=>urlencode($url)
 				)
 			);
-		die($this->api."/parse/urls?".$url_paramaters);
-		$get_page = $wp_http->request( $this->api."/parse/urls?".$url_paramaters, 
-			array( 
-				'method' => 'GET',
-				'user-agent'=>'trks.it WordPress'.get_bloginfo('version'),
-				'blocking'=>false,
+		$get_opengraph = wp_remote_get( $this->api."/parse/urls?".$url_paramaters, array( 
+				'user-agent'=>'trks.it WordPress '.get_bloginfo('version'),
+				'timeout'=>10,
+				'blocking'=>true,
 				'headers'=>array(
 						'Authorization' => 'Bearer ' . get_option('trksit_token'),
 						'Content-Type' => 'application/x-www-form-urlencoded'
 					)
 				) 
 			);
-		die(var_dump($get_page));
-		if( $get_page['reponse']['code'] === 500 OR $get_page['reponse']['code'] === 400 ){
+
+		if( $get_opengraph['response']['code'] === 500 OR $get_opengraph['reponse']['code'] === 400 ){
 			new WP_Error( 'broke', __( "Unable to get URL data", "trks.it" ) );
-		}elseif( $get_page['reponse']['code'] === 200 ){
-			$output = json_decode($get_page['body']);
+		}elseif( $get_opengraph['response']['code'] === 200 ){
+			$opengraph = json_decode($get_opengraph['body'],true);
 			//if the wp_http cannot get the json data without weird, encoded characters, this may be because wp_http added padding to the body
-			if( !$output ){
-				$output = json_decode($this->removePadding($get_page['body']));
+			if( !$opengraph ){
+				$opengraph = json_decode($this->removePadding($get_opengraph['body']),true);
 			}
+			$imageArray = $opengraph['open_graph']['og:image'];
+			$opengraph_images = array();
+			foreach( $imageArray as $image ){
+				$opengraph_images[] = $image['og:image:url'];
+			}
+			$opengraph_data = array();
+			// set the opengraph data
+			foreach( $opengraph['open_graph'] as $key=>$new_opengraph){
+				if( $key !=  'og:image'){
+					$opengraph_data[$key] = $opengraph['open_graph'][$key];
+				}
+			}
+			$this->ogMetaArray = $opengraph_data;
+			$this->imgArray = $opengraph_images;
+			$this->title = $opengraph['open_graph']['og:title'];
+			$this->description = $opengraph['open_graph']['og:description'];
 		}
-		die(var_dump($output));
 	}	//END parseURL
 	
 	
@@ -129,35 +141,35 @@ class trksit {
           	array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' )
           ); 
 	
-	//Setting the URL ID to return to ShortenURL function
-	$shortenedURLID = $wpdb->insert_id;
-		
-    if($wpdb->insert_id){
-    
-      $inserted_record = $wpdb->insert_id;
-      
-      $script_count = count($mainArray['trksit_scripts']);
-      $scripts_array = array();
-      
-      for( $i = 1; $i <= $script_count; $i++ ){
-      
-        $scripts_array[] = array(
-          'script_id' => $mainArray['trksit_scripts'][$i - 1],
-          'url_id' => $inserted_record
-        );
-        
-      }
-      
-      foreach ( $scripts_array as $script ){
-        $wpdb->insert( $wpdb->prefix . 'trksit_scripts_to_urls', $script, array('%d', '%d') );
-      }
-    
-    }
+		//Setting the URL ID to return to ShortenURL function
+		$shortenedURLID = $wpdb->insert_id;
+			
+	    if($wpdb->insert_id){
+	    
+	      $inserted_record = $wpdb->insert_id;
+	      
+	      $script_count = count($mainArray['trksit_scripts']);
+	      $scripts_array = array();
+	      
+	      for( $i = 1; $i <= $script_count; $i++ ){
+	      
+	        $scripts_array[] = array(
+	          'script_id' => $mainArray['trksit_scripts'][$i - 1],
+	          'url_id' => $inserted_record
+	        );
+	        
+	      }
+	      
+	      foreach ( $scripts_array as $script ){
+	        $wpdb->insert( $wpdb->prefix . 'trksit_scripts_to_urls', $script, array('%d', '%d') );
+	      }
+	    
+	    }
     
 		//return the ID of the URL insert
 		return 	$shortenedURLID;
 
-	} 	//END saveURL
+	}//END saveURL
 	
 	
 	//Generating the shortened URL from trks.it
@@ -175,9 +187,7 @@ class trksit {
 		);
 		//pass the og data to trks.it
 		foreach($data as $key => $value){
-			//If the input name has "og:", then store it in the open graph array
-			if( strstr($key, "og:") )
-				$ogArray[$key] = $value;
+			$ogArray[$key] = $value;
 		}
 		
 		$body["og_data"] = $ogArray;
