@@ -4,7 +4,7 @@ Plugin Name: Trks.it for WordPress
 Plugin URI: https://get.trks.it?utm_source=WordPress%20Admin%20Link
 Description: Ever wonder how many people click links that lead to 3rd party sites from your social media platforms? Trks.it is a WordPress plugin for tracking social media engagement.
 Author: Arsham Mirshah, De'Yonte Wilkinson, Derek Cavaliero
-Version: 1.2.1
+Version: 1.3.0
 Author URI: http://get.trks.it?utm_source=WordPress%20Admin%20Link
 */
 
