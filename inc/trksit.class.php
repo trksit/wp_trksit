@@ -18,7 +18,7 @@ class trksit {
 	private $api; 					//trks.it api
 	
 	function __construct(){
-		$this->api = "http://api.trksit.dev";
+		$this->api = "https://api.trks.it";
 	}
 	//Parse the given URL & get...
 	//title, meta desctipion, open graph fields, and all images.
