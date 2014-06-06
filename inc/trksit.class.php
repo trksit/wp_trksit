@@ -199,9 +199,9 @@ class trksit {
 		$request = new WP_Http;
 		$result = $request->request( $url , array( 'method' => 'POST','body'=>$body, 'headers' => $headers) );
 		
-		//sometimes the API returns a 404 when the og_data is sent, so resend the data to shorten URL with og data as string
+		//sometimes the API returns a 404 when the og_data is sent, so resend the data to shorten URL with og data removed
 		if( $result['response']['code'] != 201 ){
-			$body["og_data"] = http_build_query($ogArray);
+			unset($body["og_data"]);
 			$headers = array(
 				'Authorization' => 'Bearer ' . get_option('trksit_token'),
 				'Content-Type' => 'application/x-www-form-urlencoded'
