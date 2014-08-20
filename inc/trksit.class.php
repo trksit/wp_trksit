@@ -4,6 +4,10 @@
 @ini_set('zlib.output_compression', 'Off');
 @ini_set('output_buffering', 'Off');
 @ini_set('output_handler', '');
+
+$wp_host = explode('.', $_SERVER['HTTP_HOST']);
+$wp_host = array_pop($wp_host);
+define('WP_TKSIT_PRODUCTION', ($wp_host == 'local' || $wp_host == 'dev') ? false : true);
 		
 class trksit {
 	public $imgArray = array();		//Images array
@@ -16,9 +20,16 @@ class trksit {
 	public $URL;					//og:url ?
 	
 	private $api; 					//trks.it api
+	private $short_url_base;		//trks.it redirector url, always end with /
 	
 	function __construct(){
-		$this->api = "https://api.trks.it";
+		if ( WP_TKSIT_PRODUCTION ) {
+			$this->api = "https://api.trks.it";
+			$this->short_url_base = "https://trks.it/";
+		} else {
+			$this->api = "http://api.trksit.local";
+			$this->short_url_base = 'http://trksit.local/';
+		}
 	}
 	//Parse the given URL & get...
 	//title, meta desctipion, open graph fields, and all images.
@@ -40,7 +51,7 @@ class trksit {
 					)
 				) 
 			);
-
+		// Need error handling here when API times out - 140820
 		if( $get_opengraph['response']['code'] === 500 OR $get_opengraph['reponse']['code'] === 400 ){
 			new WP_Error( 'broke', __( "Unable to get URL data", "trks.it" ) );
 		}elseif( $get_opengraph['response']['code'] === 200 ){
@@ -81,7 +92,8 @@ class trksit {
 		
 		//shorten the URL
 		$shortURL = $this->generateURL($longURL,$postArray);
-		$shortURL = "https://trks.it/" . $shortURL;
+		//$shortURL = "https://trks.it/" . $shortURL;
+		$shortURL = $this->short_url_base . $shortURL;
 		
 		//set the updateArray & whereArray for the shortened URL
 		$updateArray = array('trksit_url' => $shortURL);

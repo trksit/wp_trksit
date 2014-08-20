@@ -4,15 +4,22 @@ Plugin Name: Trks.it for WordPress
 Plugin URI: https://get.trks.it?utm_source=WordPress%20Admin%20Link
 Description: Ever wonder how many people click links that lead to 3rd party sites from your social media platforms? Trks.it is a WordPress plugin for tracking social media engagement.
 Author: Arsham Mirshah, De'Yonte Wilkinson, Derek Cavaliero
-Version: 1.3.0
+Version: 1.3.1
 Author URI: http://get.trks.it?utm_source=WordPress%20Admin%20Link
 */
 
 // Installation Script
 register_activation_hook( __FILE__, 'trksit_Install' );
 function trksit_Install(){
-  
+
 	global $wpdb;
+
+	$charset_collate = '';
+
+		if ( ! empty($wpdb->charset) )
+			$charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
+		if ( ! empty($wpdb->collate) )
+			$charset_collate .= " COLLATE $wpdb->collate";
 
 	$table_1_name = $wpdb->prefix . "trksit_urls";
 	$table_1_sql = "CREATE TABLE $table_1_name (
@@ -26,11 +33,10 @@ function trksit_Install(){
 	  meta_title VARCHAR(255) DEFAULT '' NOT NULL,
 	  meta_description VARCHAR(255) DEFAULT '' NOT NULL,
 	  meta_image VARCHAR(255) DEFAULT '' NOT NULL,
-	  og_data TEXT DEFAULT '' NOT NULL,
+	  og_data TEXT NOT NULL,
 	  PRIMARY KEY  url_id (url_id)) 
 		ENGINE = InnoDB 
-    DEFAULT CHARACTER SET = ".DB_CHARSET." 
-    COLLATE = ".DB_COLLATE.";";
+    $charset_collate;";
 
 	$table_2_name = $wpdb->prefix . "trksit_hits";
 	$table_2_sql = "CREATE TABLE $table_2_name (
@@ -39,8 +45,7 @@ function trksit_Install(){
 	  hit_date DATE DEFAULT '0000-00-00' NOT NULL,
 	  PRIMARY KEY  (url_id, hit_date))
 		ENGINE = InnoDB 
-    DEFAULT CHARACTER SET = ".DB_CHARSET." 
-    COLLATE = ".DB_COLLATE.";";
+    $charset_collate;";
 
 	$table_3_name = $wpdb->prefix . "trksit_scripts";
 	$table_3_sql = "CREATE TABLE $table_3_name (
@@ -50,8 +55,7 @@ function trksit_Install(){
 	  script TEXT DEFAULT '' NOT NULL,
 	  PRIMARY KEY  script_id (script_id))
 		ENGINE = InnoDB 
-    DEFAULT CHARACTER SET = ".DB_CHARSET." 
-    COLLATE = ".DB_COLLATE.";";
+    $charset_collate;";
 
 	$table_4_name = $wpdb->prefix . "trksit_scripts_to_urls";
 	$table_4_sql = "CREATE TABLE $table_4_name (
@@ -60,8 +64,7 @@ function trksit_Install(){
 	  url_id INT NOT NULL,
 	  PRIMARY KEY  (assignment_id, script_id, url_id))
 		ENGINE = InnoDB 
-    DEFAULT CHARACTER SET = ".DB_CHARSET." 
-    COLLATE = ".DB_COLLATE.";";
+    $charset_collate;";
 
 	update_option('trksit_jquery', 0);
 	update_option('trksit_redirect_delay', 500);
@@ -70,10 +73,11 @@ function trksit_Install(){
     
 	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 		
-	dbDelta( $table_1_sql );
+	dbDelta( $table_1_sql ); // This is a WordPress function, cool huh?
 	dbDelta( $table_2_sql );
 	dbDelta( $table_3_sql );
-	dbDelta( $table_4_sql );		      
+	dbDelta( $table_4_sql );	
+
 }
 
 //load the needed scripts
