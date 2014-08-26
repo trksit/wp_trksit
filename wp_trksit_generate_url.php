@@ -27,6 +27,7 @@
 	  </div>
 	  <div class="trksit_col left">
 		 <h2><?php _e('Here\'s Your Tracking URL:'); ?> <?php echo $shortURL; ?></h2>
+		 <p><a href='./admin.php?page=trksit-generate'>Create another link</a></p>
 	  </div>
 	  <div class="trksit_col right"></div>
 
