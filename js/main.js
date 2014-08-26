@@ -41,28 +41,14 @@ jQuery(document).ready(function($){
    $('#preview .content .description').text($('textarea#description').val());
 
    // COPY BUTTONS
-   /*
-	*   $(".trksit-copy-btn").on('click', function (e) {
-	*
-	*      e.preventDefault();
-	*
-	*   }).each(function () {
-	*
-	*      $(this).zclip({
-	*         path: "/wp-content/plugins/wp_trksit/js/swf/ZeroClipboard.swf",
-	*         copy: function() { return $(this).data("trksit-link"); },
-	*         afterCopy:function(){ alert($(this).data("trksit-link") + " has been copied to your clipboard."); },
-	*         clickAfter: false
-	*      });
-	*
-	*   });
-	*/
 
+   // Set location of SWF File
    ZeroClipboard.config( { swfPath: "/wp-content/plugins/wp_trksit/js/swf/ZeroClipboard.swf" } );
 
    var client = new ZeroClipboard($(".trksit-copy-btn"));
    client.on("ready", function(event){
 
+	  // Use the data attribute associated with the link
 	  client.on("copy", function(event){
 		 event.clipboardData.setData('text/plain', event.target.getAttribute('data-trksit-link'));
 	  });
@@ -73,7 +59,7 @@ jQuery(document).ready(function($){
 
    });
    client.on( 'error', function(event) {
-	   console.log( 'ZeroClipboard error of type "' + event.name + '": ' + event.message );
+	  console.log( 'ZeroClipboard error of type "' + event.name + '": ' + event.message );
 	  ZeroClipboard.destroy();
    } );
 
