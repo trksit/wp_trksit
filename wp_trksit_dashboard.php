@@ -266,7 +266,7 @@
 					 <a href="<?php echo $table_row->trksit_url; ?>?preview=true" target="_blank" class="trksit-link" id="trksit-link-<?php echo $table_row->url_id; ?>"><?php echo str_replace("https://", "", $table_row->trksit_url); ?></a>
 				  </td>
 				  <td class="trks_it_copy">
-					 <span class="copy-btn-wrap"><a class="trksit-copy-btn" id="trks-copy-btn-<?php echo $table_row->url_id; ?>" data-trksit-link="//<?php echo $table_row->trksit_url; ?>"><?php _e('Copy');?></a></span>
+					 <span class="copy-btn-wrap"><a class="trksit-copy-btn" id="trks-copy-btn-<?php echo $table_row->url_id; ?>" data-trksit-link="<?php echo $table_row->trksit_url; ?>"><?php _e('Copy');?></a></span>
 				  </td>
 				  <td class="truncate trks_it_destination">
 					 <a href="<?php echo $table_row->destination_url; ?>" target="_blank"><?php echo $table_row->destination_url; ?></a>
