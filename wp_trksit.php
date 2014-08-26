@@ -1,4 +1,4 @@
-<?php 	
+<?php
 /*
 Plugin Name: Trks.it for WordPress
 Plugin URI: https://get.trks.it?utm_source=WordPress%20Admin%20Link
@@ -34,8 +34,8 @@ function trksit_Install(){
 	  meta_description VARCHAR(255) DEFAULT '' NOT NULL,
 	  meta_image VARCHAR(255) DEFAULT '' NOT NULL,
 	  og_data TEXT NOT NULL,
-	  PRIMARY KEY  url_id (url_id)) 
-		ENGINE = InnoDB 
+	  PRIMARY KEY  url_id (url_id))
+		ENGINE = InnoDB
     $charset_collate;";
 
 	$table_2_name = $wpdb->prefix . "trksit_hits";
@@ -44,7 +44,7 @@ function trksit_Install(){
 	  url_id INT NOT NULL,
 	  hit_date DATE DEFAULT '0000-00-00' NOT NULL,
 	  PRIMARY KEY  (url_id, hit_date))
-		ENGINE = InnoDB 
+		ENGINE = InnoDB
     $charset_collate;";
 
 	$table_3_name = $wpdb->prefix . "trksit_scripts";
@@ -54,7 +54,7 @@ function trksit_Install(){
 	  label VARCHAR(255) DEFAULT '' NOT NULL,
 	  script TEXT DEFAULT '' NOT NULL,
 	  PRIMARY KEY  script_id (script_id))
-		ENGINE = InnoDB 
+		ENGINE = InnoDB
     $charset_collate;";
 
 	$table_4_name = $wpdb->prefix . "trksit_scripts_to_urls";
@@ -63,20 +63,20 @@ function trksit_Install(){
 	  script_id INT NOT NULL,
 	  url_id INT NOT NULL,
 	  PRIMARY KEY  (assignment_id, script_id, url_id))
-		ENGINE = InnoDB 
+		ENGINE = InnoDB
     $charset_collate;";
 
 	update_option('trksit_jquery', 0);
 	update_option('trksit_redirect_delay', 500);
 	update_option('trksit_token', '');
 	update_option('trksit_token_expires', 1);
-    
+
 	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-		
+
 	dbDelta( $table_1_sql ); // This is a WordPress function, cool huh?
 	dbDelta( $table_2_sql );
 	dbDelta( $table_3_sql );
-	dbDelta( $table_4_sql );	
+	dbDelta( $table_4_sql );
 
 }
 
@@ -89,7 +89,7 @@ function trksit_load_scripts() {
 		wp_register_style('trksit-styles', plugins_url( '/wp_trksit/css/wp_trksit_style.css' , dirname(__FILE__)));
 		wp_register_script('trksit-bootstrap-js', plugins_url( '/wp_trksit/js/bootstrap.min.js' , dirname(__FILE__)),array('jquery'));
 		wp_register_script('trksit-zclip-js', plugins_url( '/wp_trksit/js/jquery.zclip.js' , dirname(__FILE__)),array('jquery'),'1.1.1',true);
-		wp_register_script('trksit-validation-js', plugins_url( '/wp_trksit/js/jquery.validate.min.js' , dirname(__FILE__)),array('jquery'),'1.11.1');   
+		wp_register_script('trksit-validation-js', plugins_url( '/wp_trksit/js/jquery.validate.min.js' , dirname(__FILE__)),array('jquery'),'1.11.1');
 		wp_register_script('trksit-main-js', plugins_url( '/wp_trksit/js/main.js', dirname(__FILE__)),array('jquery'),'1.2.1');
 		wp_register_script('jquery-image-picker', plugins_url( '/wp_trksit/js/image-picker.min.js' , dirname(__FILE__) ),array('jquery').'0.1.3',true);
 
@@ -100,7 +100,7 @@ function trksit_load_scripts() {
 		wp_enqueue_script('trksit-validation-js');
 		wp_enqueue_script('jquery-image-picker');
 		wp_enqueue_script('trksit-main-js');
-  
+
 	}
   if($_GET['page'] == 'trksit-dashboard'){
   	wp_enqueue_script('jquery-ui-datepicker');
@@ -112,7 +112,7 @@ function trksit_load_scripts() {
 		wp_enqueue_style('jquery-ui-bootstrap', plugins_url( '/wp_trksit/css/jquery-ui-1.10.0.custom.css',dirname(__FILE__)),'','0.4.3');
 	}
   if($_GET['page'] == 'trksit-generate'){
-	
+
 		wp_register_script('trksit-generate-js', plugins_url( '/wp_trksit/js/generate.js' , dirname(__FILE__)),array('jquery'),'1.2.1',true);
 		wp_enqueue_script('trksit-generate-js');
 	}
@@ -125,7 +125,7 @@ function trksit_add_pages() {
   add_submenu_page('trksit-dashboard', __('Generate URL &lsaquo; Trks.it','trksit_menu'), __('Generate URL','trksit_menu'), 'manage_options', 'trksit-generate', 'trksit_generate');
   add_submenu_page('trksit-dashboard', __('Plugin Settings &lsaquo; Trks.it','trksit_menu'), __('Settings','trksit_menu'), 'manage_options', 'trksit-settings', 'trksit_settings');
 }
-    
+
 // Dashboard Page Content
 function trksit_dashboard() {
 
@@ -133,11 +133,11 @@ function trksit_dashboard() {
 		wp_die( __('You do not have sufficient permissions to access this page.') );
 	}else{
     global $wpdb;
-		include('wp_trksit_dashboard.php');  
-	}        
-    
+		include('wp_trksit_dashboard.php');
+	}
+
 }
-    
+
 // Generate URL Page Content
 function trksit_generate() {
 
@@ -145,19 +145,19 @@ function trksit_generate() {
 		wp_die( __('You do not have sufficient permissions to access this page.') );
 	}else{
     global $wpdb;
-		include('wp_trksit_generate_url.php');  
+		include('wp_trksit_generate_url.php');
 	}
 
 }
-    
+
 // Settings Page Content
 function trksit_settings() {
-  
+
   if (!current_user_can('manage_options'))  {
 		wp_die( __('You do not have sufficient permissions to access this page.') );
 	}else{
     global $wpdb;
-		include('wp_trksit_settings.php');  
+		include('wp_trksit_settings.php');
 	}
 
 }
@@ -172,16 +172,16 @@ function trksit_current_page() {
 		$pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
 	}
 	return $pageURL;
-}    
-    
+}
+
 /*
  * UPDATING the plugin automatically
- */  
+ */
 add_action( 'init', 'github_plugin_updater_init' );
 function github_plugin_updater_init() {
 
 	include_once 'updater.php';
-	
+
 	define( 'WP_GITHUB_FORCE_UPDATE', true );
 
 	if ( is_admin() ) { // note the use of is_admin() to double check that this is happening in the admin
@@ -200,4 +200,19 @@ function github_plugin_updater_init() {
 	  new WP_GitHub_Updater($config);
 	}
  }
+//Increase http request timeout
+define('WP_TRKSIT_CURL_TIMEOUT', 15);
+add_filter('http_request_args', 'bal_http_request_args', 100, 1);
+function bal_http_request_args($r)
+{
+   $r['timeout'] = WP_TRKSIT_CURL_TIMEOUT;
+	return $r;
+}
+
+add_action('http_api_curl', 'bal_http_api_curl', 100, 1);
+function bal_http_api_curl($handle)
+{
+   curl_setopt( $handle, CURLOPT_CONNECTTIMEOUT, WP_TRKSIT_CURL_TIMEOUT );
+   curl_setopt( $handle, CURLOPT_TIMEOUT, WP_TRKSIT_CURL_TIMEOUT );
+}
 

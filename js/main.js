@@ -53,10 +53,6 @@ jQuery(document).ready(function($){
 		 event.clipboardData.setData('text/plain', event.target.getAttribute('data-trksit-link'));
 	  });
 
-	  client.on("aftercopy", function(event){
-		 console.log('Copied text to clipboard: ' + event.data['text/plain']);
-	  });
-
    });
    client.on( 'error', function(event) {
 	  console.log( 'ZeroClipboard error of type "' + event.name + '": ' + event.message );
