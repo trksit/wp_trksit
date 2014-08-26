@@ -201,17 +201,3 @@ function github_plugin_updater_init() {
 	}
  }
 
-//Increase http request timeout
-add_filter('http_request_args', 'bal_http_request_args', 100, 1);
-function bal_http_request_args($r) //called on line 237
-{
-	$r['timeout'] = 15;
-	return $r;
-}
-
-add_action('http_api_curl', 'bal_http_api_curl', 100, 1);
-function bal_http_api_curl($handle) //called on line 1315
-{
-	curl_setopt( $handle, CURLOPT_CONNECTTIMEOUT, 15 );
-	curl_setopt( $handle, CURLOPT_TIMEOUT, 15 );
-}
