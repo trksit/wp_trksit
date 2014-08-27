@@ -42,6 +42,13 @@
 		 }
 		 $trksit->wp_trksit_parseURL($_POST['destination_url']);
 
+		 $og_error = $trksit->wp_trksit_getErrors();
+
+		 if(is_wp_error($og_error)){
+			echo $og_error->get_error_message();
+		 }
+
+
 	  ?>
 	  <div class="trksit_tab_nav">
 		 <ul>

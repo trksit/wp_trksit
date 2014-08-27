@@ -18,6 +18,7 @@
 	  public $description;			//meta description
 	  public $image;					//og:image ?
 	  public $URL;					//og:url ?
+	  public $trksit_errors;
 
 	  private $api; 					//trks.it api
 	  private $short_url_base;		//trks.it redirector url, always end with /
@@ -31,8 +32,45 @@
 			$this->short_url_base = 'http://trksit.local/';
 		 }
 	  }
-	  //Parse the given URL & get...
-	  //title, meta desctipion, open graph fields, and all images.
+
+/*
+ *Array
+ *(
+ *    [headers] => Array
+ *        (
+ *            [date] => Wed, 27 Aug 2014 22:23:34 GMT
+ *            [server] => Apache
+ *            [vary] => Authorization
+ *            [x-powered-by] => PHP/5.4.19
+ *            [content-length] => 51
+ *            [connection] => close
+ *            [content-type] => application/json
+ *        )
+ *
+ *    [body] => {"error":true,"msg":"User not active","status":400}
+ *    [response] => Array
+ *        (
+ *            [code] => 400
+ *            [message] => Bad Request
+ *        )
+ *
+ *    [cookies] => Array
+ *        (
+ *        )
+ *
+ *    [filename] => 
+ *)
+ */
+
+	  /**
+	  * wp_trksit_parseUrl($url) - Parse the URL and get information
+	  * about the page
+	  *
+	  * variables received: title, meta desctipion, open graph fields, and all images.
+	  *
+	  * @param $url - The URL to be parsed
+	  *
+	  */
 	  function wp_trksit_parseURL($url) {
 
 		 //load WordPress HTTP to load url
@@ -51,12 +89,15 @@
 			)
 		 )
 	  );
+	  if($get_opengraph['response']['code'] === 400){
+		 $this->trksit_errors = new WP_Error( 'broke', __( json_decode($get_opengraph['body'])->msg, "trks.it" ) );
+	  }
 	  // Need error handling here when API times out - 140820
-	  if( $get_opengraph['response']['code'] === 500 OR $get_opengraph['reponse']['code'] === 400 ){
+	  if( $get_opengraph['response']['code'] === 500 || $get_opengraph['reponse']['code'] === 400 ){
 		 new WP_Error( 'broke', __( "Unable to get URL data", "trks.it" ) );
 	  }elseif( $get_opengraph['response']['code'] === 200 ){
 		 $opengraph = json_decode($get_opengraph['body'],true);
-		 //if the wp_http cannot get the json data without weird, encoded characters, this may be because wp_http added padding to the body
+		 //if the wp_http cannot get the json data without weird, encoded characters, this may be becjjkuause wp_http added padding to the body
 		 if( !$opengraph ){
 			$opengraph = json_decode($this->wp_trksit_removePadding($get_opengraph['body']),true);
 		 }
@@ -186,6 +227,8 @@
 
    //Generating the shortened URL from trks.it
    function wp_trksit_generateURL($long_url,$data){
+
+
 	  $url = $this->api.'/urls';
 
 	  $body = array(
@@ -382,6 +425,9 @@
    }
    public function wp_trksit_getOGMetaArray(){
 	  return $this->ogMetaArray;
+   }
+   public function wp_trksit_getErrors(){
+	  return $this->trksit_errors;
    }
 
 }	//END Class trksit
