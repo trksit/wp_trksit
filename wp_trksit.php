@@ -80,11 +80,11 @@ function trksit_Install(){
 
 }
 
+include( plugin_dir_path( __FILE__ ) . 'inc/trksit.class.php');
 //load the needed scripts
 add_action('admin_enqueue_scripts', 'trksit_load_scripts');
 function trksit_load_scripts() {
 	if($_GET['page'] == 'trksit-dashboard' || $_GET['page'] == 'trksit-settings' || $_GET['page'] == 'trksit-generate'){
-	  include( plugin_dir_path( __FILE__ ) . 'inc/trksit.class.php');
 		wp_register_style('trksit-bootstrap', plugins_url( '/wp_trksit/css/bootstrap.min.css' , dirname(__FILE__)));
 		wp_register_style('trksit-styles', plugins_url( '/wp_trksit/css/wp_trksit_style.css' , dirname(__FILE__)));
 		wp_register_script('trksit-bootstrap-js', plugins_url( '/wp_trksit/js/bootstrap.min.js' , dirname(__FILE__)),array('jquery'));
@@ -215,4 +215,3 @@ function bal_http_api_curl($handle)
    curl_setopt( $handle, CURLOPT_CONNECTTIMEOUT, WP_TRKSIT_CURL_TIMEOUT );
    curl_setopt( $handle, CURLOPT_TIMEOUT, WP_TRKSIT_CURL_TIMEOUT );
 }
-
