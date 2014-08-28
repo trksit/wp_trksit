@@ -33,35 +33,6 @@
 		 }
 	  }
 
-/*
- *Array
- *(
- *    [headers] => Array
- *        (
- *            [date] => Wed, 27 Aug 2014 22:23:34 GMT
- *            [server] => Apache
- *            [vary] => Authorization
- *            [x-powered-by] => PHP/5.4.19
- *            [content-length] => 51
- *            [connection] => close
- *            [content-type] => application/json
- *        )
- *
- *    [body] => {"error":true,"msg":"User not active","status":400}
- *    [response] => Array
- *        (
- *            [code] => 400
- *            [message] => Bad Request
- *        )
- *
- *    [cookies] => Array
- *        (
- *        )
- *
- *    [filename] => 
- *)
- */
-
 	  /**
 	  * wp_trksit_parseUrl($url) - Parse the URL and get information
 	  * about the page
@@ -93,7 +64,7 @@
 		 $this->trksit_errors = new WP_Error( 'broke', __( json_decode($get_opengraph['body'])->msg, "trks.it" ) );
 	  }
 	  // Need error handling here when API times out - 140820
-	  if( $get_opengraph['response']['code'] === 500 || $get_opengraph['reponse']['code'] === 400 ){
+	  if( $get_opengraph['response']['code'] === 500 || $get_opengraph['response']['code'] === 400 ){
 		 new WP_Error( 'broke', __( "Unable to get URL data", "trks.it" ) );
 	  }elseif( $get_opengraph['response']['code'] === 200 ){
 		 $opengraph = json_decode($get_opengraph['body'],true);
@@ -224,6 +195,23 @@
 
    }//END saveURL
 
+   function wp_trksit_user_is_active(){
+	  $url = $this->api.'/clients/'.get_option('trksit_public_api_key');
+	  $headers = array(
+		 'Authorization' => 'Bearer ' . get_option('trksit_token'),
+		 'Content-Type' => 'aplication/x-www-form-urlencoded'
+	  );
+
+	  $request = new WP_Http;
+	  $result = $request->request( $url, array('method' => 'GET', 'body' => array(), 'headers' => $headers));
+	  $client_array = json_decode($result['body']);
+	  $client = json_decode($client_array->client_ids);
+
+	  if($client->active == 0) {
+		 return false;
+	  }
+	  return true;
+   }
 
    //Generating the shortened URL from trks.it
    function wp_trksit_generateURL($long_url,$data){
@@ -265,6 +253,9 @@
 		 $request2 = new WP_Http;
 		 $result2 = $request->request( $url , array( 'method' => 'POST','body'=>$body, 'headers' => $headers) );
 		 $result = $result2;
+	  }
+	  if($result['response']['code'] === 400){
+		 $this->trksit_errors = new WP_Error( 'broke', __( json_decode($result['body'])->msg, "trks.it" ) );
 	  }
 
 	  $output = json_decode($result['body']);

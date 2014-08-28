@@ -17,6 +17,7 @@
 			$trksit->wp_trksit_resetToken();
 		 }
 		 $shortURL = $trksit->wp_trksit_shortenURL($_POST);
+		 $trks_error = $trksit->wp_trksit_getErrors();
 	  ?>
 	  <div class="trksit_tab_nav">
 		 <ul>
@@ -25,11 +26,19 @@
 			<li class="active"><a href="#">Step 3</a></li>
 		 </ul>
 	  </div>
+	  <?php
+		 if(is_wp_error($trks_error)){
+			echo '<h2 class="trksit-header">' . $trks_error->get_error_message() . '</h2>';
+			echo '<p><a href="/wp-admin/admin.php?page=trksit-settings">Please visit settings to correct</a></p>';
+		 }
+	  ?>
+	  <?php if(!is_wp_error($trks_error)): ?>
 	  <div class="trksit_col left">
 		 <h2><?php _e('Here\'s Your Tracking URL:'); ?> <?php echo $shortURL; ?></h2>
 		 <p><a href='./admin.php?page=trksit-generate'>Create another link</a></p>
 	  </div>
 	  <div class="trksit_col right"></div>
+	  <?php endif; ?>
 
 	  <?php
 		 /* ---- Step 2 ---- */
@@ -42,12 +51,7 @@
 		 }
 		 $trksit->wp_trksit_parseURL($_POST['destination_url']);
 
-		 $og_error = $trksit->wp_trksit_getErrors();
-
-		 if(is_wp_error($og_error)){
-			echo $og_error->get_error_message();
-		 }
-
+		 $trks_error = $trksit->wp_trksit_getErrors();
 
 	  ?>
 	  <div class="trksit_tab_nav">
@@ -57,6 +61,15 @@
 			<li><a href="#">Step 3</a></li>
 		 </ul>
 	  </div>
+
+	  <?php
+		 if(is_wp_error($trks_error)){
+			echo '<h2 class="trksit-header">' . $trks_error->get_error_message() . '</h2>';
+			echo '<p><a href="/wp-admin/admin.php?page=trksit-settings">Please visit settings to correct</a></p>';
+		 }
+	  ?>
+
+	  <?php if(!is_wp_error($trks_error)): ?>
 
 	  <form class="trksit-form"  method="post">
 		 <div class="trksit_col left">
@@ -189,6 +202,7 @@
 		 </div>
 
 	  </form>
+	  <?php endif; ?>
 
 	  <?php
 		 /* ---- Step 1 ---- */

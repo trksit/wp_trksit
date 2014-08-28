@@ -1,5 +1,7 @@
 <div class="wrap" id="trksit-wrap">
    <?php
+	  $trksit = new trksit();
+
 
 	  if($_GET['view'] == 'link-detail' && is_numeric($_GET['linkid'])){
 		 $details_nonce = $_REQUEST['_wpnonce'];
@@ -10,7 +12,6 @@
 			$url_details = $wpdb->get_results( "SELECT * FROM " . $wpdb->prefix . "trksit_urls WHERE url_id = " . $link_id . "" );
 			if(count($url_details === 1)){
 
-			   $trksit = new trksit();
 			   $trksit->wp_trksit_parseURL($url_details[0]->destination_url);
 			   $og_data = unserialize ( $url_details[0]->og_data );
 			   $date = $url_details[0]->date_created;
@@ -228,7 +229,6 @@
 		 <div id="trks_hits"></div>
 
 		 <?php
-			$trksit = new trksit();
 			$trksit->wp_trksit_getAnalytics($start_date,$end_date);
 		 }
 		 $table_data = $wpdb->get_results("SELECT *,(SELECT COALESCE(SUM(tkhits.hit_count),0) as hit_total FROM ".$wpdb->prefix."trksit_hits tkhits WHERE tku.url_id = tkhits.url_id AND tkhits.hit_date BETWEEN '$start_date' AND '$end_date') AS hit_total FROM ".$wpdb->prefix."trksit_urls tku WHERE tku.url_id IN(SELECT DISTINCT tkhits.url_id FROM ".$wpdb->prefix."trksit_hits tkhits WHERE tku.url_id = tkhits.url_id AND tkhits.hit_date BETWEEN '$start_date' AND '$end_date') ORDER BY hit_total DESC");
