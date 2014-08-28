@@ -81,6 +81,7 @@ function trksit_Install(){
 }
 
 include( plugin_dir_path( __FILE__ ) . 'inc/trksit.class.php');
+add_action( 'init', array( new trksit, 'init' ) );
 //load the needed scripts
 add_action('admin_enqueue_scripts', 'trksit_load_scripts');
 function trksit_load_scripts() {

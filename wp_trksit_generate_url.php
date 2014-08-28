@@ -7,7 +7,6 @@
 
 <div class="wrap" id="trksit-wrap"><!--wrap-->
    <h2 class="trksit-header top"><img src="<?php echo plugins_url( '/wp_trksit/img/trksit-icon-36x36.png' , dirname(__FILE__) ); ?>" class="trksit-header-icon" /><?php echo __( 'Generate a New Trks.it URL', 'trksit_menu' ); ?></h2>
-
    <?php
 	  /* ---- Step 3 ---- */
 	  if($_POST["meta_title"] && ( !empty($_POST) && check_admin_referer('trksit_generate_url','trksit_generate_step2') )){
@@ -49,9 +48,6 @@
 		 if(time() > get_option('trksit_token_expires')){
 			$trksit->wp_trksit_resetToken();
 		 }
-		 $trksit->wp_trksit_parseURL($_POST['destination_url']);
-
-		 $trks_error = $trksit->wp_trksit_getErrors();
 
 	  ?>
 	  <div class="trksit_tab_nav">
@@ -62,7 +58,23 @@
 		 </ul>
 	  </div>
 
+	  <script>
+		 jQuery(document).ready(function(){
+			jQuery.post(
+			   ajaxurl,
+			   {
+				  action: 'cstef'
+			   },
+			   function(response){
+				  alert(response);
+			   }
+			);
+		 });
+	  </script>
+
 	  <?php
+		 $trksit->wp_trksit_parseURL($_POST['destination_url']);
+		 $trks_error = $trksit->wp_trksit_getErrors();
 		 if(is_wp_error($trks_error)){
 			echo '<h2 class="trksit-header">' . $trks_error->get_error_message() . '</h2>';
 			echo '<p><a href="/wp-admin/admin.php?page=trksit-settings">Please visit settings to correct</a></p>';
@@ -70,6 +82,7 @@
 	  ?>
 
 	  <?php if(!is_wp_error($trks_error)): ?>
+
 
 	  <form class="trksit-form"  method="post">
 		 <div class="trksit_col left">

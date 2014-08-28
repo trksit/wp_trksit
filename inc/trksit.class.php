@@ -31,7 +31,20 @@
 			$this->api = "http://api.trksit.local";
 			$this->short_url_base = 'http://trksit.local/';
 		 }
+		 //exposing public functions to wp_ajax
+		 add_action( 'wp_ajax_cstef', array( $this, 'do_it' ) );
+		 add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+
 	  }
+
+	  //test function for ajax calls
+	  //TODO: have template call the data with ajax rather than procedurally
+	  //TODO: this will allow a spinny loader while it is doing stuff.
+	  public function do_it(){
+		 echo "I will eventually be something useful - (☞ﾟヮﾟ)☞";
+		 exit;
+	  }
+
 
 	  /**
 	  * wp_trksit_parseUrl($url) - Parse the URL and get information
@@ -240,185 +253,196 @@
 	  );
 
 	  $request = new WP_Http;
-	  $result = $request->request( $url , array( 'method' => 'POST','body'=>$body, 'headers' => $headers) );
+	  $result = $request->request(
+		 $url,
+		 array(
+			'method' => 'POST',
+			'body'=>$body,
+			'headers' => $headers)
+		 );
+		 //file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/log1.txt', print_r($result, true), FILE_APPEND);
+		 if(is_wp_error($result)){
+			$this->trksit_errors = new WP_Error( 'broke', __( $result->get_error_message(), "trks.it" ) );
+			return "Error";
+		 }
+		 //sometimes the API returns a 404 when the og_data is sent, so resend the data to shorten URL with og data removed
+		 if( $result['response']['code'] != 201 ){
+			unset($body["og_data"]);
+			$headers = array(
+			   'Authorization' => 'Bearer ' . get_option('trksit_token'),
+			   'Content-Type' => 'application/x-www-form-urlencoded'
+			);
 
-	  //sometimes the API returns a 404 when the og_data is sent, so resend the data to shorten URL with og data removed
-	  if( $result['response']['code'] != 201 ){
-		 unset($body["og_data"]);
-		 $headers = array(
-			'Authorization' => 'Bearer ' . get_option('trksit_token'),
-			'Content-Type' => 'application/x-www-form-urlencoded'
+			$request2 = new WP_Http;
+			$result2 = $request->request( $url , array( 'method' => 'POST','body'=>$body, 'headers' => $headers) );
+			$result = $result2;
+		 }
+		 file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/log1.txt', print_r($result, true), FILE_APPEND);
+		 if($result['response']['code'] === 400){
+			$this->trksit_errors = new WP_Error( 'broke', __( json_decode($result['body'])->msg, "trks.it" ) );
+		 }
+
+		 $output = json_decode($result['body']);
+		 //if the wp_http cannot get the json data without weird, encoded characters, this may be because wp_http added padding to the body
+		 if( !$output ){
+			$output = json_decode($this->wp_trksit_removePadding($result['body']));
+		 }
+
+		 if($output->error){
+			return $output->error;
+		 } else {
+			return $output->msg;
+		 }
+
+	  }
+
+
+	  //resetToken
+	  function wp_trksit_resetToken(){
+		 $url = $this->api.'/token?grant_type=creds';
+		 $body = array(
+			'client_id' => get_option('trksit_public_api_key'),
+			'client_secret' => get_option('trksit_private_api_key')
 		 );
 
-		 $request2 = new WP_Http;
-		 $result2 = $request->request( $url , array( 'method' => 'POST','body'=>$body, 'headers' => $headers) );
-		 $result = $result2;
-	  }
-	  if($result['response']['code'] === 400){
-		 $this->trksit_errors = new WP_Error( 'broke', __( json_decode($result['body'])->msg, "trks.it" ) );
-	  }
+		 $request = new WP_Http;
+		 $result = $request->request( $url , array( 'method' => 'POST','body'=>$body,'headers'=>array('Content-Type'=>' application/x-www-form-urlencoded') ) );
 
-	  $output = json_decode($result['body']);
-	  //if the wp_http cannot get the json data without weird, encoded characters, this may be because wp_http added padding to the body
-	  if( !$output ){
-		 $output = json_decode($this->wp_trksit_removePadding($result['body']));
-	  }
-
-	  if($output->error){
-		 return $output->error;
-	  } else {
-		 return $output->msg;
-	  }
-
-   }
-
-
-   //resetToken
-   function wp_trksit_resetToken(){
-	  $url = $this->api.'/token?grant_type=creds';
-	  $body = array(
-		 'client_id' => get_option('trksit_public_api_key'),
-		 'client_secret' => get_option('trksit_private_api_key')
-	  );
-
-	  $request = new WP_Http;
-	  $result = $request->request( $url , array( 'method' => 'POST','body'=>$body,'headers'=>array('Content-Type'=>' application/x-www-form-urlencoded') ) );
-
-	  //check if wp_http has thrown an error message
-	  if( $result instanceof WP_Error ){
-		 echo $result->get_error_message();
-		 exit;
-	  }
-
-	  $output = json_decode($result['body']);
-	  //if the wp_http cannot get the json data without weird, encoded characters, this may be because wp_http added padding to the body
-	  if( !$output ){
-		 $output = json_decode($this->wp_trksit_removePadding($result['body']));
-	  }
-
-	  update_option('trksit_token', $output->code->access_token);
-	  update_option('trksit_token_expires', $output->code->expires);
-
-	  return $output;
-   }
-
-   //checkToken
-   function wp_trksit_checkToken(){
-	  $url = $this->api.'/token?grant_type=authorization';
-	  $body = array(
-		 'client_id' => get_option('trksit_public_api_key'),
-		 'client_secret' => get_option('trksit_private_api_key'),
-		 'Authorization' => get_option('trksit_token')
-	  );
-
-	  $request = new WP_Http;
-	  $result = $request->request( $url , array( 'method' => 'POST','body'=>$body ) );
-
-	  //check if wp_http has thrown an error message
-	  if( $result instanceof WP_Error ){
-		 echo $result->get_error_message();
-		 exit;
-	  }
-	  $output = json_decode($result["body"]);
-
-	  //if the wp_http cannot get the json data without weird, encoded characters, this may be because wp_http added padding to the body
-	  if( !$output ){
-		 $output = json_decode($this->wp_trksit_removePadding($result['body']));
-	  }
-
-	  if($output->error){
-		 return $output->error;
-	  } else {
-		 return true;
-	  }
-
-   }
-
-   //get the hits for the links
-   function wp_trksit_getAnalytics($start_date = null,$end_date = null,$short_url_id = null){
-	  global $wpdb;
-
-	  //select the hit counts based on start and end dates
-	  if( is_null($short_url) AND is_null($start_date) AND is_null($end_date) ){
-		 $hits = $wpdb->get_results('SELECT *,(SELECT COALESCE(SUM(hit_count),0) as hit_count FROM '.$wpdb->prefix.'trksit_hits WHERE wp_trksit_hits.hit_date = v.hit_date) AS hit_count from (SELECT adddate("1970-01-01",t4.i*10000 + t3.i*1000 + t2.i*100 + t1.i*10 + t0.i) hit_date from (SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t0,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t1,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t2,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t3,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t4) v WHERE v.hit_date BETWEEN "'.$start_date.'" AND "'.$end_date.'" ORDER BY v.hit_date',OBJECT);
-	  }elseif( is_null($short_url) AND !is_null($start_date) AND !is_null($end_date) ){
-		 $hits = $wpdb->get_results('SELECT *,(SELECT COALESCE(SUM(hit_count),0) as hit_count FROM '.$wpdb->prefix.'trksit_hits WHERE wp_trksit_hits.hit_date = v.hit_date) AS hit_count from (SELECT adddate("1970-01-01",t4.i*10000 + t3.i*1000 + t2.i*100 + t1.i*10 + t0.i) hit_date from (SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t0,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t1,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t2,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t3,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t4) v WHERE v.hit_date BETWEEN "'.$start_date.'" AND "'.$end_date.'" ORDER BY v.hit_date',OBJECT);
-	  }elseif( !is_null($short_url) AND is_null($start_date) AND is_null($end_date) ){
-		 $hits = $wpdb->get_results('SELECT *,(SELECT COALESCE(SUM(hit_count),0) as hit_count FROM '.$wpdb->prefix.'trksit_hits WHERE wp_trksit_hits.hit_date = v.hit_date AND url_id = '.$short_url_id.') AS hit_count from (SELECT adddate("1970-01-01",t4.i*10000 + t3.i*1000 + t2.i*100 + t1.i*10 + t0.i) hit_date from (SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t0,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t1,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t2,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t3,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t4) v WHERE v.hit_date BETWEEN "'.$start_date.'" AND "'.$end_date.'" ORDER BY v.hit_date',OBJECT);
-	  }elseif( !is_null($short_url) AND !is_null($start_date) AND !is_null($end_date) ){
-		 $hits = $wpdb->get_results('SELECT *,(SELECT COALESCE(SUM(hit_count),0) as hit_count FROM '.$wpdb->prefix.'trksit_hits WHERE wp_trksit_hits.hit_date = v.hit_date AND url_id = '.$short_url_id.') AS hit_count from (SELECT adddate("1970-01-01",t4.i*10000 + t3.i*1000 + t2.i*100 + t1.i*10 + t0.i) hit_date from (SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t0,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t1,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t2,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t3,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t4) v WHERE v.hit_date BETWEEN "'.$start_date.'" AND "'.$end_date.'" ORDER BY v.hit_date',OBJECT);
-	  }
-
-	  $data = null;
-	  foreach( $hits as $hit ){
-		 if( is_null($data) ){
-			$data = "{ day: '".$hit->hit_date."', hits: ".$hit->hit_count."},";
-		 }else{
-			$data .= "{ day: '".$hit->hit_date."', hits: ".$hit->hit_count."},";
+		 //check if wp_http has thrown an error message
+		 if( $result instanceof WP_Error ){
+			echo $result->get_error_message();
+			exit;
 		 }
+
+		 $output = json_decode($result['body']);
+		 //if the wp_http cannot get the json data without weird, encoded characters, this may be because wp_http added padding to the body
+		 if( !$output ){
+			$output = json_decode($this->wp_trksit_removePadding($result['body']));
+		 }
+
+		 update_option('trksit_token', $output->code->access_token);
+		 update_option('trksit_token_expires', $output->code->expires);
+
+		 return $output;
 	  }
-	  echo "<script>
-		 //JS for line graph
-		 var graph = new Morris.Line({
-			element: 'trks_hits',
-			data: [
-			$data
-			],
-			xkey: 'day',
-			ykeys: ['hits'],
-			labels: ['Hits'],
-			xLabels:'day',
-			resize: true,
-			pointSize: 5,
-			smooth: false,
-			lineWidth: 2,
-			gridTextSize: 11,
-			gridTextFamily: 'Open Sans',
-			pointFillColors: ['#76bd1d'],
-			hideHover: true,
-			lineColors: ['#555555'],
-			pointStrokeColors: '#000000',
-			dateFormat: function(x){
-			   var date = new Date(x)
-			   return ('0' + (date.getMonth() + 1).toString()).substr(-2) + '/' + ('0' + date.getDate().toString()).substr(-2)  + '/' + (date.getFullYear().toString()).substr(2);
-			},
-			xLabelFormat:function(x){
-			   var date = new Date(x)
-			   return ('0' + (date.getMonth() + 1).toString()).substr(-2) + '/' + ('0' + date.getDate().toString()).substr(-2)  + '/' + (date.getFullYear().toString()).substr(2);
+
+	  //checkToken
+	  function wp_trksit_checkToken(){
+		 $url = $this->api.'/token?grant_type=authorization';
+		 $body = array(
+			'client_id' => get_option('trksit_public_api_key'),
+			'client_secret' => get_option('trksit_private_api_key'),
+			'Authorization' => get_option('trksit_token')
+		 );
+
+		 $request = new WP_Http;
+		 $result = $request->request( $url , array( 'method' => 'POST','body'=>$body ) );
+
+		 //check if wp_http has thrown an error message
+		 if( $result instanceof WP_Error ){
+			echo $result->get_error_message();
+			exit;
+		 }
+		 $output = json_decode($result["body"]);
+
+		 //if the wp_http cannot get the json data without weird, encoded characters, this may be because wp_http added padding to the body
+		 if( !$output ){
+			$output = json_decode($this->wp_trksit_removePadding($result['body']));
+		 }
+
+		 if($output->error){
+			return $output->error;
+		 } else {
+			return true;
+		 }
+
+	  }
+
+	  //get the hits for the links
+	  function wp_trksit_getAnalytics($start_date = null,$end_date = null,$short_url_id = null){
+		 global $wpdb;
+
+		 //select the hit counts based on start and end dates
+		 if( is_null($short_url) AND is_null($start_date) AND is_null($end_date) ){
+			$hits = $wpdb->get_results('SELECT *,(SELECT COALESCE(SUM(hit_count),0) as hit_count FROM '.$wpdb->prefix.'trksit_hits WHERE wp_trksit_hits.hit_date = v.hit_date) AS hit_count from (SELECT adddate("1970-01-01",t4.i*10000 + t3.i*1000 + t2.i*100 + t1.i*10 + t0.i) hit_date from (SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t0,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t1,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t2,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t3,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t4) v WHERE v.hit_date BETWEEN "'.$start_date.'" AND "'.$end_date.'" ORDER BY v.hit_date',OBJECT);
+		 }elseif( is_null($short_url) AND !is_null($start_date) AND !is_null($end_date) ){
+			$hits = $wpdb->get_results('SELECT *,(SELECT COALESCE(SUM(hit_count),0) as hit_count FROM '.$wpdb->prefix.'trksit_hits WHERE wp_trksit_hits.hit_date = v.hit_date) AS hit_count from (SELECT adddate("1970-01-01",t4.i*10000 + t3.i*1000 + t2.i*100 + t1.i*10 + t0.i) hit_date from (SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t0,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t1,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t2,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t3,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t4) v WHERE v.hit_date BETWEEN "'.$start_date.'" AND "'.$end_date.'" ORDER BY v.hit_date',OBJECT);
+		 }elseif( !is_null($short_url) AND is_null($start_date) AND is_null($end_date) ){
+			$hits = $wpdb->get_results('SELECT *,(SELECT COALESCE(SUM(hit_count),0) as hit_count FROM '.$wpdb->prefix.'trksit_hits WHERE wp_trksit_hits.hit_date = v.hit_date AND url_id = '.$short_url_id.') AS hit_count from (SELECT adddate("1970-01-01",t4.i*10000 + t3.i*1000 + t2.i*100 + t1.i*10 + t0.i) hit_date from (SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t0,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t1,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t2,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t3,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t4) v WHERE v.hit_date BETWEEN "'.$start_date.'" AND "'.$end_date.'" ORDER BY v.hit_date',OBJECT);
+		 }elseif( !is_null($short_url) AND !is_null($start_date) AND !is_null($end_date) ){
+			$hits = $wpdb->get_results('SELECT *,(SELECT COALESCE(SUM(hit_count),0) as hit_count FROM '.$wpdb->prefix.'trksit_hits WHERE wp_trksit_hits.hit_date = v.hit_date AND url_id = '.$short_url_id.') AS hit_count from (SELECT adddate("1970-01-01",t4.i*10000 + t3.i*1000 + t2.i*100 + t1.i*10 + t0.i) hit_date from (SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t0,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t1,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t2,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t3,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t4) v WHERE v.hit_date BETWEEN "'.$start_date.'" AND "'.$end_date.'" ORDER BY v.hit_date',OBJECT);
+		 }
+
+		 $data = null;
+		 foreach( $hits as $hit ){
+			if( is_null($data) ){
+			   $data = "{ day: '".$hit->hit_date."', hits: ".$hit->hit_count."},";
+			}else{
+			   $data .= "{ day: '".$hit->hit_date."', hits: ".$hit->hit_count."},";
 			}
-		 });
-	  </script>";
-   }
+		 }
+		 echo "<script>
+			//JS for line graph
+			var graph = new Morris.Line({
+			   element: 'trks_hits',
+			   data: [
+			   $data
+			   ],
+			   xkey: 'day',
+			   ykeys: ['hits'],
+			   labels: ['Hits'],
+			   xLabels:'day',
+			   resize: true,
+			   pointSize: 5,
+			   smooth: false,
+			   lineWidth: 2,
+			   gridTextSize: 11,
+			   gridTextFamily: 'Open Sans',
+			   pointFillColors: ['#76bd1d'],
+			   hideHover: true,
+			   lineColors: ['#555555'],
+			   pointStrokeColors: '#000000',
+			   dateFormat: function(x){
+				  var date = new Date(x)
+				  return ('0' + (date.getMonth() + 1).toString()).substr(-2) + '/' + ('0' + date.getDate().toString()).substr(-2)  + '/' + (date.getFullYear().toString()).substr(2);
+			   },
+			   xLabelFormat:function(x){
+				  var date = new Date(x)
+				  return ('0' + (date.getMonth() + 1).toString()).substr(-2) + '/' + ('0' + date.getDate().toString()).substr(-2)  + '/' + (date.getFullYear().toString()).substr(2);
+			   }
+			});
+		 </script>";
+	  }
 
-   //remove the padding by wp_http that causes padding to be added to a JSON request
-   function wp_trksit_removePadding($data){
-	  //if the wp_http cannot get the json data without weird, encoded characters, this may be because wp_http added padding to the body
-	  //remove lines
-	  $data = preg_replace("@[\\r|\\n|\\t]+@", "", $data);
-	  //remove padding @http://forrst.com/posts/PHP_Convert_JSONP_to_JSON-mcv
-	  $data = preg_replace('/.+?({.+}).+/','$1',$data);
+	  //remove the padding by wp_http that causes padding to be added to a JSON request
+	  function wp_trksit_removePadding($data){
+		 //if the wp_http cannot get the json data without weird, encoded characters, this may be because wp_http added padding to the body
+		 //remove lines
+		 $data = preg_replace("@[\\r|\\n|\\t]+@", "", $data);
+		 //remove padding @http://forrst.com/posts/PHP_Convert_JSONP_to_JSON-mcv
+		 $data = preg_replace('/.+?({.+}).+/','$1',$data);
 
-	  return $data;
-   }
+		 return $data;
+	  }
 
-   //GET functions
-   public function wp_trksit_getTitle(){
-	  return $this->title;
-   }
-   public function wp_trksit_getDescription(){
-	  return $this->description;
-   }
-   public function wp_trksit_getURL(){
-	  return $this->URL;
-   }
-   public function wp_trksit_getImage(){
-	  return $this->image;
-   }
-   public function wp_trksit_getOGMetaArray(){
-	  return $this->ogMetaArray;
-   }
-   public function wp_trksit_getErrors(){
-	  return $this->trksit_errors;
-   }
+	  //GET functions
+	  public function wp_trksit_getTitle(){
+		 return $this->title;
+	  }
+	  public function wp_trksit_getDescription(){
+		 return $this->description;
+	  }
+	  public function wp_trksit_getURL(){
+		 return $this->URL;
+	  }
+	  public function wp_trksit_getImage(){
+		 return $this->image;
+	  }
+	  public function wp_trksit_getOGMetaArray(){
+		 return $this->ogMetaArray;
+	  }
+	  public function wp_trksit_getErrors(){
+		 return $this->trksit_errors;
+	  }
 
-}	//END Class trksit
+   }	//END Class trksit
