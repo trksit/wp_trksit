@@ -8,6 +8,9 @@
 		 if(!wp_verify_nonce($details_nonce, 'trksit-view-details')){
 			die();
 		 }else {
+			if($_POST["meta_title"] && !empty($_POST) ){
+			   $trksit->wp_trksit_saveURL($wpdb, $_POST, true, $_GET['linkid']);
+			}
 			$link_id = $_GET['linkid'];
 			$url_details = $wpdb->get_results( "SELECT * FROM " . $wpdb->prefix . "trksit_urls WHERE url_id = " . $link_id . "" );
 			if(count($url_details === 1)){

@@ -137,10 +137,25 @@
 
    }	//END shortenURL
 
+   private function wp_trksit_saveScripts($wpdb, $mainArray, $id){
+	  $wpdb->delete($wpdb->prefix . 'trksit_scripts_to_urls', array('url_id' => $id));
 
+	  $script_count = count($mainArray['trksit_scripts']);
+	  $scripts_array = array();
+
+	  for( $i = 1; $i <= $script_count; $i++ ){
+		 $scripts_array[] = array(
+			'script_id' => $mainArray['trksit_scripts'][$i - 1],
+			'url_id' => $id
+		 );
+	  }
+	  foreach ( $scripts_array as $script ){
+		 $wpdb->insert( $wpdb->prefix . 'trksit_scripts_to_urls', $script, array('%d', '%d') );
+	  }
+   }
 
    //Save URL to database
-   function wp_trksit_saveURL($wpdb, $postArray){
+   function wp_trksit_saveURL($wpdb, $postArray, $update = false, $updateid = null){
 
 	  //Setting up our 2 arrays, 1 from main data & other for Open Graph data
 	  $mainArray = $ogArray = array();
@@ -160,50 +175,39 @@
 	  //print_r($mainArray);
 	  $mainArray["og_data"] = serialize($ogArray);
 
-	  //insert main data into DB
-	  $wpdb->insert(
-		 $wpdb->prefix . 'trksit_urls',
-		 array(
-			'destination_url' => $mainArray['destination_url'],
-			'meta_title' => $mainArray['meta_title'],
-			'meta_description' => $mainArray['meta_description'],
-			'meta_image' => $mainArray['meta_image'],
-			'og_data' => $mainArray['og_data'],
-			'campaign' => $mainArray['campaign'],
-			'source' => $mainArray['source'],
-			'medium' => $mainArray['medium'],
-			'date_created' => $mainArray['date_created']
-		 ),
-		 array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' )
+	  $fields = array(
+		 'destination_url' => $mainArray['destination_url'],
+		 'meta_title' => $mainArray['meta_title'],
+		 'meta_description' => $mainArray['meta_description'],
+		 'meta_image' => $mainArray['meta_image'],
+		 'og_data' => $mainArray['og_data'],
+		 'campaign' => $mainArray['campaign'],
+		 'source' => $mainArray['source'],
+		 'medium' => $mainArray['medium'],
+		 'date_created' => $mainArray['date_created']
 	  );
+	  $values = array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' );
 
-	  //Setting the URL ID to return to ShortenURL function
-	  $shortenedURLID = $wpdb->insert_id;
 
-	  if($wpdb->insert_id){
+	  if($update){
+		 $wpdb->update( $wpdb->prefix . 'trksit_urls', $fields, array('url_id' => intval($updateid)), $values);
+		 $this->wp_trksit_saveScripts($wpdb, $mainArray, $updateid);
+	  } else {
+		 //insert main data into DB
+		 $wpdb->insert(
+			$wpdb->prefix . 'trksit_urls', $fields, $values
+		 );
 
-		 $inserted_record = $wpdb->insert_id;
+		 //Setting the URL ID to return to ShortenURL function
+		 $shortenedURLID = $wpdb->insert_id;
 
-		 $script_count = count($mainArray['trksit_scripts']);
-		 $scripts_array = array();
-
-		 for( $i = 1; $i <= $script_count; $i++ ){
-
-			$scripts_array[] = array(
-			   'script_id' => $mainArray['trksit_scripts'][$i - 1],
-			   'url_id' => $inserted_record
-			);
-
+		 if($wpdb->insert_id){
+			$inserted_record = $wpdb->insert_id;
+			$this->wp_trksit_saveScripts($wpdb, $mainArray, $inserted_record);
 		 }
-
-		 foreach ( $scripts_array as $script ){
-			$wpdb->insert( $wpdb->prefix . 'trksit_scripts_to_urls', $script, array('%d', '%d') );
-		 }
-
+		 //return the ID of the URL insert
+		 return $shortenedURLID;
 	  }
-
-	  //return the ID of the URL insert
-	  return 	$shortenedURLID;
 
    }//END saveURL
 
