@@ -149,6 +149,25 @@
 
    <?php if($_GET['tab'] == 'scripts'): ?>
 
+   <?php
+	  $s_label = '';
+	  $s_platform = '';
+	  $s_script = '';
+	  $trksit = new trksit();
+	  if(isset($_GET['edit_nonce']) && $_GET['act'] == 'edit' && wp_verify_nonce($_GET['edit_nonce'], 'edit_script')){
+		 $script_details = $trksit->wp_trksit_scriptDetails($wpdb, $_GET['id']);
+		 $s_label = $script_details['label'];
+		 $s_platform = $script_details['platform'];
+		 $s_script = stripslashes($script_details['script']);
+
+		 //TODO Need to populate the edit thing and show it somehow.
+		 // Probably make it JSON and javascript it
+	  }
+	  if(isset($_GET['delete_nonce']) && $_GET['act'] == 'delete' && wp_verify_nonce($_GET['delete_nonce'], 'delete_script')){
+		 $trksit->wp_trksit_deleteScript($wpdb, $_GET['id']);
+	  }
+   ?>
+
    <div class="trksit_col_full">
 
 	  <h2 class="trksit-header"><?php _e("Custom Scripts"); ?></h2>
@@ -176,13 +195,20 @@
 					 foreach($table_data as $table_row){
 						$datetime = strtotime($table_row->date_created);
 						$date_created = date('F j, Y', $datetime);
+						$edit_url = wp_nonce_url(admin_url('admin.php?page=trksit-settings&tab=scripts&act=edit&id=' . $table_row->script_id), 'edit_script', 'edit_nonce');
+						$delete_url = wp_nonce_url(admin_url('admin.php?page=trksit-settings&tab=scripts&act=delete&id=' . $table_row->script_id), 'delete_script', 'delete_nonce');
 					 ?>
 					 <tr>
 						<td><?php echo $date_created; ?></td>
 						<td><?php echo stripslashes($table_row->label); ?></td>
 						<td><?php echo $table_row->platform; ?></td>
 						<td>TODO</td>
-						<td><a href="#">Edit</a> | <a href="#">Delete</a></td>
+						<td>
+						   <a href="<?php echo $edit_url; ?>">
+							  Edit
+						   </a> |
+						   <a href="<?php echo $delete_url; ?>">Delete</a>
+						</td>
 					 </tr>
 					 <?php
 					 }

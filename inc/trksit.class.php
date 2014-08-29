@@ -211,6 +211,15 @@
 
    }//END saveURL
 
+   function wp_trksit_deleteScript($wpdb, $id) {
+	  $wpdb->delete($wpdb->prefix . 'trksit_scripts', array('script_id' => intval($id)));
+	  $wpdb->delete($wpdb->prefix . 'trksit_scripts_to_urls', array('script_id' => intval($id)));
+   }
+
+   function wp_trksit_scriptDetails($wpdb, $id){
+	  return $wpdb->get_results('SELECT label, script, platform FROM ' . $wpdb->prefix . 'WHERE script_id = ' . intval($id));
+   }
+
    function wp_trksit_user_is_active(){
 	  $url = $this->api.'/clients/'.get_option('trksit_public_api_key');
 	  $headers = array(
@@ -231,7 +240,6 @@
 
    //Generating the shortened URL from trks.it
    function wp_trksit_generateURL($long_url,$data){
-
 
 	  $url = $this->api.'/urls';
 

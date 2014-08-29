@@ -66,7 +66,7 @@
 				  action: 'cstef'
 			   },
 			   function(response){
-				  alert(response);
+				  console.log(response);
 			   }
 			);
 		 });
