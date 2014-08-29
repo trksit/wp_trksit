@@ -33,7 +33,6 @@
 		 }
 		 //exposing public functions to wp_ajax
 		 add_action( 'wp_ajax_cstef', array( $this, 'do_it' ) );
-		 add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
 	  }
 
