@@ -180,7 +180,7 @@
 					 <tr>
 						<td><?php echo $date_created; ?></td>
 						<td><?php echo stripslashes($table_row->label); ?></td>
-						<td>TODO</td>
+						<td><?php echo $table_row->platform; ?></td>
 						<td>TODO</td>
 						<td><a href="#">Edit</a> | <a href="#">Delete</a></td>
 					 </tr>
