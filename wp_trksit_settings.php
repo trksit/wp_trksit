@@ -30,15 +30,18 @@
 
 	  $trksit_script_label = $_POST['trksit_script_label'];
 	  $trksit_script = addslashes($_POST['trksit_script']);
+	  $trksit_platform = $_POST['trksit_script_platform'];
 
 	  $wpdb->insert(
 		 $wpdb->prefix . 'trksit_scripts',
 		 array(
 			'date_created' => date('Y-m-d'),
 			'label' => $trksit_script_label,
-			'script' => $trksit_script
+			'script' => $trksit_script,
+			'platform' => $trksit_platform
 		 ),
 		 array(
+			'%s',
 			'%s',
 			'%s',
 			'%s'
@@ -177,8 +180,8 @@
 					 <tr>
 						<td><?php echo $date_created; ?></td>
 						<td><?php echo stripslashes($table_row->label); ?></td>
-						<td>Google</td>
-						<td>12</td>
+						<td>TODO</td>
+						<td>TODO</td>
 						<td><a href="#">Edit</a> | <a href="#">Delete</a></td>
 					 </tr>
 					 <?php

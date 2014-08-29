@@ -53,6 +53,7 @@ function trksit_Install(){
 	  date_created DATE DEFAULT '0000-00-00' NOT NULL,
 	  label VARCHAR(255) DEFAULT '' NOT NULL,
 	  script TEXT DEFAULT '' NOT NULL,
+	  platform VARCHAR(25) DEFAULT 'Google' NOT NULL,
 	  PRIMARY KEY  script_id (script_id))
 		ENGINE = InnoDB
     $charset_collate;";
