@@ -183,16 +183,18 @@
 		 'og_data' => $mainArray['og_data'],
 		 'campaign' => $mainArray['campaign'],
 		 'source' => $mainArray['source'],
-		 'medium' => $mainArray['medium'],
-		 'date_created' => $mainArray['date_created']
+		 'medium' => $mainArray['medium']
+		 //'date_created' => $mainArray['date_created']
 	  );
-	  $values = array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' );
+	  $values = array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' );
 
 
 	  if($update){
 		 $wpdb->update( $wpdb->prefix . 'trksit_urls', $fields, array('url_id' => intval($updateid)), $values);
 		 $this->wp_trksit_saveScripts($wpdb, $mainArray, $updateid);
 	  } else {
+		 $fields['date_created'] = $mainArray['date_created'];
+		 array_push($values, '%s');
 		 //insert main data into DB
 		 $wpdb->insert(
 			$wpdb->prefix . 'trksit_urls', $fields, $values
