@@ -196,9 +196,7 @@
 		 $fields['date_created'] = $mainArray['date_created'];
 		 array_push($values, '%s');
 		 //insert main data into DB
-		 $wpdb->insert(
-			$wpdb->prefix . 'trksit_urls', $fields, $values
-		 );
+		 $wpdb->insert( $wpdb->prefix . 'trksit_urls', $fields, $values );
 
 		 //Setting the URL ID to return to ShortenURL function
 		 $shortenedURLID = $wpdb->insert_id;
