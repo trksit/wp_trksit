@@ -217,7 +217,8 @@
    }
 
    function wp_trksit_scriptDetails($wpdb, $id){
-	  return $wpdb->get_results('SELECT label, script, platform FROM ' . $wpdb->prefix . 'WHERE script_id = ' . intval($id));
+	  $query = 'SELECT label, script, platform FROM ' . $wpdb->prefix . 'trksit_scripts WHERE script_id = ' . intval($id);
+	  return $wpdb->get_results($query);
    }
 
    function wp_trksit_user_is_active(){

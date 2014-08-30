@@ -156,13 +156,15 @@
 	  $trksit = new trksit();
 	  if(isset($_GET['edit_nonce']) && $_GET['act'] == 'edit' && wp_verify_nonce($_GET['edit_nonce'], 'edit_script')){
 		 $script_details = $trksit->wp_trksit_scriptDetails($wpdb, $_GET['id']);
-		 $s_label = $script_details['label'];
-		 $s_platform = $script_details['platform'];
-		 $s_script = stripslashes($script_details['script']);
+		 $s_label = $script_details[0]->label;
+		 $s_platform = $script_details[0]->platform;
+		 $s_script = stripslashes($script_details[0]->script);
 
-		 //TODO Need to populate the edit thing and show it somehow.
-		 // Probably make it JSON and javascript it
+		 //TODO htmspecialchar javascript for databassery
+
+		 echo "<script>jQuery(window).load(function(){ jQuery('#add-script-window').modal('show'); });</script>";
 	  }
+
 	  if(isset($_GET['delete_nonce']) && $_GET['act'] == 'delete' && wp_verify_nonce($_GET['delete_nonce'], 'delete_script')){
 		 $trksit->wp_trksit_deleteScript($wpdb, $_GET['id']);
 	  }
@@ -231,7 +233,7 @@
 
 	  </div>
 
-	  <div id="add-script-window" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="add-script-window" aria-hidden="true">
+	  <div id="add-script-window" class="modal fade hide" tabindex="-1" role="dialog" aria-labelledby="add-script-window" aria-hidden="true">
 		 <div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 			<h3 id="myModalLabel"><?php _e("Add a New Custom Script"); ?></h3>
@@ -242,7 +244,7 @@
 			   <div class="control-group">
 				  <label for="trksit_script_label" class="control-label"><?php _e("Script Label:"); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e("Enter a label that will allow you to easily identify this script."); ?>" data-original-title="<?php _e("Script Label"); ?>"><i class="icon-question-sign"></i></a></label>
 				  <div class="controls">
-					 <input name="trksit_script_label" type="text" id="trksit_script_label" value="" />
+					 <input name="trksit_script_label" type="text" id="trksit_script_label" value="<?php echo $s_label; ?>" />
 				  </div>
 			   </div>
 
@@ -250,10 +252,10 @@
 				  <label for="trksit_script_platform" class="control-label"><?php _e("Platform"); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e("What is this script for? Google? Bing? Facebook? etc..."); ?>" data-original-title="<?php _e("Platform"); ?>"><i class="icon-question-sign"></i></a></label>
 				  <div class="controls">
 					 <select name="trksit_script_platform" id="trksit_script_platform">
-						<option value="google">Google Remarketing</option>
-						<option value="bing">Bing</option>
-						<option value="facebook">Facebook</option>
-						<option value="custom">Custom</option>
+						<option value="google" <?php if ($s_platform == 'google') { echo 'selected="selected"'; } ?>>Google Remarketing</option>
+						<option value="bing" <?php if ($s_platform == 'bing') { echo 'selected="selected"'; } ?>>Bing</option>
+						<option value="facebook" <?php if ($s_platform == 'facebook') { echo 'selected="selected"'; } ?>>Facebook</option>
+						<option value="custom" <?php if ($s_platform == 'custom') { echo 'selected="selected"'; } ?>>Custom</option>
 					 </select>
 				  </div>
 			   </div>
@@ -261,7 +263,7 @@
 			   <div class="control-group">
 				  <label for="trksit_script" class="control-label"><?php _e("Custom Script"); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e("Use this field to write your custom script. Make sure everything works!"); ?>" data-original-title="<?php _e("Custom Script"); ?>"><i class="icon-question-sign"></i></a></label>
 				  <div class="controls">
-					 <textarea name="trksit_script" id="trksit_script"></textarea>
+					 <textarea name="trksit_script" id="trksit_script"><?php echo $s_script; ?></textarea>
 				  </div>
 			   </div>
 			   <input type="hidden" name="trksit_page" value="add_script" />
