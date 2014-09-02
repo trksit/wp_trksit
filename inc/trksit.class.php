@@ -222,8 +222,10 @@
    }
 
    function wp_trksit_saveCustomScript($wpdb, $post, $update = false){
+	  $trksit_replace = array('http://', 'https://', '<script>', '</script>');
+	  $trksit_replacements = array('//', '//', '', '');
 	  $trksit_script_label = $post['trksit_script_label'];
-	  $trksit_script = str_replace(array('http://', 'https://'), array('//', '//'), htmlspecialchars($post['trksit_script']));
+	  $trksit_script = htmlspecialchars(str_replace($trksit_replace, $trksit_replacements, $post['trksit_script']));
 	  $trksit_platform = $post['trksit_script_platform'];
 	  $trksit_id = $post['script-id'];
 	  $trksit_confirmation = '<div class="alert alert-success" style="margin:30px 0px 0px 0px;">' . __('Script successfully added') . '</div>';

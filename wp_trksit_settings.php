@@ -175,9 +175,13 @@
 			   $table_data = $wpdb->get_results(
 				  "SELECT * FROM " . $wpdb->prefix . "trksit_scripts ORDER BY date_created DESC, script_id DESC" );
 
+
 				  if(count($table_data)){
 
 					 foreach($table_data as $table_row){
+						$q = "SELECT url_id FROM " . $wpdb->prefix . "trksit_scripts_to_urls WHERE script_id = " . $table_row->script_id;
+						$times_used = $wpdb->get_results($q);
+						$used = count($times_used);
 						$datetime = strtotime($table_row->date_created);
 						$date_created = date('F j, Y', $datetime);
 						$edit_url = wp_nonce_url(admin_url('admin.php?page=trksit-settings&tab=scripts&act=edit&id=' . $table_row->script_id), 'edit_script', 'edit_nonce');
@@ -187,7 +191,7 @@
 						<td><?php echo $date_created; ?></td>
 						<td><?php echo stripslashes($table_row->label); ?></td>
 						<td><?php echo $table_row->platform; ?></td>
-						<td>TODO</td>
+						<td><?php echo $used; ?></td>
 						<td>
 						   <a href="<?php echo $edit_url; ?>">
 							  Edit
