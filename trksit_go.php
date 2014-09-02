@@ -23,7 +23,6 @@
    $_GET['api_signature'] = 'testing12345678';
 
 
-
    // Check request method and ensure all parameters are present in return from API.
    if( $_SERVER['REQUEST_METHOD'] == 'GET' && ( isset( $_GET['url_id'] ) && isset( $_GET['api_signature'] ) ) ){
 
@@ -102,7 +101,10 @@
 <!DOCTYPE html>
 <html prefix="og: http://ogp.me/ns#" xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://www.facebook.com/2008/fbml">
    <head>
+	  <?php if($redirect == ''): ?>
 	  <meta http-equiv="refresh" content="0; url=<?php echo $redirect_lookup[0]->destination_url; ?>">
+	  <?php endif; ?>
+
 
 	  <title><?php echo $redirect_lookup[0]->meta_title; ?></title>
 	  <meta name="description" content="<?php echo $redirect_lookup[0]->meta_description; ?>" />
@@ -116,6 +118,8 @@
 	  <meta http-equiv="expires" content="0" />
 	  <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
 	  <meta http-equiv="pragma" content="no-cache" /-->
+
+	  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
 
 	  <?php
@@ -195,15 +199,17 @@
 
 	  </head>
 	  <body>
+		 <script>
 		 <?php
 			foreach($script_array as $script){
-			   $script_out = stripslashes($script);
+			   $script_out = stripslashes(htmlspecialchars_decode($script));
 			   $script_out = stripslashes($script_out);
 
 			   echo $script_out;
 			}
 
 		 ?>
+	  </script>
 
 		 <?php echo $redirect; ?>
 
