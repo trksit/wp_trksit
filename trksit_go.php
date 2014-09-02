@@ -15,6 +15,7 @@
    $analytics_id = get_option('trksit_analytics_id');
    $redirect_delay = get_option('trksit_redirect_delay');
    $redirect = '';
+   setcookie("trks_new", "new_user", time()+900);
 
 
    //THIS SHOULD BE GOTTEN FROM THE DB
@@ -164,7 +165,6 @@
 
 
 		 <script type="text/javascript">
-
 			//		always set the GA account
 			var _gaq = _gaq || [];
 			_gaq.push(['_setAccount', '<?php echo $analytics_id; ?>']);
@@ -175,7 +175,7 @@
 
 			// 		if they haven't been here.. push an event to set their GA cookies
 			var delay = 0;
-			if(!getCookie("_utma")){
+			if(!getCookie("trks_new")){
 			   // Fire an event to set it
 			   _gaq.push(['_trackEvent', 'trks.it', 'New Visitor', '<?php echo $redirect_lookup[0]->destination_url; ?>', 0, true]);
 			   delay = 100;
