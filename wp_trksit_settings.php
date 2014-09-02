@@ -142,7 +142,7 @@
 		 $script_details = $trksit->wp_trksit_scriptDetails($wpdb, $_GET['id']);
 		 $s_label = $script_details[0]->label;
 		 $s_platform = $script_details[0]->platform;
-		 $s_script = stripslashes($script_details[0]->script);
+		 $s_script = stripslashes(html_entity_decode($script_details[0]->script));
 		 $s_sid = $script_details[0]->script_id;
 
 		 //TODO htmspecialchar javascript for databassery

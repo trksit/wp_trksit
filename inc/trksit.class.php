@@ -223,7 +223,7 @@
 
    function wp_trksit_saveCustomScript($wpdb, $post, $update = false){
 	  $trksit_script_label = $post['trksit_script_label'];
-	  $trksit_script = addslashes($post['trksit_script']);
+	  $trksit_script = htmlentities($post['trksit_script']);
 	  $trksit_platform = $post['trksit_script_platform'];
 	  $trksit_id = $post['script-id'];
 	  $trksit_confirmation = '<div class="alert alert-success" style="margin:30px 0px 0px 0px;">' . __('Script successfully added') . '</div>';
