@@ -99,4 +99,9 @@ jQuery(document).ready(function($){
 
    //change the name of trks.it menu (change the name of the first link to Dashboard)
    $('li#toplevel_page_trksit-dashboard ul.wp-submenu a.wp-first-item').text('Dashboard');
+
+   $("#add-script").click(function(){
+   	  // clean the form out
+   });
+
 });

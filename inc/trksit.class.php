@@ -217,8 +217,42 @@
    }
 
    function wp_trksit_scriptDetails($wpdb, $id){
-	  $query = 'SELECT label, script, platform FROM ' . $wpdb->prefix . 'trksit_scripts WHERE script_id = ' . intval($id);
+	  $query = 'SELECT label, script, platform, script_id FROM ' . $wpdb->prefix . 'trksit_scripts WHERE script_id = ' . intval($id);
 	  return $wpdb->get_results($query);
+   }
+
+   function wp_trksit_saveCustomScript($wpdb, $post, $update = false){
+	  $trksit_script_label = $post['trksit_script_label'];
+	  $trksit_script = addslashes($post['trksit_script']);
+	  $trksit_platform = $post['trksit_script_platform'];
+	  $trksit_id = $post['script-id'];
+	  $trksit_confirmation = '<div class="alert alert-success" style="margin:30px 0px 0px 0px;">' . __('Script successfully added') . '</div>';
+	  $trksit_update = '<div class="alert alert-success" style="margin:30px 0px 0px 0px;">' . __('Script successfully updated') . '</div>';
+	  $trksit_conf_fail = '<div class="alert alert-danger" style="margin: 30px 0 0 0;">' . __('Script did not save please try again') . '</div>';
+
+	  $fields = array(
+		 'date_created' => date('Y-m-d'),
+		 'label' => $trksit_script_label,
+		 'script' => $trksit_script,
+		 'platform' => $trksit_platform
+	  );
+	  $values = array('%s','%s','%s','%s');
+
+	  if($update){
+		 $upd = $wpdb->update($wpdb->prefix . 'trksit_scripts', $fields, array('script_id' => $trksit_id), $values);
+		 if(!$upd){
+			$trksit_confirmation = $trks_conf_fail;
+		 } else {
+			$trksit_confirmation = $trksit_update;
+		 }
+	  } else {
+		 $wpdb->insert($wpdb->prefix . 'trksit_scripts', $fields, $values);
+		 if(!$wpdb->insert_id){
+			$trksit_confirmation = $trks_conf_fail;
+		 }
+	  }
+
+	  return $trksit_confirmation;
    }
 
    function wp_trksit_user_is_active(){

@@ -27,29 +27,11 @@
    }
 
    if($_POST['trksit_page'] == 'add_script' && ( !empty($_POST) && check_admin_referer('trksit_save_settings','trksit_add_script') )) {
-
-	  $trksit_script_label = $_POST['trksit_script_label'];
-	  $trksit_script = addslashes($_POST['trksit_script']);
-	  $trksit_platform = $_POST['trksit_script_platform'];
-
-	  $wpdb->insert(
-		 $wpdb->prefix . 'trksit_scripts',
-		 array(
-			'date_created' => date('Y-m-d'),
-			'label' => $trksit_script_label,
-			'script' => $trksit_script,
-			'platform' => $trksit_platform
-		 ),
-		 array(
-			'%s',
-			'%s',
-			'%s',
-			'%s'
-		 )
-	  );
-
-	  if($wpdb->insert_id){
-		 $trksit_confirmation = '<div class="alert alert-success" style="margin:30px 0px 0px 0px;">' . __('Script successfully added') . '</div>';
+	  $trksit = new trksit();
+	  if($_POST['script-id'] == ''){
+		 $trksit_confirmation = $trksit->wp_trksit_saveCustomScript($wpdb, $_POST, false);
+	  } else {
+		 $trksit_confirmation = $trksit->wp_trksit_saveCustomScript($wpdb, $_POST, true);
 	  }
 
    }
@@ -153,12 +135,15 @@
 	  $s_label = '';
 	  $s_platform = '';
 	  $s_script = '';
+	  $s_sid = '';
+	  $form_url = remove_query_arg( array('act','id','edit_nonce','delete_nonce'), str_replace( '%7E', '~', $_SERVER['REQUEST_URI']));
 	  $trksit = new trksit();
 	  if(isset($_GET['edit_nonce']) && $_GET['act'] == 'edit' && wp_verify_nonce($_GET['edit_nonce'], 'edit_script')){
 		 $script_details = $trksit->wp_trksit_scriptDetails($wpdb, $_GET['id']);
 		 $s_label = $script_details[0]->label;
 		 $s_platform = $script_details[0]->platform;
 		 $s_script = stripslashes($script_details[0]->script);
+		 $s_sid = $script_details[0]->script_id;
 
 		 //TODO htmspecialchar javascript for databassery
 
@@ -209,7 +194,7 @@
 						   <a href="<?php echo $edit_url; ?>">
 							  Edit
 						   </a> |
-						   <a href="<?php echo $delete_url; ?>">Delete</a>
+						   <a href="<?php echo $delete_url; ?>" onclick="return confirm('Are you sure? This can not be undone.');">Delete</a>
 						</td>
 					 </tr>
 					 <?php
@@ -238,7 +223,7 @@
 			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 			<h3 id="myModalLabel"><?php _e("Add a New Custom Script"); ?></h3>
 		 </div>
-		 <form name="trksit_add_script_form" id="trksit_add_script_form" class="trksit-form" method="post" action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI']); ?>" style="margin-bottom:0px;">
+		 <form name="trksit_add_script_form" id="trksit_add_script_form" class="trksit-form" method="post" action="<?php echo $form_url; ?>" style="margin-bottom:0px;">
 			<div class="modal-body">
 
 			   <div class="control-group">
@@ -268,10 +253,11 @@
 			   </div>
 			   <input type="hidden" name="trksit_page" value="add_script" />
 			   <?php wp_nonce_field('trksit_save_settings','trksit_add_script'); ?>
+			   <input type='hidden' name='script-id' value='<?php echo $s_sid; ?>' />
 			</div>
 			<div class="modal-footer">
 			   <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><?php _e("Close"); ?></button>
-			   <input type="submit" name="Submit" class="btn btn-success" value="<?php _e("Add Script"); ?>" />
+			   <input type="submit" name="Submit" class="btn btn-success" value="<?php _e("Save Script"); ?>" />
 			</div>
 		 </form>
 	  </div>

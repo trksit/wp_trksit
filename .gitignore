@@ -2,3 +2,4 @@
 *.sublime-workspace
 *.log
 .tags
+.DS_Store
