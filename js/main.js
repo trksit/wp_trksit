@@ -102,6 +102,15 @@ jQuery(document).ready(function($){
 
    $("#add-script").click(function(){
    	  // clean the form out
+   	  $("#trksit_script_label").val("");
+   	  $("#trksit_script_platform option:selected").removeAttr("selected");
+   	  $("#trksit_script").val("");
+   	  $("#script-id").val("");
+   });
+
+   $("#script_cancel").click(function(){
+   	  var url = $(this).attr('data-url');
+   	  window.location = url;
    });
 
 });

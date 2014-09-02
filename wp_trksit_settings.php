@@ -253,10 +253,10 @@
 			   </div>
 			   <input type="hidden" name="trksit_page" value="add_script" />
 			   <?php wp_nonce_field('trksit_save_settings','trksit_add_script'); ?>
-			   <input type='hidden' name='script-id' value='<?php echo $s_sid; ?>' />
+			   <input type='hidden' name='script-id' id='script-id' value='<?php echo $s_sid; ?>' />
 			</div>
 			<div class="modal-footer">
-			   <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><?php _e("Close"); ?></button>
+			   <button class="btn btn-danger" id="script_cancel" data-dismiss="modal" data-url="<?php echo $form_url; ?>" aria-hidden="true"><?php _e("Close"); ?></button>
 			   <input type="submit" name="Submit" class="btn btn-success" value="<?php _e("Save Script"); ?>" />
 			</div>
 		 </form>
