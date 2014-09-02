@@ -1,6 +1,6 @@
-<?php 
+<?php
 
-   // Setting cache-control headers 
+   // Setting cache-control headers
    header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
    header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0',false);
    header("Pragma: no-cache");
@@ -11,8 +11,8 @@
    require_once( '../../../wp-load.php' );
 
 
-   //Getting options 
-   $analytics_id = get_option('trksit_analytics_id');  
+   //Getting options
+   $analytics_id = get_option('trksit_analytics_id');
    $redirect_delay = get_option('trksit_redirect_delay');
    $redirect = '';
 
@@ -33,7 +33,7 @@
 		 $incoming_url_id = $_GET['url_id'];
 
 		 global $wpdb;
-		 $redirect_lookup = $wpdb->get_results( 'SELECT * FROM ' . $wpdb->prefix . 'trksit_urls WHERE url_id=' . $incoming_url_id ); 
+		 $redirect_lookup = $wpdb->get_results( 'SELECT * FROM ' . $wpdb->prefix . 'trksit_urls WHERE url_id=' . $incoming_url_id );
 
 		 // If destination URL exsists in wpdb result. Output redirect script.
 		 if($redirect_lookup[0]->destination_url){
@@ -49,8 +49,8 @@
 			   array_push($script_array, $single_script[0]->script);
 			}
 
-			$hit_result = $wpdb->get_results( "SELECT * FROM " . $wpdb->prefix . "trksit_hits WHERE url_id=" . $url_id . " AND hit_date='" . $today . "'"); 
-			$hit_result_count = count($hit_result);      
+			$hit_result = $wpdb->get_results( "SELECT * FROM " . $wpdb->prefix . "trksit_hits WHERE url_id=" . $url_id . " AND hit_date='" . $today . "'");
+			$hit_result_count = count($hit_result);
 
 			if($hit_result_count === 1){
 			   //echo 'Update the current hit record and redirect to (' . $redirect_lookup[0]->destination_url . ').';
@@ -58,9 +58,9 @@
 			   $update_results = $wpdb->query(
 				  $wpdb->prepare(
 					 "
-					 UPDATE " . $wpdb->prefix ."trksit_hits 
-					 SET hit_count = hit_count + 1 
-					 WHERE url_id = %d 
+					 UPDATE " . $wpdb->prefix ."trksit_hits
+					 SET hit_count = hit_count + 1
+					 WHERE url_id = %d
 					 AND hit_date = %s
 					 ",
 					 $url_id, $today
@@ -68,25 +68,25 @@
 			   );
 
 			   if($update_results){
-				  $redirect = '<script type="text/javascript">setTimeout(function(){window.location.href = "' . $redirect_lookup[0]->destination_url . '"},' . $redirect_delay . ');</script>';    
+				  $redirect = '<script type="text/javascript">setTimeout(function(){window.location.href = "' . $redirect_lookup[0]->destination_url . '"},' . $redirect_delay . ');</script>';
 			   }
 
 			}
 			else if($hit_result_count === 0){
 			   //echo 'Insert a new hit record and redirect to (' . $redirect_lookup[0]->destination_url . ').';
 
-			   $wpdb->insert( 
-				  $wpdb->prefix . 'trksit_hits', 
-				  array( 
-					 'hit_count' => 1, 
+			   $wpdb->insert(
+				  $wpdb->prefix . 'trksit_hits',
+				  array(
+					 'hit_count' => 1,
 					 'url_id' => $url_id,
-					 'hit_date' => $today 
-				  ), 
-				  array( '%d', '%d','%s' ) 
-			   ); 
+					 'hit_date' => $today
+				  ),
+				  array( '%d', '%d','%s' )
+			   );
 
 			   if($wpdb->insert_id){
-				  $redirect = '<script type="text/javascript">setTimeout(function(){window.location.href = "' . $redirect_lookup[0]->destination_url . '"},' . $redirect_delay . ');</script>';  
+				  $redirect = '<script type="text/javascript">setTimeout(function(){window.location.href = "' . $redirect_lookup[0]->destination_url . '"},' . $redirect_delay . ');</script>';
 			   }
 
 			}else{ die; }
@@ -167,7 +167,7 @@
 
 			//REQUIRED FOR LOCAL DEVELOPMENT
 			//		_gaq.push(['_setDomainName', 'none']);
-			//		_gaq.push(['_setAllowLinker', true]);   
+			//		_gaq.push(['_setAllowLinker', true]);
 
 			// 		if they haven't been here.. push an event to set their GA cookies
 			var delay = 0;
@@ -191,11 +191,11 @@
 			   var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 			})();
 
-		 </script>    
+		 </script>
 
 	  </head>
 	  <body>
-		 <?php 
+		 <?php
 			foreach($script_array as $script){
 			   $script_out = stripslashes($script);
 			   $script_out = stripslashes($script_out);
