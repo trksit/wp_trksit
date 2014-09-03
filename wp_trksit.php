@@ -179,7 +179,7 @@ function trksit_current_page() {
 /*
  * UPDATING the plugin automatically
  */
-add_action( 'init', 'github_plugin_updater_init' );
+//add_action( 'init', 'github_plugin_updater_init' );
 function github_plugin_updater_init() {
 
 	include_once 'updater.php';

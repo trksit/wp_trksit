@@ -59,17 +59,19 @@
 	  </div>
 
 	  <script>
-		 jQuery(document).ready(function(){
-			jQuery.post(
-			   ajaxurl,
-			   {
-				  action: 'cstef'
-			   },
-			   function(response){
-				  console.log(response);
-			   }
-			);
-		 });
+		 /*
+		  *jQuery(document).ready(function(){
+		  *   jQuery.post(
+		  *      ajaxurl,
+		  *      {
+		  *         action: 'cstef'
+		  *      },
+		  *      function(response){
+		  *         console.log(response);
+		  *      }
+		  *   );
+		  *});
+		  */
 	  </script>
 
 	  <?php
