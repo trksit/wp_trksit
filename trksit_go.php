@@ -120,9 +120,6 @@
 	  <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
 	  <meta http-equiv="pragma" content="no-cache" /-->
 
-	  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-
-
 	  <?php
 
 		 //Get the Open Graph data & unseralize it
@@ -204,13 +201,13 @@
 			foreach($script_array as $script){
 			   $script_out = stripslashes(htmlspecialchars_decode($script));
 			   $script_out = stripslashes($script_out);
-
+			   echo 'try{ ';
 			   echo $script_out;
+			   echo ' } catch(err){ console.log(err); }';
 			}
 
 		 ?>
-	  </script>
-
+		 </script>
 		 <?php echo $redirect; ?>
 
 	  </body>
