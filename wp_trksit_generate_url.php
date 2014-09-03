@@ -1,6 +1,12 @@
 <?php
-   //error_reporting(E_ALL);
-   //ini_set('display_errors', 1);
+   if(!empty($_POST)){
+	  header('Content-Encoding: none;'); // Use with ob_start() and flushing of buffers!!!
+	  ob_start();
+	  echo '<div id="loading-indicator" style="margin: 0px auto; width: 200px; text-align: center; padding-top: 200px;">';
+	  echo '<h2>Loading...</h2><br />';
+	  echo '<img src="' . plugins_url( '/wp_trksit/img/loading.gif' , dirname(__FILE__) ) . '" alt="Loading" /></div>';
+	  flush_buffers();
+   }
 ?>
 
 <?php if($_GET['page'] == 'trksit-generate'): ?>
@@ -58,21 +64,6 @@
 		 </ul>
 	  </div>
 
-	  <script>
-		 /*
-		  *jQuery(document).ready(function(){
-		  *   jQuery.post(
-		  *      ajaxurl,
-		  *      {
-		  *         action: 'cstef'
-		  *      },
-		  *      function(response){
-		  *         console.log(response);
-		  *      }
-		  *   );
-		  *});
-		  */
-	  </script>
 
 	  <?php
 		 $trksit->wp_trksit_parseURL($_POST['destination_url']);
@@ -268,6 +259,11 @@
 	  <?php
 	  }
    ?>
+   <style>
+	  #loading-indicator {
+		 display: none;
+	  }
+   </style>
 
 
 </div><!-- #trksit-wrap -->

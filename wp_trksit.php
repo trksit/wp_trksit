@@ -217,3 +217,10 @@ function bal_http_api_curl($handle)
    curl_setopt( $handle, CURLOPT_CONNECTTIMEOUT, WP_TRKSIT_CURL_TIMEOUT );
    curl_setopt( $handle, CURLOPT_TIMEOUT, WP_TRKSIT_CURL_TIMEOUT );
 }
+
+function flush_buffers() {
+   ob_end_flush();
+   @ob_flush();
+   flush();
+   ob_start();
+}

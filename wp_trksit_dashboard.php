@@ -1,3 +1,13 @@
+<?php
+   if(isset($_GET['view'])){
+	  header('Content-Encoding: none;'); // Use with ob_start() and flushing of buffers!!!
+	  ob_start();
+	  echo '<div id="loading-indicator" style="margin: 0px auto; width: 200px; text-align: center; padding-top: 200px;">';
+	  echo '<h2>Loading...</h2><br />';
+	  echo '<img src="' . plugins_url( '/wp_trksit/img/loading.gif' , dirname(__FILE__) ) . '" alt="Loading" /></div>';
+	  flush_buffers();
+   }
+?>
 <div class="wrap" id="trksit-wrap">
    <?php
 	  $trksit = new trksit();
@@ -290,4 +300,9 @@
 		 <?php
 		 }
 	  ?>
+	  <style>
+		 #loading-indicator {
+			display: none;
+		 }
+	  </style>
    </div><!-- #trksit-wrap -->
