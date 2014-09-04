@@ -6,7 +6,8 @@
 
    //TODO check URL id exists.  If not, make it 404.
    if(!isset($_GET['url_id'])){
-	  die("404");
+	  $four04 = get_site_url() . '/error404';
+	  echo '<script type="text/javascript">setTimeout(function(){window.location.href = "'.$four04.'"},0);</script>';
    }
 
    //Getting options
@@ -95,9 +96,8 @@
 			}else{ die; }
 
 		 }else{
-			$newp = get_site_url();
-			die($newp);
-			//echo '<script type="text/javascript">setTimeout(function(){window.location.href = "http://trksitwp.local/error404"},0);</script>';
+			$four04 = get_site_url() . '/error404';
+			echo '<script type="text/javascript">setTimeout(function(){window.location.href = "'.$four04.'"},0);</script>';
 		 }
 
 	  }else{ die; }
@@ -118,8 +118,6 @@
 	  <meta name="description" content="<?php echo $redirect_lookup[0]->meta_description; ?>" />
 
 	  <link rel="canonical" href="<?php echo $redirect_lookup[0]->destination_url; ?>">
-
-	  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
 	  <!-- Making Sure Page doesn't get indexed or cached -->
 	  <!--meta name="robots" content="noindex, nofollow" />
@@ -246,7 +244,6 @@
 			   };
 
 			}
-
 
 		 </script>
 		 <?php echo $redirect; ?>
