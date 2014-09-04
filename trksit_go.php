@@ -10,6 +10,10 @@
    define( 'SHORTINIT', true );
    require_once( '../../../wp-load.php' );
 
+   //TODO check URL id exists.  If not, make it 404.
+   if(!isset($_GET['url_id'])){
+	  //die("404");
+   }
 
    //Getting options
    $analytics_id = get_option('trksit_analytics_id');
@@ -45,8 +49,13 @@
 			$scripts_to_url = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . "trksit_scripts_to_urls WHERE url_id=" . $url_id);
 			$script_array = array();
 			foreach($scripts_to_url as $single_script){
-			   $single_script = $wpdb->get_results("SELECT script FROM " . $wpdb->prefix . "trksit_scripts WHERE script_id=" . $single_script->script_id);
-			   array_push($script_array, $single_script[0]->script);
+			   $script_results = array();
+			   $single_script = $wpdb->get_results("SELECT script, script_id FROM "
+			   . $wpdb->prefix . "trksit_scripts WHERE script_id="
+			   . $single_script->script_id);
+			   $script_results['script'] = $single_script[0]->script;
+			   $script_results['id'] = $single_script[0]->script_id;
+			   array_push($script_array, $script_results);
 			}
 
 			$hit_result = $wpdb->get_results( "SELECT * FROM " . $wpdb->prefix . "trksit_hits WHERE url_id=" . $url_id . " AND hit_date='" . $today . "'");
@@ -111,6 +120,8 @@
 	  <meta name="description" content="<?php echo $redirect_lookup[0]->meta_description; ?>" />
 
 	  <link rel="canonical" href="<?php echo $redirect_lookup[0]->destination_url; ?>">
+
+	  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
 	  <!-- Making Sure Page doesn't get indexed or cached -->
 	  <!--meta name="robots" content="noindex, nofollow" />
@@ -197,16 +208,40 @@
 	  </head>
 	  <body>
 		 <script>
-		 <?php
-			foreach($script_array as $script){
-			   $script_out = stripslashes(htmlspecialchars_decode($script));
-			   $script_out = stripslashes($script_out);
-			   echo 'try{ ';
-			   echo $script_out;
-			   echo ' } catch(err){ console.log(err); }';
+			<?php
+			   foreach($script_array as $script){
+				  $script_out = stripslashes(htmlspecialchars_decode($script['script']));
+				  $script_out = stripslashes($script_out);
+				  echo 'try{ ';
+				  echo $script_out;
+				  echo ' } catch(err){ handle_error(err.message, ' . $script['id'] . '); }  ';
+			   }
+
+			?>
+
+			<?php echo 'var ajaxurl = "wp-admin/admin-ajax.php"'; ?>
+
+			function handle_error(error, id){
+			   console.log(error);
+			   console.log(id);
+			   var data = {
+				  'error': error,
+				  'id': id
+			   };
+			   /*
+				*jQuery.post(
+				*   ajaxurl,
+				*   {
+				*      'action': 'add_script_error'
+				*      //'data':   data
+				*   },
+				*   function(response){
+				*      console.log(response);
+				*   }
+				*);
+				*/
 			}
 
-		 ?>
 		 </script>
 		 <?php echo $redirect; ?>
 
