@@ -23,7 +23,7 @@ function trksit_Install(){
 
 	$table_1_name = $wpdb->prefix . "trksit_urls";
 	$table_1_sql = "CREATE TABLE $table_1_name (
-	  url_id INT NOT NULL AUTO_INCREMENT,
+	  url_id INT(10) unsigned NOT NULL AUTO_INCREMENT,
 	  date_created DATE DEFAULT '0000-00-00' NOT NULL,
 	  destination_url VARCHAR(255) DEFAULT '' NOT NULL,
 	  trksit_url VARCHAR(255) DEFAULT '' NOT NULL,
@@ -40,8 +40,8 @@ function trksit_Install(){
 
 	$table_2_name = $wpdb->prefix . "trksit_hits";
 	$table_2_sql = "CREATE TABLE $table_2_name (
-	  hit_count INT NOT NULL,
-	  url_id INT NOT NULL,
+	  hit_count INT(10) unsigned NOT NULL,
+	  url_id INT(10) unsigned NOT NULL,
 	  hit_date DATE DEFAULT '0000-00-00' NOT NULL,
 	  PRIMARY KEY  (url_id, hit_date))
 		ENGINE = InnoDB
@@ -49,7 +49,7 @@ function trksit_Install(){
 
 	$table_3_name = $wpdb->prefix . "trksit_scripts";
 	$table_3_sql = "CREATE TABLE $table_3_name (
-	  script_id INT NOT NULL AUTO_INCREMENT,
+	  script_id INT(10) unsigned NOT NULL AUTO_INCREMENT,
 	  date_created DATE DEFAULT '0000-00-00' NOT NULL,
 	  label VARCHAR(255) DEFAULT '' NOT NULL,
 	  script TEXT DEFAULT '' NOT NULL,
@@ -60,8 +60,8 @@ function trksit_Install(){
 
 	$table_4_name = $wpdb->prefix . "trksit_scripts_to_urls";
 	$table_4_sql = "CREATE TABLE $table_4_name (
-	  assignment_id INT NOT NULL AUTO_INCREMENT,
-	  script_id INT NOT NULL,
+	  assignment_id INT(10) unsigned NOT NULL AUTO_INCREMENT,
+	  script_id INT(10) unsigned NOT NULL,
 	  url_id INT NOT NULL,
 	  PRIMARY KEY  (assignment_id, script_id, url_id))
 		ENGINE = InnoDB
