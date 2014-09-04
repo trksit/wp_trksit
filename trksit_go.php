@@ -12,7 +12,7 @@
 
    //TODO check URL id exists.  If not, make it 404.
    if(!isset($_GET['url_id'])){
-	  //die("404");
+	  die("404");
    }
 
    //Getting options
@@ -100,7 +100,11 @@
 
 			}else{ die; }
 
-		 }else{ die; }
+		 }else{
+			$newp = get_site_url();
+			die($newp);
+			//echo '<script type="text/javascript">setTimeout(function(){window.location.href = "http://trksitwp.local/error404"},0);</script>';
+		 }
 
 	  }else{ die; }
 
@@ -208,6 +212,25 @@
 	  </head>
 	  <body>
 		 <script>
+
+			var errorData = [];
+			onerror = function(message, file, line, position, error) {
+			   errorData.push({message:message, file:file, line:line, position:position, error:error});
+			};
+
+			/*
+			 *window.oldSetTimeout = window.setTimeout;
+			 *window.setTimeout = function(func, delay){
+			 *   return window.oldSetTimeout(function(){
+			 *      try {
+			 *         func();
+			 *      } catch(err) {
+			 *         console.log(err.message);
+			 *      }
+			 *   });
+			 *}
+			 */
+
 			<?php
 			   foreach($script_array as $script){
 				  $script_out = stripslashes(htmlspecialchars_decode($script['script']));
@@ -216,7 +239,6 @@
 				  echo $script_out;
 				  echo ' } catch(err){ handle_error(err.message, ' . $script['id'] . '); }  ';
 			   }
-
 			?>
 
 			<?php echo 'var ajaxurl = "wp-admin/admin-ajax.php"'; ?>
@@ -228,19 +250,9 @@
 				  'error': error,
 				  'id': id
 			   };
-			   /*
-				*jQuery.post(
-				*   ajaxurl,
-				*   {
-				*      'action': 'add_script_error'
-				*      //'data':   data
-				*   },
-				*   function(response){
-				*      console.log(response);
-				*   }
-				*);
-				*/
+
 			}
+
 
 		 </script>
 		 <?php echo $redirect; ?>

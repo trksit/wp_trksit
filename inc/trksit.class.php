@@ -112,7 +112,8 @@
 	  $shareURL_ID = $this->wp_trksit_saveURL($wpdb, $postArray);
 
 	  //Build the longURL with query string params
-	  $longURL = plugins_url( 'trksit_go.php?utm_source='.$postArray['source'].'&utm_medium='.$postArray['medium'].'&utm_campaign='.$postArray['campaign'].'&url_id=' . $shareURL_ID, dirname(__FILE__) );
+	  //$longURL = plugins_url( 'trksit_go.php?utm_source='.$postArray['source'].'&utm_medium='.$postArray['medium'].'&utm_campaign='.$postArray['campaign'].'&url_id=' . $shareURL_ID, dirname(__FILE__) );
+	  $longURL = get_site_url() . '/trksitgo?utm_source='.$postArray['source'].'&utm_medium='.$postArray['medium'].'&utm_campaign='.$postArray['campaign'].'&url_id=' . $shareURL_ID;
 
 	  //shorten the URL
 	  $shortURL = $this->wp_trksit_generateURL($longURL,$postArray);
