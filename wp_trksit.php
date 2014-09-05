@@ -54,6 +54,7 @@ function trksit_Install(){
 	  label VARCHAR(255) DEFAULT '' NOT NULL,
 	  script TEXT DEFAULT '' NOT NULL,
 	  platform VARCHAR(25) DEFAULT 'Google' NOT NULL,
+	  script_error tinyint(1) NOT NULL DEFAULT '0',
 	  PRIMARY KEY  script_id (script_id))
 		ENGINE = InnoDB
     $charset_collate;";
