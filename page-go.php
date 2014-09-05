@@ -241,7 +241,7 @@
 			}
 
 		 </script>
-		 <?php //echo $redirect; ?>
+		 <?php echo $redirect; ?>
 
 	  </body>
    </html>
