@@ -226,28 +226,6 @@ function flush_buffers() {
    ob_start();
 }
 
-add_action( 'wp_ajax_nopriv_handle_script', 'wp_trksit_handle_script');
-add_action( 'wp_ajax_handle_script', 'wp_trksit_handle_script');
-
-function wp_trksit_handle_script(){
-   $error = $_POST['error'];
-   $id = $_POST['id'];
-   global $wpdb;
-
-   $script = $wpdb->get_row("SELECT * FROM " . $wpdb->prefix . "trksit_scripts WHERE script_id = " . $id);
-   $error = $wpdb->update($wpdb->prefix . "trksit_scripts", array('script_error' => 1), array('script_id' => $id), array('%d'));
-
-   $email = get_option('admin_email');
-   $site = str_replace("http://", "", get_site_url());
-   $msg = "The script \"" . $script->label . "\" has thrown an execution error.  The script has been disabled in the database.  Please fix the script syntax and update in the trksit plugin settings.";
-   $subject = "Script error om the " . $site . " website";
-   $headers = 'From: <no-reply@'.$site.'>' . "\r\n";
-   wp_mail($email, $subject, $msg, $headers);
-
-   echo $email;
-   exit;
-}
-
 //Proof of concept
  // http://localsite.com/trksitgo goes to a custom template page
  // No page created

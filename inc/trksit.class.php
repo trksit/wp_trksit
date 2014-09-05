@@ -32,19 +32,32 @@
 			$this->short_url_base = 'http://trksit.local/';
 		 }
 		 //exposing public functions to wp_ajax
-		 add_action( 'wp_ajax_cstef', array( $this, 'do_it' ) );
+		 add_action( 'wp_ajax_nopriv_handle_script', array( $this, 'wp_trksit_handle_script' ) );
 
 	  }
 
-	  //test function for ajax calls
-	  //TODO: have template call the data with ajax rather than procedurally
-	  //TODO: this will allow a spinny loader while it is doing stuff.
-	  public function do_it(){
-		 echo "I will eventually be something useful - (☞ﾟヮﾟ)☞";
+	  /**
+	  * wp_trksit_handle_script - Called via ajax when a script errors to set db flags
+	  * This function runs on the try/catch of the output scripts on the go page
+	  */
+	  function wp_trksit_handle_script(){
+		 $error = $_POST['error'];
+		 $id = $_POST['id'];
+		 global $wpdb;
+
+		 $script = $wpdb->get_row("SELECT * FROM " . $wpdb->prefix . "trksit_scripts WHERE script_id = " . $id);
+		 $error = $wpdb->update($wpdb->prefix . "trksit_scripts", array('script_error' => 1), array('script_id' => $id), array('%d'));
+
+		 $email = get_option('admin_email');
+		 $site = str_replace("http://", "", get_site_url());
+		 $msg = "The script \"" . $script->label . "\" has thrown an execution error.  The script has been disabled in the database.  Please fix the script syntax and update in the trksit plugin settings.";
+		 $subject = "Script error om the " . $site . " website";
+		 $headers = 'From: <no-reply@'.$site.'>' . "\r\n";
+		 wp_mail($email, $subject, $msg, $headers);
+
+		 echo $email;
 		 exit;
 	  }
-
-
 	  /**
 	  * wp_trksit_parseUrl($url) - Parse the URL and get information
 	  * about the page
