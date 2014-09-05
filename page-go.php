@@ -45,11 +45,12 @@
 			$script_array = array();
 			foreach($scripts_to_url as $single_script){
 			   $script_results = array();
-			   $single_script = $wpdb->get_results("SELECT script, script_id FROM "
+			   $single_script = $wpdb->get_results("SELECT script, script_id, script_error FROM "
 			   . $wpdb->prefix . "trksit_scripts WHERE script_id="
 			   . $single_script->script_id);
 			   $script_results['script'] = $single_script[0]->script;
 			   $script_results['id'] = $single_script[0]->script_id;
+			   $script_results['error'] = $single_script[0]->script_error;
 			   array_push($script_array, $script_results);
 			}
 
@@ -203,50 +204,44 @@
 
 	  </head>
 	  <body>
+		 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 		 <script>
-
-			var errorData = [];
-			onerror = function(message, file, line, position, error) {
-			   errorData.push({message:message, file:file, line:line, position:position, error:error});
-			};
-
-			/*
-			 *window.oldSetTimeout = window.setTimeout;
-			 *window.setTimeout = function(func, delay){
-			 *   return window.oldSetTimeout(function(){
-			 *      try {
-			 *         func();
-			 *      } catch(err) {
-			 *         console.log(err.message);
-			 *      }
-			 *   });
-			 *}
-			 */
 
 			<?php
 			   foreach($script_array as $script){
-				  $script_out = stripslashes(htmlspecialchars_decode($script['script']));
-				  $script_out = stripslashes($script_out);
-				  echo 'try{ ';
-				  echo $script_out;
-				  echo ' } catch(err){ handle_error(err.message, ' . $script['id'] . '); }  ';
+				  if($script['error'] == 0) {
+					 $script_out = stripslashes(htmlspecialchars_decode($script['script']));
+					 $script_out = stripslashes($script_out);
+					 echo 'try{ ';
+					 echo $script_out;
+					 echo ' } catch(err){ handle_error(err.message, ' . $script['id'] . '); }  ';
+				  }
 			   }
 			?>
 
 			<?php echo 'var ajaxurl = "wp-admin/admin-ajax.php"'; ?>
 
 			function handle_error(error, id){
-			   console.log(error);
-			   console.log(id);
-			   var data = {
-				  'error': error,
-				  'id': id
+			   var dd = {
+				  action: 'nopriv_handle_script',
+				  error: error,
+				  id: id
 			   };
 
+			   setTimeout(function(){
+				  jQuery.post(
+					 ajaxurl, dd,
+					 function( response ) {
+						console.log(response);
+						return;
+					 }
+				  );
+
+			   }, 0);
 			}
 
 		 </script>
-		 <?php echo $redirect; ?>
+		 <?php //echo $redirect; ?>
 
 	  </body>
    </html>
