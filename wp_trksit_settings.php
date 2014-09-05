@@ -187,9 +187,9 @@
 						$edit_url = wp_nonce_url(admin_url('admin.php?page=trksit-settings&tab=scripts&act=edit&id=' . $table_row->script_id), 'edit_script', 'edit_nonce');
 						$delete_url = wp_nonce_url(admin_url('admin.php?page=trksit-settings&tab=scripts&act=delete&id=' . $table_row->script_id), 'delete_script', 'delete_nonce');
 					 ?>
-					 <tr>
+					 <tr <?php if($table_row->script_error) { echo "class='error-script'"; } ?>>
 						<td><?php echo $date_created; ?></td>
-						<td><?php echo stripslashes($table_row->label); ?></td>
+						<td><?php echo stripslashes($table_row->label); if($table_row->script_error) { echo " - (Script has errors)"; } ?></td>
 						<td><?php echo $table_row->platform; ?></td>
 						<td><?php echo $used; ?></td>
 						<td>

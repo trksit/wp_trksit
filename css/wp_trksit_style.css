@@ -1,7 +1,7 @@
 /*========================================
   GENERAL
   ========================================*/
-  
+
   .clearfix{
     clear:both;
   }
@@ -54,7 +54,7 @@
   }
 
   /* ---- Tables ---- */
-  
+
   #trksit-wrap .widefat tr:hover{
     background:#f5f5f5;
   }
@@ -62,7 +62,7 @@
     padding:8px !important;
     vertical-align: middle;
   }
-  
+
   td.truncate{
   white-space: nowrap;
   overflow: hidden;
@@ -71,9 +71,9 @@
   td.trks_it_details{
     text-align:right;
   }
-  
+
   th#trks_it_destination{
-  
+
 }
 td.trks_it_destination{
 
@@ -115,14 +115,14 @@ table#trks_dashboard td{
   display:none;
   position: relative;
   }
-  
+
   /* ---- Add Script Button ---- */
   #add-script{
     float:right;
     margin-top:20px;
   }
   /* ---- Help Popovers ---- */
-  
+
   a.trksit-help{
   opacity:0.7;
   }
@@ -156,7 +156,7 @@ table#trks_dashboard td{
   .trksit_tab_nav{
   border-bottom:1px solid #ccc;
   width:100%;
-  float:left; 
+  float:left;
   clear:both;
   margin:20px 0px 30px 0px;
   position: relative;
@@ -167,7 +167,7 @@ table#trks_dashboard td{
   margin:0px 0px 0px 10px;
   padding:0px;
   width:100%;
-  float:left; 
+  float:left;
   clear:both;
   }
   .trksit_tab_nav li{
@@ -178,7 +178,7 @@ table#trks_dashboard td{
   .trksit_tab_nav li,
   .trksit_tab_nav a{
   display: inline-block;
-  float:left; 
+  float:left;
   position: relative;
   }
   .trksit_tab_nav a{
@@ -200,7 +200,7 @@ table#trks_dashboard td{
   color:#555;
   top:1px;
   border:1px solid #ccc;
-  border-bottom-color: #fff;  
+  border-bottom-color: #fff;
   }
   .trksit_tab_nav li.active a:hover{
   background:#fff;
@@ -209,7 +209,7 @@ table#trks_dashboard td{
 /*========================================
   FORMS
   ========================================*/
-  
+
   .copy-btn-wrap{
     display:inline-block;
     position:relative;
@@ -232,10 +232,10 @@ table#trks_dashboard td{
     -moz-transition: 0.25s;
     -o-transition: 0.25s;
     transition: 0.25s;
-    -webkit-backface-visibility: hidden; 
+    -webkit-backface-visibility: hidden;
     cursor:pointer;
-    font-size:11px;  
-    padding:0px 5px; 
+    font-size:11px;
+    padding:0px 5px;
   }
   .trksit-copy-btn.hover,
   .trksit-copy-btn:hover,
@@ -247,56 +247,56 @@ table#trks_dashboard td{
   .trksit-copy-btn:active{
     background:#333;
   }
-  
+
   #trksit-wrap .modal input[type="text"],
   #trksit-wrap .modal textarea{
     width:100%;
     max-width:516px;
   }
   #trksit-wrap .modal textarea{
-    height:200px; 
+    height:200px;
   }
-  
+
   .control-group{
     margin-bottom: 15px;
   }
   .trksit-form input.trksit-input-small{
     width:30% !important;
   }
-  .trksit-form textarea, 
-  .trksit-form input[type="text"], 
-  .trksit-form input[type="password"], 
-  .trksit-form input[type="datetime"], 
-  .trksit-form input[type="datetime-local"], 
-  .trksit-form input[type="date"], 
-  .trksit-form input[type="month"], 
-  .trksit-form input[type="time"], 
-  .trksit-form input[type="week"], 
-  .trksit-form input[type="number"], 
-  .trksit-form input[type="email"], 
-  .trksit-form input[type="url"], 
-  .trksit-form input[type="search"], 
-  .trksit-form input[type="tel"], 
-  .trksit-form input[type="color"], 
+  .trksit-form textarea,
+  .trksit-form input[type="text"],
+  .trksit-form input[type="password"],
+  .trksit-form input[type="datetime"],
+  .trksit-form input[type="datetime-local"],
+  .trksit-form input[type="date"],
+  .trksit-form input[type="month"],
+  .trksit-form input[type="time"],
+  .trksit-form input[type="week"],
+  .trksit-form input[type="number"],
+  .trksit-form input[type="email"],
+  .trksit-form input[type="url"],
+  .trksit-form input[type="search"],
+  .trksit-form input[type="tel"],
+  .trksit-form input[type="color"],
   .uneditable-input {
     box-sizing: content-box !important;
     margin:0px !important;
   }
-  .trksit_col.left textarea, 
-  .trksit_col.left input[type="text"], 
-  .trksit_col.left input[type="password"], 
-  .trksit_col.left input[type="datetime"], 
-  .trksit_col.left input[type="datetime-local"], 
-  .trksit_col.left input[type="date"], 
-  .trksit_col.left input[type="month"], 
-  .trksit_col.left input[type="time"], 
-  .trksit_col.left input[type="week"], 
-  .trksit_col.left input[type="number"], 
-  .trksit_col.left input[type="email"], 
-  .trksit_col.left input[type="url"], 
-  .trksit_col.left input[type="search"], 
-  .trksit_col.left input[type="tel"], 
-  .trksit_col.left input[type="color"], 
+  .trksit_col.left textarea,
+  .trksit_col.left input[type="text"],
+  .trksit_col.left input[type="password"],
+  .trksit_col.left input[type="datetime"],
+  .trksit_col.left input[type="datetime-local"],
+  .trksit_col.left input[type="date"],
+  .trksit_col.left input[type="month"],
+  .trksit_col.left input[type="time"],
+  .trksit_col.left input[type="week"],
+  .trksit_col.left input[type="number"],
+  .trksit_col.left input[type="email"],
+  .trksit_col.left input[type="url"],
+  .trksit_col.left input[type="search"],
+  .trksit_col.left input[type="tel"],
+  .trksit_col.left input[type="color"],
   .trksit_col.left .uneditable-input{
   max-width:486px;
   width:100%;
@@ -327,13 +327,13 @@ table#trks_dashboard td{
   .trksit-form .checkbox:hover {
     color: #333;
     background-color: #f5f5f5;
-  }  
+  }
   #url{
   width:437px;
   height:27px;
   }
   .trksit-form label.error{
-   color:#b94a48;  
+   color:#b94a48;
    padding:5px 35px 5px 12px;
    margin-top:5px;
    margin-bottom:10px;
@@ -346,45 +346,45 @@ table#trks_dashboard td{
    display:block;
    font-size:12px !important;
   }
-  .trksit_col.left textarea.error, 
-  .trksit_col.left input[type="text"].error, 
-  .trksit_col.left input[type="password"].error, 
-  .trksit_col.left input[type="datetime"].error, 
-  .trksit_col.left input[type="datetime-local"].error, 
-  .trksit_col.left input[type="date"].error, 
-  .trksit_col.left input[type="month"].error, 
-  .trksit_col.left input[type="time"].error, 
-  .trksit_col.left input[type="week"].error, 
-  .trksit_col.left input[type="number"].error, 
-  .trksit_col.left input[type="email"].error, 
-  .trksit_col.left input[type="url"].error, 
-  .trksit_col.left input[type="search"].error, 
-  .trksit_col.left input[type="tel"].error, 
+  .trksit_col.left textarea.error,
+  .trksit_col.left input[type="text"].error,
+  .trksit_col.left input[type="password"].error,
+  .trksit_col.left input[type="datetime"].error,
+  .trksit_col.left input[type="datetime-local"].error,
+  .trksit_col.left input[type="date"].error,
+  .trksit_col.left input[type="month"].error,
+  .trksit_col.left input[type="time"].error,
+  .trksit_col.left input[type="week"].error,
+  .trksit_col.left input[type="number"].error,
+  .trksit_col.left input[type="email"].error,
+  .trksit_col.left input[type="url"].error,
+  .trksit_col.left input[type="search"].error,
+  .trksit_col.left input[type="tel"].error,
   .trksit_col.left input[type="color"].error{
     border-color: #b94a48;
     -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);  
-  }  
-  .trksit_col.left textarea.error:focus, 
-  .trksit_col.left input[type="text"].error:focus, 
-  .trksit_col.left input[type="password"].error:focus, 
-  .trksit_col.left input[type="datetime"].error:focus, 
-  .trksit_col.left input[type="datetime-local"].error:focus, 
-  .trksit_col.left input[type="date"].error:focus, 
-  .trksit_col.left input[type="month"].error:focus, 
-  .trksit_col.left input[type="time"].error:focus, 
-  .trksit_col.left input[type="week"].error:focus, 
-  .trksit_col.left input[type="number"].error:focus, 
-  .trksit_col.left input[type="email"].error:focus, 
-  .trksit_col.left input[type="url"].error:focus, 
-  .trksit_col.left input[type="search"].error:focus, 
-  .trksit_col.left input[type="tel"].error:focus 
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  }
+  .trksit_col.left textarea.error:focus,
+  .trksit_col.left input[type="text"].error:focus,
+  .trksit_col.left input[type="password"].error:focus,
+  .trksit_col.left input[type="datetime"].error:focus,
+  .trksit_col.left input[type="datetime-local"].error:focus,
+  .trksit_col.left input[type="date"].error:focus,
+  .trksit_col.left input[type="month"].error:focus,
+  .trksit_col.left input[type="time"].error:focus,
+  .trksit_col.left input[type="week"].error:focus,
+  .trksit_col.left input[type="number"].error:focus,
+  .trksit_col.left input[type="email"].error:focus,
+  .trksit_col.left input[type="url"].error:focus,
+  .trksit_col.left input[type="search"].error:focus,
+  .trksit_col.left input[type="tel"].error:focus
   .trksit_col.left input[type="color"].error:focus{
   border-color: #953b39;
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #d59392;
      -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #d59392;
-          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #d59392;  
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #d59392;
   }
 
 /*========================================
@@ -427,7 +427,7 @@ table#trks_dashboard td{
   margin:20px 0px;
     -webkit-box-shadow: 0px 0px 2px rgba(0,0,0,.1);
     -moz-box-shadow: 0px 0px 2px rgba(0,0,0,.1);
-    box-shadow: 0px 0px 2px rgba(0,0,0,.1); 
+    box-shadow: 0px 0px 2px rgba(0,0,0,.1);
     background: #ffffff;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
@@ -477,8 +477,8 @@ table#trks_dashboard td{
   border: 0px;
   }
   #tooltip > .nip{
-  width: 0; 
-  height: 0; 
+  width: 0;
+  height: 0;
   border-left: 5px solid transparent;
   border-right: 5px solid transparent;
   border-top: 5px solid #464646;
@@ -628,15 +628,15 @@ ul.thumbnails.image_picker_selector {
   list-style-position: outside;
   list-style-type: none;
   padding: 0px;
-  margin: 0px; 
+  margin: 0px;
 }
 ul.thumbnails.image_picker_selector li {
   margin: 0px 9px 18px 9px;
-  float: left; 
+  float: left;
 }
 ul.thumbnails.image_picker_selector li .thumbnail {
   padding: 6px;
-  border: 1px solid #dddddd; 
+  border: 1px solid #dddddd;
   -moz-border-radius:3px;
   -webkit-border-radius:3px;
   border-radius:3px;
@@ -654,7 +654,7 @@ ul.thumbnails.image_picker_selector li .thumbnail img{
   width:50px;
 }
 ul.thumbnails.image_picker_selector li .thumbnail.selected {
-  background: #d3dae8; 
+  background: #d3dae8;
   border-color:#0088cc;
 }
 
@@ -714,4 +714,11 @@ a#trks_dashboard_next{
 div#trks_dashboard_info{
   font-style: italic;
   margin-top: 5px;
+}
+
+.error-script {
+   background: #EFD5D5;
+}
+.widefat .error-script td {
+   color: #a94442;
 }

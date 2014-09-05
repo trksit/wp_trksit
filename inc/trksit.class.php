@@ -242,6 +242,8 @@
 	  $values = array('%s','%s','%s','%s');
 
 	  if($update){
+		 $fields['script_error'] = 0;
+		 array_push($values, '%s');
 		 $upd = $wpdb->update($wpdb->prefix . 'trksit_scripts', $fields, array('script_id' => $trksit_id), $values);
 		 if(!$upd){
 			$trksit_confirmation = $trks_conf_fail;
