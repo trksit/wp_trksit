@@ -88,6 +88,9 @@
 			$url .= "?_fb_noscript=1";
 		 }
 		 $og_html = $this->wp_trksit_scrapeURL($url);
+		 if($og_html['error']['error_number'] != 0) {
+			$this->trksit_errors = new WP_Error( 'broke', __($og_html['error']['error_message'], 'trks.it'));
+		 }
 		 $get_opengraph = wp_remote_post( $this->api."/parse/opengraph", array(
 			'user-agent'=>'trks.it WordPress '.get_bloginfo('version'),
 			'timeout'=>10,
