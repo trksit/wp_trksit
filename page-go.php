@@ -4,7 +4,7 @@
    header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0',false);
    header("Pragma: no-cache");
 
-   //TODO check URL id exists.  If not, make it 404.
+   //Forward to 404 page if id is not set.
    if(!isset($_GET['url_id'])){
 	  $four04 = get_site_url() . '/error404';
 	  echo '<script type="text/javascript">setTimeout(function(){window.location.href = "'.$four04.'"},0);</script>';
@@ -185,7 +185,6 @@
 			   _gaq.push(['_trackEvent', 'trks.it', 'New Visitor', '<?php echo $redirect_lookup[0]->destination_url; ?>', 0, true]);
 			   delay = 100;
 			}
-
 
 			//		pushing a custom variable & event to Google Analytics to track this clicked link
 			setTimeout(function(){

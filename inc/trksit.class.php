@@ -58,6 +58,8 @@
 		 echo $email;
 		 exit;
 	  }
+
+
 	  /**
 	  * wp_trksit_parseUrl($url) - Parse the URL and get information
 	  * about the page
@@ -75,14 +77,26 @@
 			   'destination_url'=>urlencode($url)
 			)
 		 );
-		 $get_opengraph = wp_remote_get( $this->api."/parse/urls?".$url_paramaters, array(
+		 $is_facebook = parse_url($url, PHP_URL_HOST);
+		 if( strpos($is_facebook,'facebook.com') !== false ){
+			$facebook_url = parse_url($destination_url);
+			$original_url = $destination_url;
+
+			if( !empty($facebook_url['query']) )
+			$url .= "&_fb_noscript=1";
+			else
+			$url .= "?_fb_noscript=1";
+		 }
+		 $og_html = $this->wp_trksit_scrapeURL($url);
+		 $get_opengraph = wp_remote_post( $this->api."/parse/opengraph", array(
 			'user-agent'=>'trks.it WordPress '.get_bloginfo('version'),
 			'timeout'=>10,
 			'blocking'=>true,
 			'headers'=>array(
 			   'Authorization' => 'Bearer ' . get_option('trksit_token'),
 			   'Content-Type' => 'application/x-www-form-urlencoded'
-			)
+			),
+			'body' => array('html_encoded' => $og_html['body'], 'destination_url' => urlencode($url))
 		 )
 	  );
 	  if($get_opengraph['response']['code'] === 400){
@@ -93,7 +107,7 @@
 		 new WP_Error( 'broke', __( "Unable to get URL data", "trks.it" ) );
 	  }elseif( $get_opengraph['response']['code'] === 200 ){
 		 $opengraph = json_decode($get_opengraph['body'],true);
-		 //if the wp_http cannot get the json data without weird, encoded characters, this may be becjjkuause wp_http added padding to the body
+		 //if the wp_http cannot get the json data without weird, encoded characters, this may be because wp_http added padding to the body
 		 if( !$opengraph ){
 			$opengraph = json_decode($this->wp_trksit_removePadding($get_opengraph['body']),true);
 		 }
@@ -115,6 +129,27 @@
 		 $this->description = $opengraph['open_graph']['og:description'];
 	  }
    }	//END parseURL
+
+   function wp_trksit_scrapeURL($url){
+	  $curl = curl_init(urldecode($url));
+	  curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1); // do not echo output
+	  curl_setopt( $curl, CURLOPT_FOLLOWLOCATION, 1); // follow 301s
+	  curl_setopt( $curl, CURLOPT_SSL_VERIFYPEER, 0);
+	  curl_setopt( $curl, CURLOPT_ENCODING, 'gzip,deflate');
+	  $status = curl_getinfo( $curl, CURLINFO_HTTP_CODE );
+	  $result = curl_exec( $curl );
+	  $curl_errno = curl_errno( $curl );
+	  $curl_error = curl_error( $curl );
+	  curl_close( $curl );
+
+	  $urldata = array();
+
+	  $urldata['error'] = array('error_number' => $curl_errno, 'error_message' => $curl_error);
+	  $urldata['body'] = base64_encode($result);
+
+	  return $urldata;
+
+   }
 
 
    //Shorten the URL (STEP 2)
