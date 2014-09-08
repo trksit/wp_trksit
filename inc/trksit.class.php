@@ -133,6 +133,11 @@
 	  }
    }	//END parseURL
 
+   /**
+   * wp_trksit_scrapeURL($url)
+   * Scrapes the HTML of a page using cURL rather than the API
+   * to safeguard against exploits
+   */
    function wp_trksit_scrapeURL($url){
 	  $curl = curl_init(urldecode($url));
 	  curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1); // do not echo output
