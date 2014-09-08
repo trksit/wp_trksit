@@ -140,7 +140,7 @@
 			<div class="trksit-section">
 			   <h2 class="trskit-header"><?php _e('Add Scripts'); ?></h2>
 			   <?php
-				  $scripts = $wpdb->get_results( "SELECT * FROM " . $wpdb->prefix . "trksit_scripts ORDER BY date_created DESC, label DESC" );
+				  $scripts = $wpdb->get_results( "SELECT * FROM " . $wpdb->prefix . "trksit_scripts WHERE script_error != 1 ORDER BY date_created DESC, label DESC" );
 
 				  if(count($scripts)){
 					 $count = 1;
