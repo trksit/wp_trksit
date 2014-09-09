@@ -254,7 +254,6 @@
 			}
 
 		 }
-		 //print_r($mainArray);
 		 $mainArray["og_data"] = serialize($ogArray);
 
 		 $fields = array(

@@ -55,7 +55,7 @@
 					 <div class="control-group">
 						<label class="control-label"><?php _e('Trks.it URL:'); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e('This is the shortened Trks.it URL you will use on various social and marketing platforms.'); ?>" data-original-title="<?php _e('Trks.it URL'); ?>"><i class="icon-question-sign"></i></a></label>
 						<div class="controls">
-						   <a href="http://<?php echo $url_details[0]->trksit_url; ?>" target="_blank"><span class="uneditable-input input-span6" id="final-url"><?php echo $url_details[0]->trksit_url; ?></span></a>
+						   <a href="<?php echo $url_details[0]->trksit_url; ?>" target="_blank"><span class="uneditable-input input-span6" id="final-url"><?php echo $url_details[0]->trksit_url; ?></span></a>
 						   <input type="hidden" name="trksit_url" value="<?php echo $url_details[0]->trksit_url;?>">
 						</div>
 					 </div>
@@ -89,6 +89,7 @@
 						<label class="control-label" for="campaign"><?php _e('Campaign Name:'); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e('Use this field to define a unique campaign value to be sent into your Google Analytics dashboard.'); ?>" data-original-title="<?php _e('Campaign Name'); ?>"><i class="icon-question-sign"></i></a></label>
 						<div class="controls">
 						   <span class="uneditable-input"><?php echo $url_details[0]->campaign; ?></span>
+						   <input type="hidden" name="campaign" value="<?php echo $url_details[0]->campaign;?>">
 						</div>
 					 </div>
 
@@ -96,12 +97,14 @@
 						<label class="control-label" for="source"><?php _e('Source:'); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e('Use this field to define a unique source value to be sent into your Google Analytics dashboard.'); ?>" data-original-title="<?php _e('Campaign Source'); ?>"><i class="icon-question-sign"></i></a></label>
 						<div class="controls">
 						   <span class="uneditable-input"><?php if($url_details[0]->source === ''){ echo 'Auto Detect'; }else{ echo $url_details[0]->source; } ?></span>
+						   <input type="hidden" name="source" value="<?php echo $url_details[0]->source;?>">
 						</div>
 					 </div>
 					 <div class="control-group">
 						<label class="control-label" for="medium"><?php _e('Medium:'); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e('Use this field to define a unique medium value to be sent into your Google Analytics dashboard.'); ?>" data-original-title="<?php _e('Campaign Medium'); ?>"><i class="icon-question-sign"></i></a></label>
 						<div class="controls">
 						   <span class="uneditable-input"><?php echo $url_details[0]->medium; ?></span>
+						   <input type="hidden" name="medium" value="<?php echo $url_details[0]->medium;?>">
 						</div>
 					 </div>
 

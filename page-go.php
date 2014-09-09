@@ -37,7 +37,7 @@
 
 		 $js_redir = '<script type="text/javascript">setTimeout(function(){window.location.href = "'
 		 	. $redirect_lookup[0]->destination_url . '"},' . $redirect_delay . ');</script>';
-		 $meta_redir = '<meta http-equiv="refresh" content="3; url='.$redirect_lookup[0]->destination_url.'">';
+		 $meta_redir = '<meta http-equiv="refresh" content="2; url='.$redirect_lookup[0]->destination_url.'">';
 
 		 // If destination URL exsists in wpdb result. Output redirect script.
 		 if($redirect_lookup[0]->destination_url){
