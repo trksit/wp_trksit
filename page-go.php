@@ -23,6 +23,7 @@
    $_GET['api_signature'] = 'testing12345678';
 
 
+
    // Check request method and ensure all parameters are present in return from API.
    if( $_SERVER['REQUEST_METHOD'] == 'GET' && ( isset( $_GET['url_id'] ) && isset( $_GET['api_signature'] ) ) ){
 
@@ -33,6 +34,10 @@
 
 		 global $wpdb;
 		 $redirect_lookup = $wpdb->get_results( 'SELECT * FROM ' . $wpdb->prefix . 'trksit_urls WHERE url_id=' . $incoming_url_id );
+
+		 $js_redir = '<script type="text/javascript">setTimeout(function(){window.location.href = "'
+		 	. $redirect_lookup[0]->destination_url . '"},' . $redirect_delay . ');</script>';
+		 $meta_redir = '<meta http-equiv="refresh" content="3; url='.$redirect_lookup[0]->destination_url.'">';
 
 		 // If destination URL exsists in wpdb result. Output redirect script.
 		 if($redirect_lookup[0]->destination_url){
@@ -73,7 +78,8 @@
 			   );
 
 			   if($update_results){
-				  $redirect = '<script type="text/javascript">setTimeout(function(){window.location.href = "' . $redirect_lookup[0]->destination_url . '"},' . $redirect_delay . ');</script>';
+				  //$redirect = '<script type="text/javascript">setTimeout(function(){window.location.href = "' . $redirect_lookup[0]->destination_url . '"},' . $redirect_delay . ');</script>';
+				  $redirect = $js_redir . $meta_redir;
 			   }
 
 			}
@@ -91,7 +97,8 @@
 			   );
 
 			   if($wpdb->insert_id){
-				  $redirect = '<script type="text/javascript">setTimeout(function(){window.location.href = "' . $redirect_lookup[0]->destination_url . '"},' . $redirect_delay . ');</script>';
+				  //$redirect = '<script type="text/javascript">setTimeout(function(){window.location.href = "' . $redirect_lookup[0]->destination_url . '"},' . $redirect_delay . ');</script>';
+				  $redirect = $js_redir . $meta_redir;
 			   }
 
 			}else{ die; }
@@ -113,7 +120,6 @@
 	  <?php if($redirect == ''): ?>
 	  <meta http-equiv="refresh" content="0; url=<?php echo $redirect_lookup[0]->destination_url; ?>">
 	  <?php endif; ?>
-
 
 	  <title><?php echo $redirect_lookup[0]->meta_title; ?></title>
 	  <meta name="description" content="<?php echo $redirect_lookup[0]->meta_description; ?>" />
@@ -241,6 +247,59 @@
 
 		 </script>
 		 <?php echo $redirect; ?>
+		 <h2 id='holdup'>Please wait, loading requested site</h2>
+
+		 <style>
+			#holdup {
+				  color: #666;
+				  font-family: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+				  -webkit-animation: fadein 10s; /* Safari, Chrome and Opera > 12.1 */
+				  -moz-animation: fadein 10s; /* Firefox < 16 */
+				  -ms-animation: fadein 10s; /* Internet Explorer */
+				  -o-animation: fadein 10s; /* Opera < 12.1 */
+				  animation: fadein 10s;
+			}
+			/**
+			* This business will not work in IE9 <
+			**/
+
+			@keyframes fadein {
+			   0% { opacity: 0; }
+			   7% { opacity: 0; }
+			   100% { opacity: 1; }
+			}
+
+			/* Firefox < 16 */
+			@-moz-keyframes fadein {
+			   0% { opacity: 0; }
+			   7% { opacity: 0; }
+			   100% { opacity: 1; }
+
+			}
+
+			/* Safari, Chrome and Opera > 12.1 */
+			@-webkit-keyframes fadein {
+			   0% { opacity: 0; }
+			   7% { opacity: 0; }
+			   100% { opacity: 1; }
+
+			}
+
+			/* Internet Explorer */
+			@-ms-keyframes fadein {
+			   0% { opacity: 0; }
+			   7% { opacity: 0; }
+			   100% { opacity: 1; }
+
+			}
+
+			/* Opera < 12.1 */
+			@-o-keyframes fadein {
+			   0% { opacity: 0; }
+			   7% { opacity: 0; }
+			   100% { opacity: 1; }
+			}
+		 </style>
 
 	  </body>
    </html>
