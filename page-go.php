@@ -209,44 +209,6 @@
 
 	  </head>
 	  <body>
-		 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-		 <script>
-
-			<?php
-			   foreach($script_array as $script){
-				  if($script['error'] == 0) {
-					 $script_out = stripslashes(htmlspecialchars_decode($script['script']));
-					 $script_out = stripslashes($script_out);
-					 echo 'try{ ';
-					 echo $script_out;
-					 echo ' } catch(err){ handle_error(err.message, ' . $script['id'] . '); }  ';
-				  }
-			   }
-			?>
-
-			<?php echo 'var ajaxurl = "wp-admin/admin-ajax.php"'; ?>
-
-			function handle_error(error, id){
-			   var dd = {
-				  action: 'nopriv_handle_script',
-				  error: error,
-				  id: id
-			   };
-
-			   setTimeout(function(){
-				  jQuery.post(
-					 ajaxurl, dd,
-					 function( response ) {
-						console.log(response);
-						return;
-					 }
-				  );
-
-			   }, 0);
-			}
-
-		 </script>
-		 <?php echo $redirect; ?>
 		 <h2 id='holdup'>Please wait, loading requested site</h2>
 
 		 <style>
@@ -301,6 +263,44 @@
 			}
 		 </style>
 
+		 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+		 <script>
+
+			<?php
+			   foreach($script_array as $script){
+				  if($script['error'] == 0) {
+					 $script_out = stripslashes(htmlspecialchars_decode($script['script']));
+					 $script_out = stripslashes($script_out);
+					 echo 'try{ ';
+					 echo $script_out;
+					 echo ' } catch(err){ handle_error(err.message, ' . $script['id'] . '); }  ';
+				  }
+			   }
+			?>
+
+			<?php echo 'var ajaxurl = "wp-admin/admin-ajax.php"'; ?>
+
+			function handle_error(error, id){
+			   var dd = {
+				  action: 'nopriv_handle_script',
+				  error: error,
+				  id: id
+			   };
+
+			   setTimeout(function(){
+				  jQuery.post(
+					 ajaxurl, dd,
+					 function( response ) {
+						console.log(response);
+						return;
+					 }
+				  );
+
+			   }, 0);
+			}
+
+		 </script>
+		 <?php echo $redirect; ?>
 	  </body>
    </html>
 
