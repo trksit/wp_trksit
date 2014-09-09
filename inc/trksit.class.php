@@ -90,6 +90,20 @@
 			$url .= "?_fb_noscript=1";
 		 }
 
+		 /** Old method, leaving for testing if needed. */
+		 /* $get_opengraph = wp_remote_get(
+			$this->api."/parse/urls?".$url_paramaters, array(
+			   'user-agent'=>'trks.it WordPress '.get_bloginfo('version'),
+			   'timeout'=>10,
+			   'blocking'=>true,
+			   'headers'=>array(
+				  'Authorization' => 'Bearer ' . get_option('trksit_token'),
+				  'Content-Type' => 'application/x-www-form-urlencoded'
+			   )
+			)
+		 ); */
+
+
 		 //Get base64 encoded HTML
 		 $og_html = $this->wp_trksit_scrapeURL($url);
 
@@ -108,9 +122,11 @@
 				  'Authorization' => 'Bearer ' . get_option('trksit_token'),
 				  'Content-Type' => 'application/x-www-form-urlencoded'
 			   ),
+			   //POST parameters
 			   'body' => array('html_encoded' => $og_html['body'], 'destination_url' => urlencode($url))
 			)
 		 );
+
 		 if($get_opengraph['response']['code'] === 400){
 			$this->trksit_errors = new WP_Error( 'broke', __( json_decode($get_opengraph['body'])->msg, "trks.it" ) );
 		 }
