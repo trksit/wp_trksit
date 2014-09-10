@@ -8,6 +8,7 @@
    if(!isset($_GET['url_id'])){
 	  $four04 = get_site_url() . '/error404';
 	  echo '<script type="text/javascript">setTimeout(function(){window.location.href = "'.$four04.'"},0);</script>';
+	  echo '<meta http-equiv="refresh" content="2; url='.$four04.'">';
    }
 
    //Getting options
@@ -106,6 +107,7 @@
 		 }else{
 			$four04 = get_site_url() . '/error404';
 			echo '<script type="text/javascript">setTimeout(function(){window.location.href = "'.$four04.'"},0);</script>';
+			echo '<meta http-equiv="refresh" content="2; url='.$four04.'">';
 		 }
 
 	  }else{ die; }
@@ -207,10 +209,6 @@
 
 		 </script>
 
-	  </head>
-	  <body>
-		 <h2 id='holdup'>Please wait, loading requested site</h2>
-
 		 <style>
 			#holdup {
 				  color: #666;
@@ -263,6 +261,10 @@
 			}
 		 </style>
 
+	  </head>
+	  <body>
+		 <h2 id='holdup'>Please wait, loading requested site</h2>
+
 		 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 		 <script>
 
@@ -272,7 +274,9 @@
 					 $script_out = stripslashes(htmlspecialchars_decode($script['script']));
 					 $script_out = stripslashes($script_out);
 					 echo 'try{ ';
+					 echo 'setTimeout(function(){ ';
 					 echo $script_out;
+					 echo ' }, 100);';
 					 echo ' } catch(err){ handle_error(err.message, ' . $script['id'] . '); }  ';
 				  }
 			   }
