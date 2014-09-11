@@ -59,6 +59,24 @@
 		 exit;
 	  }
 
+	  function wp_trksit_setMissingFlags($shorturl){
+		 $flags = wp_remote_post(
+			$this->api."/urls/missing", array(
+			   'user-agent'=>'trks.it WordPress '.get_bloginfo('version'),
+			   'timeout'=>10,
+			   'blocking'=>true,
+			   'headers'=>array(
+				  'Authorization' => 'Bearer ' . get_option('trksit_token'),
+				  'Content-Type' => 'application/x-www-form-urlencoded'
+			   ),
+			   //POST parameters
+			   'body' => array('short_url' => $shorturl)
+			)
+		 );
+
+		 return $flags;
+	  }
+
 
 	  /**
 	  * wp_trksit_parseUrl($url) - Parse the URL and get information
@@ -153,8 +171,12 @@
 			}
 			$this->ogMetaArray = $opengraph_data;
 			$this->imgArray = $opengraph_images;
-			$this->title = $opengraph['open_graph']['og:title'];
-			$this->description = $opengraph['open_graph']['og:description'];
+			if(isset($opengraph['open_graph']['og:title'])){
+			   $this->title = $opengraph['open_graph']['og:title'];
+			}
+			if(isset($opengraph['open_graph']['og:description'])){
+			   $this->description = $opengraph['open_graph']['og:description'];
+			}
 		 }
 	  }	//END parseURL
 
@@ -193,13 +215,13 @@
 		 $shareURL_ID = $this->wp_trksit_saveURL($wpdb, $postArray);
 
 		 //Build the longURL with query string params
-		 //$longURL = plugins_url( 'trksit_go.php?utm_source='.$postArray['source'].'&utm_medium='.$postArray['medium'].'&utm_campaign='.$postArray['campaign'].'&url_id=' . $shareURL_ID, dirname(__FILE__) );
-		 $longURL = get_site_url() . '/trksitgo?utm_source='.$postArray['source'].'&utm_medium='.$postArray['medium'].'&utm_campaign='.$postArray['campaign'].'&url_id=' . $shareURL_ID;
 
+		 $longURL = get_site_url() . '/index.php?trksitgo=1&utm_source='.$postArray['source'].'&utm_medium='.$postArray['medium'].'&utm_campaign='.$postArray['campaign'].'&url_id=' . $shareURL_ID;
 		 //shorten the URL
 		 $shortURL = $this->wp_trksit_generateURL($longURL,$postArray);
 		 //$shortURL = "https://trks.it/" . $shortURL;
 		 $shortURL = $this->short_url_base . $shortURL;
+
 
 		 //set the updateArray & whereArray for the shortened URL
 		 $updateArray = array('trksit_url' => $shortURL);
@@ -221,8 +243,10 @@
 
 	  private function wp_trksit_saveScripts($wpdb, $mainArray, $id){
 		 $wpdb->delete($wpdb->prefix . 'trksit_scripts_to_urls', array('url_id' => $id));
-
-		 $script_count = count($mainArray['trksit_scripts']);
+		 $script_count = 0;
+		 if(isset($mainArray['trksit_scripts'])){
+			$script_count = count($mainArray['trksit_scripts']);
+		 }
 		 $scripts_array = array();
 
 		 for( $i = 1; $i <= $script_count; $i++ ){
@@ -264,18 +288,16 @@
 			'og_data' => $mainArray['og_data'],
 			'campaign' => $mainArray['campaign'],
 			'source' => $mainArray['source'],
-			'medium' => $mainArray['medium']
-			//'date_created' => $mainArray['date_created']
+			'medium' => $mainArray['medium'],
+			'date_created' => $mainArray['date_created']
 		 );
-		 $values = array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' );
+		 $values = array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' );
 
 
 		 if($update){
 			$wpdb->update( $wpdb->prefix . 'trksit_urls', $fields, array('url_id' => intval($updateid)), $values);
 			$this->wp_trksit_saveScripts($wpdb, $mainArray, $updateid);
 		 } else {
-			$fields['date_created'] = $mainArray['date_created'];
-			array_push($values, '%s');
 			//insert main data into DB
 			$wpdb->insert( $wpdb->prefix . 'trksit_urls', $fields, $values );
 
@@ -391,7 +413,7 @@
 			   'body'=>$body,
 			   'headers' => $headers)
 			);
-			//file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/log1.txt', print_r($result, true), FILE_APPEND);
+
 			if(is_wp_error($result)){
 			   $this->trksit_errors = new WP_Error( 'broke', __( $result->get_error_message(), "trks.it" ) );
 			   return "Error";
@@ -408,7 +430,6 @@
 			   $result2 = $request->request( $url , array( 'method' => 'POST','body'=>$body, 'headers' => $headers) );
 			   $result = $result2;
 			}
-			file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/log1.txt', print_r($result, true), FILE_APPEND);
 			if($result['response']['code'] === 400){
 			   $this->trksit_errors = new WP_Error( 'broke', __( json_decode($result['body'])->msg, "trks.it" ) );
 			}
@@ -494,13 +515,13 @@
 			global $wpdb;
 
 			//select the hit counts based on start and end dates
-			if( is_null($short_url) AND is_null($start_date) AND is_null($end_date) ){
+			if( is_null($short_url_id) AND is_null($start_date) AND is_null($end_date) ){
 			   $hits = $wpdb->get_results('SELECT *,(SELECT COALESCE(SUM(hit_count),0) as hit_count FROM '.$wpdb->prefix.'trksit_hits WHERE wp_trksit_hits.hit_date = v.hit_date) AS hit_count from (SELECT adddate("1970-01-01",t4.i*10000 + t3.i*1000 + t2.i*100 + t1.i*10 + t0.i) hit_date from (SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t0,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t1,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t2,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t3,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t4) v WHERE v.hit_date BETWEEN "'.$start_date.'" AND "'.$end_date.'" ORDER BY v.hit_date',OBJECT);
-			}elseif( is_null($short_url) AND !is_null($start_date) AND !is_null($end_date) ){
+			}elseif( is_null($short_url_id) AND !is_null($start_date) AND !is_null($end_date) ){
 			   $hits = $wpdb->get_results('SELECT *,(SELECT COALESCE(SUM(hit_count),0) as hit_count FROM '.$wpdb->prefix.'trksit_hits WHERE wp_trksit_hits.hit_date = v.hit_date) AS hit_count from (SELECT adddate("1970-01-01",t4.i*10000 + t3.i*1000 + t2.i*100 + t1.i*10 + t0.i) hit_date from (SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t0,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t1,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t2,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t3,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t4) v WHERE v.hit_date BETWEEN "'.$start_date.'" AND "'.$end_date.'" ORDER BY v.hit_date',OBJECT);
-			}elseif( !is_null($short_url) AND is_null($start_date) AND is_null($end_date) ){
+			}elseif( !is_null($short_url_id) AND is_null($start_date) AND is_null($end_date) ){
 			   $hits = $wpdb->get_results('SELECT *,(SELECT COALESCE(SUM(hit_count),0) as hit_count FROM '.$wpdb->prefix.'trksit_hits WHERE wp_trksit_hits.hit_date = v.hit_date AND url_id = '.$short_url_id.') AS hit_count from (SELECT adddate("1970-01-01",t4.i*10000 + t3.i*1000 + t2.i*100 + t1.i*10 + t0.i) hit_date from (SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t0,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t1,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t2,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t3,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t4) v WHERE v.hit_date BETWEEN "'.$start_date.'" AND "'.$end_date.'" ORDER BY v.hit_date',OBJECT);
-			}elseif( !is_null($short_url) AND !is_null($start_date) AND !is_null($end_date) ){
+			}elseif( !is_null($short_url_id) AND !is_null($start_date) AND !is_null($end_date) ){
 			   $hits = $wpdb->get_results('SELECT *,(SELECT COALESCE(SUM(hit_count),0) as hit_count FROM '.$wpdb->prefix.'trksit_hits WHERE wp_trksit_hits.hit_date = v.hit_date AND url_id = '.$short_url_id.') AS hit_count from (SELECT adddate("1970-01-01",t4.i*10000 + t3.i*1000 + t2.i*100 + t1.i*10 + t0.i) hit_date from (SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t0,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t1,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t2,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t3,(SELECT 0 i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t4) v WHERE v.hit_date BETWEEN "'.$start_date.'" AND "'.$end_date.'" ORDER BY v.hit_date',OBJECT);
 			}
 

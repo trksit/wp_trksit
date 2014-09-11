@@ -87,14 +87,14 @@ add_action( 'init', array( new trksit, '__construct' ) );
 //load the needed scripts
 add_action('admin_enqueue_scripts', 'trksit_load_scripts');
 function trksit_load_scripts() {
-	if($_GET['page'] == 'trksit-dashboard' || $_GET['page'] == 'trksit-settings' || $_GET['page'] == 'trksit-generate'){
+	if(isset($_GET['page']) && ($_GET['page'] == 'trksit-dashboard' || $_GET['page'] == 'trksit-settings' || $_GET['page'] == 'trksit-generate')){
 		wp_register_style('trksit-bootstrap', plugins_url( '/wp_trksit/css/bootstrap.min.css' , dirname(__FILE__)));
 		wp_register_style('trksit-styles', plugins_url( '/wp_trksit/css/wp_trksit_style.css' , dirname(__FILE__)));
 		wp_register_script('trksit-bootstrap-js', plugins_url( '/wp_trksit/js/bootstrap.min.js' , dirname(__FILE__)),array('jquery'));
 		wp_register_script('trksit-zclip-js', plugins_url( '/wp_trksit/js/jquery.zclip.js' , dirname(__FILE__)),array('jquery'),'1.1.1',true);
 		wp_register_script('trksit-validation-js', plugins_url( '/wp_trksit/js/jquery.validate.min.js' , dirname(__FILE__)),array('jquery'),'1.11.1');
 		wp_register_script('trksit-main-js', plugins_url( '/wp_trksit/js/main.js', dirname(__FILE__)),array('jquery'),'1.2.1');
-		wp_register_script('jquery-image-picker', plugins_url( '/wp_trksit/js/image-picker.min.js' , dirname(__FILE__) ),array('jquery').'0.1.3',true);
+		wp_register_script('jquery-image-picker', plugins_url( '/wp_trksit/js/image-picker.min.js' , dirname(__FILE__) ),array('jquery'),'0.1.3',true);
 
 		wp_enqueue_style('trksit-bootstrap');
 		wp_enqueue_style('trksit-styles' );
@@ -105,7 +105,7 @@ function trksit_load_scripts() {
 		wp_enqueue_script('trksit-main-js');
 
 	}
-  if($_GET['page'] == 'trksit-dashboard'){
+  if(isset($_GET['page']) && $_GET['page'] == 'trksit-dashboard'){
   	wp_enqueue_script('jquery-ui-datepicker');
 		wp_enqueue_style('morris-css', plugins_url( '/wp_trksit/js/morris.js/morris.css',dirname(__FILE__)),'','0.4.3');
 		wp_register_script('raphael-js', plugins_url( '/wp_trksit/js/raphael-min.js',dirname(__FILE__)) , '','2.1.2');
@@ -114,7 +114,7 @@ function trksit_load_scripts() {
 		wp_enqueue_script('datatables', plugins_url( '/wp_trksit/js/datatables/js/jquery.dataTables.min.js',dirname(__FILE__)),array('jquery'),'1.9.4',true);
 		wp_enqueue_style('jquery-ui-bootstrap', plugins_url( '/wp_trksit/css/jquery-ui-1.10.0.custom.css',dirname(__FILE__)),'','0.4.3');
 	}
-  if($_GET['page'] == 'trksit-generate'){
+  if(isset($_GET['page']) && $_GET['page'] == 'trksit-generate'){
 
 		wp_register_script('trksit-generate-js', plugins_url( '/wp_trksit/js/generate.js' , dirname(__FILE__)),array('jquery'),'1.2.1',true);
 		wp_enqueue_script('trksit-generate-js');
@@ -260,5 +260,25 @@ function flush_buffers() {
 	if ( ! isset( $rules['trksitgo$'] ) ) {
 	   global $wp_rewrite;
 	   $wp_rewrite->flush_rules();
+	}
+ }
+
+ add_action( 'wp_loaded','wp_trksit_set_header_encoding' );
+ function wp_trksit_set_header_encoding(){
+	if(isset($_GET['page']) && $_GET['page'] == 'trksit-generate' && !empty($_POST)){
+	   header('Content-Encoding: none;'); // Use with ob_start() and flushing of buffers!!!
+	}
+ }
+
+ //Debug log function
+ if(!function_exists('_log')){
+	function _log( $message ) {
+	   if( WP_DEBUG === true && WP_DEBUG_LOG === true ){
+		  if( is_array( $message ) || is_object( $message ) ){
+			 error_log( print_r( $message, true ) );
+		  } else {
+			 error_log( $message );
+		  }
+	   }
 	}
  }

@@ -105,6 +105,9 @@
 			}else{ die; }
 
 		 }else{
+			//$trksit = new trksit();
+			//$surl = $_GET['su'];
+			//$flags_set = $trksit->wp_trksit_setMissingFlags($surl);
 			$four04 = get_site_url() . '/error404';
 			echo '<script type="text/javascript">setTimeout(function(){window.location.href = "'.$four04.'"},0);</script>';
 			echo '<meta http-equiv="refresh" content="2; url='.$four04.'">';

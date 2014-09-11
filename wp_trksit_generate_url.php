@@ -1,6 +1,7 @@
 <?php
    if(!empty($_POST)){
-	  header('Content-Encoding: none;'); // Use with ob_start() and flushing of buffers!!!
+   	  //Header setting moved to action hook
+	  //header('Content-Encoding: none;'); // Use with ob_start() and flushing of buffers!!!
 	  ob_start();
 	  echo '<div id="loading-indicator" style="margin: 0px auto; width: 200px; text-align: center; padding-top: 200px;">';
 	  echo '<h2>Loading...</h2><br />';
@@ -15,7 +16,7 @@
    <h2 class="trksit-header top"><img src="<?php echo plugins_url( '/wp_trksit/img/trksit-icon-36x36.png' , dirname(__FILE__) ); ?>" class="trksit-header-icon" /><?php echo __( 'Generate a New Trks.it URL', 'trksit_menu' ); ?></h2>
    <?php
 	  /* ---- Step 3 ---- */
-	  if($_POST["meta_title"] && ( !empty($_POST) && check_admin_referer('trksit_generate_url','trksit_generate_step2') )){
+	  if(isset($_POST['meta_title']) && ( !empty($_POST) && check_admin_referer('trksit_generate_url','trksit_generate_step2') )){
 
 		 $trksit = new trksit();
 		 if(time() > get_option('trksit_token_expires')){
@@ -47,7 +48,7 @@
 
 	  <?php
 		 /* ---- Step 2 ---- */
-	  } else if($_POST['destination_url'] && ( !empty($_POST) && check_admin_referer('trksit_generate_url','trksit_generate_step1') )){
+	  } else if(isset($_POST['destination_url']) && ( !empty($_POST) && check_admin_referer('trksit_generate_url','trksit_generate_step1') )){
 
 		 $trksit = new trksit();
 		 //if now is after when it expires
@@ -242,7 +243,7 @@
 			   <div class="controls">
 				  <div class="input-append">
 					 <?php wp_nonce_field('trksit_generate_url','trksit_generate_step1'); ?>
-					 <input name="destination_url" id="url" type="text" class="url" value="<?php if($_GET['url']){ echo $_GET['url']; }else{ echo 'http://'; } ?>" focus />
+					 <input name="destination_url" id="url" type="text" class="url" value="<?php if(isset($_GET['url'])){ echo $_GET['url']; }else{ echo 'http://'; } ?>" focus />
 					 <input type="submit" class="btn btn-success" id="trksit-generate-submit-step-1" value="<?php _e('Go!'); ?>" />
 				  </div>
 			   </div>

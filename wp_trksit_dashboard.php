@@ -13,7 +13,7 @@
 	  $trksit = new trksit();
 
 
-	  if($_GET['view'] == 'link-detail' && is_numeric($_GET['linkid'])){
+	  if((isset($_GET['view']) && $_GET['view'] == 'link-detail') && is_numeric($_GET['linkid'])){
 		 $details_nonce = $_REQUEST['_wpnonce'];
 		 if(!wp_verify_nonce($details_nonce, 'trksit-view-details')){
 			die();

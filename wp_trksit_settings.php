@@ -1,6 +1,6 @@
 <?php
    if($_GET['page'] == 'trksit-settings'):
-   if($_POST['trksit_page'] == 'settings' && ( !empty($_POST) && check_admin_referer('trksit_save_settings','trksit_general_settings') )) {
+   if((isset($_POST['trksit_page']) && $_POST['trksit_page'] == 'settings') && ( !empty($_POST) && check_admin_referer('trksit_save_settings','trksit_general_settings') )) {
 
 	  $trksit_analytics_id = $_POST['trksit_analytics_id'];
 	  $trksit_public_api_key = $_POST['trksit_public_api_key'];
@@ -26,7 +26,7 @@
 
    }
 
-   if($_POST['trksit_page'] == 'add_script' && ( !empty($_POST) && check_admin_referer('trksit_save_settings','trksit_add_script') )) {
+   if((isset($_POST['trksit_page']) && $_POST['trksit_page'] == 'add_script') && ( !empty($_POST) && check_admin_referer('trksit_save_settings','trksit_add_script') )) {
 	  $trksit = new trksit();
 	  if($_POST['script-id'] == ''){
 		 $trksit_confirmation = $trksit->wp_trksit_saveCustomScript($wpdb, $_POST, false);
@@ -41,16 +41,16 @@
 
    <h2 class="trksit-header top"><img src="<?php echo plugins_url( '/wp_trksit/img/trksit-icon-36x36.png' , dirname(__FILE__) ); ?>" class="trksit-header-icon" /><?php echo __( 'Trks.it Settings', 'trksit_menu' ); ?></h2>
 
-   <?php echo $trksit_confirmation; ?>
+   <?php //echo $trksit_confirmation; ?>
 
    <div class="trksit_tab_nav">
 	  <ul>
-		 <li <?php if($_GET['tab'] == 'general' || empty($_GET['tab'])): ?>class="active"<?php endif; ?>><a href="/wp-admin/admin.php?page=trksit-settings&tab=general"><?php _e('General Settings'); ?></a></li>
-		 <li <?php if($_GET['tab'] == 'scripts'): ?>class="active"<?php endif; ?>><a href="/wp-admin/admin.php?page=trksit-settings&tab=scripts"><?php _e('Custom Scripts'); ?></a></li>
+		 <li <?php if((isset($_GET['tab']) && $_GET['tab'] == 'general') || empty($_GET['tab'])): ?>class="active"<?php endif; ?>><a href="/wp-admin/admin.php?page=trksit-settings&tab=general"><?php _e('General Settings'); ?></a></li>
+		 <li <?php if(isset($_GET['tab']) && $_GET['tab'] == 'scripts'): ?>class="active"<?php endif; ?>><a href="/wp-admin/admin.php?page=trksit-settings&tab=scripts"><?php _e('Custom Scripts'); ?></a></li>
 	  </ul>
    </div>
 
-   <?php if($_GET['tab'] == 'general' || empty($_GET['tab'])): ?>
+   <?php if((isset($_GET['tab']) && $_GET['tab'] == 'general') || empty($_GET['tab'])): ?>
 
    <form name="trksit_settings_form" id="trksit_settings_form" class="trksit-form" method="post" action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI']); ?>" style="float:left; display:block;">
 
@@ -129,7 +129,7 @@
 
    <?php endif; ?>
 
-   <?php if($_GET['tab'] == 'scripts'): ?>
+   <?php if(isset($_GET['tab']) && $_GET['tab'] == 'scripts'): ?>
 
    <?php
 	  $s_label = '';
