@@ -180,8 +180,8 @@ function trksit_current_page() {
 /*
  * UPDATING the plugin automatically
  */
-add_action( 'init', 'github_plugin_updater_init' );
-function github_plugin_updater_init() {
+add_action( 'init', 'trksit_github_plugin_updater_init' );
+function trksit_github_plugin_updater_init() {
 
 	include_once 'updater.php';
 
@@ -205,30 +205,27 @@ function github_plugin_updater_init() {
  }
 //Increase http request timeout
 define('WP_TRKSIT_CURL_TIMEOUT', 15);
-add_filter('http_request_args', 'bal_http_request_args', 100, 1);
-function bal_http_request_args($r)
+add_filter('http_request_args', 'trksit_http_request_args', 100, 1);
+function trksit_http_request_args($r)
 {
    $r['timeout'] = WP_TRKSIT_CURL_TIMEOUT;
 	return $r;
 }
 
-add_action('http_api_curl', 'bal_http_api_curl', 100, 1);
-function bal_http_api_curl($handle)
+add_action('http_api_curl', 'trksit_http_api_curl', 100, 1);
+function trksit_http_api_curl($handle)
 {
    curl_setopt( $handle, CURLOPT_CONNECTTIMEOUT, WP_TRKSIT_CURL_TIMEOUT );
    curl_setopt( $handle, CURLOPT_TIMEOUT, WP_TRKSIT_CURL_TIMEOUT );
 }
 
-function flush_buffers() {
+function trksit_flush_buffers() {
    ob_end_flush();
    @ob_flush();
    flush();
    ob_start();
 }
 
-//Proof of concept
- // http://localsite.com/trksitgo goes to a custom template page
- // No page created
 
  // Sets the URL and sets an arbitrary query variable
  add_action( 'init', 'trksit_init_internal' );
@@ -263,8 +260,8 @@ function flush_buffers() {
 	}
  }
 
- add_action( 'wp_loaded','wp_trksit_set_header_encoding' );
- function wp_trksit_set_header_encoding(){
+ add_action( 'wp_loaded','trksit_set_header_encoding' );
+ function trksit_set_header_encoding(){
 	if(isset($_GET['page']) && $_GET['page'] == 'trksit-generate' && !empty($_POST)){
 	   header('Content-Encoding: none;'); // Use with ob_start() and flushing of buffers!!!
 	}

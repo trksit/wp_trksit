@@ -6,7 +6,7 @@
 	  echo '<div id="loading-indicator" style="margin: 0px auto; width: 200px; text-align: center; padding-top: 200px;">';
 	  echo '<h2>Loading...</h2><br />';
 	  echo '<img src="' . plugins_url( '/wp_trksit/img/loading.gif' , dirname(__FILE__) ) . '" alt="Loading" /></div>';
-	  flush_buffers();
+	  trksit_flush_buffers();
    }
 ?>
 <div class="wrap" id="trksit-wrap">
@@ -175,9 +175,9 @@
 					 if(isset($og_data['og:image']) || isset($og_data['og:title']) || isset($og_data['og:description'])){
 						echo '<div class="alert alert-warning">
 						   We have detected the following open graph tags on this URL:<br /><br />';
-						   echo ($og_data['og:image']) ? '<strong>og:image</strong><br />' : '';
-						   echo ($og_data['og:title']) ? '<strong>og:title</strong><br />' : '';
-						   echo ($og_data['og:description']) ? '<strong>og:description</strong><br />' : '';
+						   echo (isset($og_data['og:image'])) ? '<strong>og:image</strong><br />' : '';
+						   echo (isset($og_data['og:title'])) ? '<strong>og:title</strong><br />' : '';
+						   echo (isset($og_data['og:description'])) ? '<strong>og:description</strong><br />' : '';
 						   echo '<br />Trks.it will use the specified open graph tags above instead of the custom values defined on the left.</div>';
 					 }
 					 if(!isset($og_data['og:image'])){

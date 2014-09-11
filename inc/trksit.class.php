@@ -284,10 +284,10 @@
 			'og_data' => $mainArray['og_data'],
 			'campaign' => $mainArray['campaign'],
 			'source' => $mainArray['source'],
-			'medium' => $mainArray['medium'],
-			'date_created' => $mainArray['date_created']
+			'medium' => $mainArray['medium']
+			//'date_created' => $mainArray['date_created']
 		 );
-		 $values = array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' );
+		 $values = array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' );
 
 
 		 if($update){
@@ -295,6 +295,8 @@
 			$this->wp_trksit_saveScripts($wpdb, $mainArray, $updateid);
 		 } else {
 			//insert main data into DB
+			$fields['date_created'] = $mainArray['date_created'];
+			array_push($values, '%s');
 			$wpdb->insert( $wpdb->prefix . 'trksit_urls', $fields, $values );
 
 			//Setting the URL ID to return to ShortenURL function
