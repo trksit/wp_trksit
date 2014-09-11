@@ -37,7 +37,7 @@
 		 $redirect_lookup = $wpdb->get_results( 'SELECT * FROM ' . $wpdb->prefix . 'trksit_urls WHERE url_id=' . $incoming_url_id );
 
 		 $js_redir = '<script type="text/javascript">setTimeout(function(){window.location.href = "'
-		 	. $redirect_lookup[0]->destination_url . '"},' . $redirect_delay . ');</script>';
+			. $redirect_lookup[0]->destination_url . '"},' . $redirect_delay . ');</script>';
 		 $meta_redir = '<meta http-equiv="refresh" content="2; url='.$redirect_lookup[0]->destination_url.'">';
 
 		 // If destination URL exsists in wpdb result. Output redirect script.
@@ -227,40 +227,40 @@
 			**/
 
 			@keyframes fadein {
-			   0% { opacity: 0; }
-			   7% { opacity: 0; }
-			   100% { opacity: 1; }
+				  0% { opacity: 0; }
+				  7% { opacity: 0; }
+				  100% { opacity: 1; }
 			}
 
 			/* Firefox < 16 */
 			@-moz-keyframes fadein {
-			   0% { opacity: 0; }
-			   7% { opacity: 0; }
-			   100% { opacity: 1; }
+				  0% { opacity: 0; }
+				  7% { opacity: 0; }
+				  100% { opacity: 1; }
 
 			}
 
 			/* Safari, Chrome and Opera > 12.1 */
 			@-webkit-keyframes fadein {
-			   0% { opacity: 0; }
-			   7% { opacity: 0; }
-			   100% { opacity: 1; }
+				  0% { opacity: 0; }
+				  7% { opacity: 0; }
+				  100% { opacity: 1; }
 
 			}
 
 			/* Internet Explorer */
 			@-ms-keyframes fadein {
-			   0% { opacity: 0; }
-			   7% { opacity: 0; }
-			   100% { opacity: 1; }
+				  0% { opacity: 0; }
+				  7% { opacity: 0; }
+				  100% { opacity: 1; }
 
 			}
 
 			/* Opera < 12.1 */
 			@-o-keyframes fadein {
-			   0% { opacity: 0; }
-			   7% { opacity: 0; }
-			   100% { opacity: 1; }
+				  0% { opacity: 0; }
+				  7% { opacity: 0; }
+				  100% { opacity: 1; }
 			}
 		 </style>
 
@@ -268,24 +268,22 @@
 	  <body>
 		 <h2 id='holdup'>Please wait, loading requested site</h2>
 
-		 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 		 <script>
 
 			<?php
 			   foreach($script_array as $script){
 				  if($script['error'] == 0) {
-					 $script_out = stripslashes(htmlspecialchars_decode($script['script']));
+		 			 $script_out = stripslashes(htmlspecialchars_decode($script['script']));
 					 $script_out = stripslashes($script_out);
 					 echo 'try{ ';
-					 echo 'setTimeout(function(){ ';
 					 echo $script_out;
-					 echo ' }, 100);';
 					 echo ' } catch(err){ handle_error(err.message, ' . $script['id'] . '); }  ';
 				  }
 			   }
 			?>
 
 			<?php echo 'var ajaxurl = "wp-admin/admin-ajax.php"'; ?>
+
 
 			function handle_error(error, id){
 			   var dd = {
@@ -294,20 +292,25 @@
 				  id: id
 			   };
 
-			   setTimeout(function(){
-				  jQuery.post(
-					 ajaxurl, dd,
-					 function( response ) {
-						console.log(response);
-						return;
-					 }
-				  );
-
-			   }, 0);
+			   setTimeout(function(){ doAjax(ajaxurl, error, id); }, 0);
 			}
 
-		 </script>
-		 <?php echo $redirect; ?>
-	  </body>
+			function doAjax(url, error, id) {
+			   var xmlhttp = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+			   xmlhttp.onreadystatechange = function() {
+				  if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+					 console.log(xmlhttp.responseText);
+				  }
+			   }
+			   xmlhttp.open("POST", url, true);
+			   xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			   xmlhttp.send("action=nopriv_handle_script&error=" + error + "&id=" + id);
+			}
+
+
+
+   </script>
+   <?php echo $redirect; ?>
+</body>
    </html>
 

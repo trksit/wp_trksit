@@ -1,6 +1,7 @@
 <?php
    if(isset($_GET['view'])){
-	  header('Content-Encoding: none;'); // Use with ob_start() and flushing of buffers!!!
+	  //Added to action hook
+	  //header('Content-Encoding: none;'); // Use with ob_start() and flushing of buffers!!!
 	  ob_start();
 	  echo '<div id="loading-indicator" style="margin: 0px auto; width: 200px; text-align: center; padding-top: 200px;">';
 	  echo '<h2>Loading...</h2><br />';
@@ -18,7 +19,7 @@
 		 if(!wp_verify_nonce($details_nonce, 'trksit-view-details')){
 			die();
 		 }else {
-			if($_POST["meta_title"] && !empty($_POST) ){
+			if(isset($_POST["meta_title"]) && !empty($_POST) ){
 			   $trksit->wp_trksit_saveURL($wpdb, $_POST, true, $_GET['linkid']);
 			}
 			$link_id = $_GET['linkid'];
@@ -76,7 +77,7 @@
 					 <div class="control-group">
 						<label class="control-label" for="description"><?php _e('Description:'); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e('The description to be used when sharing the content. This is pulled from the pages Open Graph data if it already exists. If not, it defaults to the meta description of the page.'); ?>" data-original-title="<?php _e('Description'); ?>"><i class="icon-question-sign"></i></a></label>
 						<div class="controls">
-						   <textarea name="meta_description" id="description" <?php echo ($og_data['og:description']) ? '' : 'class="listen"'; ?> rows="5" maxlength="255"><?php echo $url_details[0]->meta_description; ?></textarea>
+						   <textarea name="meta_description" id="description" <?php if(isset($og_data['og:description'])) echo ($og_data['og:description']) ? '' : 'class="listen"'; ?> rows="5" maxlength="255"><?php echo $url_details[0]->meta_description; ?></textarea>
 						</div>
 					 </div>
 				  </div>
@@ -171,7 +172,7 @@
 				  </div><!-- #preview -->
 
 				  <?php
-					 if($og_data['og:image'] || $og_data['og:title'] || $og_data['og:description']){
+					 if(isset($og_data['og:image']) || isset($og_data['og:title']) || isset($og_data['og:description'])){
 						echo '<div class="alert alert-warning">
 						   We have detected the following open graph tags on this URL:<br /><br />';
 						   echo ($og_data['og:image']) ? '<strong>og:image</strong><br />' : '';
@@ -179,7 +180,7 @@
 						   echo ($og_data['og:description']) ? '<strong>og:description</strong><br />' : '';
 						   echo '<br />Trks.it will use the specified open graph tags above instead of the custom values defined on the left.</div>';
 					 }
-					 if(!$og_data['og:image']){
+					 if(!isset($og_data['og:image'])){
 					 ?>
 
 					 <div class="control-group controls">
