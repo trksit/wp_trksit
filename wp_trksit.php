@@ -262,7 +262,7 @@ function trksit_flush_buffers() {
 
  add_action( 'wp_loaded','trksit_set_header_encoding' );
  function trksit_set_header_encoding(){
-	if(isset($_GET['page']) && $_GET['page'] == 'trksit-generate' && !empty($_POST)){
+	if(isset($_GET['page']) && ($_GET['page'] == 'trksit-generate' || $_GET['page'] == 'trksit-settings' || $_GET['page'] == 'trksit-dashboard') && !empty($_POST)){
 	   header('Content-Encoding: none;'); // Use with ob_start() and flushing of buffers!!!
 	}
  }

@@ -1,4 +1,11 @@
 <?php
+   if(!empty($_POST)){
+	  ob_start();
+	  echo '<div id="loading-indicator" style="margin: 0px auto; width: 200px; text-align: center; padding-top: 200px;">';
+		 echo '<h2>Saving Settings...</h2><br />';
+	  echo '<img src="' . plugins_url( '/wp_trksit/img/loading.gif' , dirname(__FILE__) ) . '" alt="Loading" /></div>';
+	  trksit_flush_buffers();
+   }
    if($_GET['page'] == 'trksit-settings'):
    if((isset($_POST['trksit_page']) && $_POST['trksit_page'] == 'settings') && ( !empty($_POST) && check_admin_referer('trksit_save_settings','trksit_general_settings') )) {
 
@@ -13,6 +20,9 @@
 	  update_option('trksit_private_api_key', $trksit_private_api_key);
 	  update_option('trksit_jquery', $trksit_jquery);
 	  update_option('trksit_redirect_delay', $trksit_redirect_delay);
+
+	  $trksit = new trksit();
+	  $trksit->wp_trksit_resetToken();
 
 	  $trksit_confirmation = '<div class="alert alert-success" style="margin:30px 0px 0px 0px;">' . __('Trks.it Settings Updated') . '</div>';
 
@@ -282,3 +292,9 @@
 
    </div>
    <?php endif; ?>
+
+<style>
+	  #loading-indicator {
+		 display: none;
+	  }
+   </style>
