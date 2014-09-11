@@ -247,7 +247,7 @@ function flush_buffers() {
  add_action( 'parse_request', 'trksit_parse_request' );
  function trksit_parse_request( &$wp ){
 	if ( array_key_exists( 'trksitgo', $wp->query_vars ) ) {
-	   include 'page-go.php';
+	   include 'wp_trksit_redirector.php';
 	   exit();
 	}
 	return;
