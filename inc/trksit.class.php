@@ -216,7 +216,7 @@
 
 		 //Build the longURL with query string params
 
-		 $longURL = get_site_url() . '/index.php?trksitgo=1&utm_source='.$postArray['source'].'&utm_medium='.$postArray['medium'].'&utm_campaign='.$postArray['campaign'].'&url_id=' . $shareURL_ID;
+		 $longURL = get_site_url() . '/index.php?trksitgo=1&url_id=' . $shareURL_ID . '&utm_source='.$postArray['source'].'&utm_medium='.$postArray['medium'].'&utm_campaign='.$postArray['campaign'];
 		 //shorten the URL
 		 $shortURL = $this->wp_trksit_generateURL($longURL,$postArray);
 		 //$shortURL = "https://trks.it/" . $shortURL;
