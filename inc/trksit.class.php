@@ -126,7 +126,7 @@
 		 $og_html = $this->wp_trksit_scrapeURL($url);
 
 		 //Handle cURL errors
-		 if($og_html['error']['error_number'] != 0) {
+		 if($og_html['error']['error_code']) {
 			$this->trksit_errors = new WP_Error( 'broke', __($og_html['error']['error_message'], 'trks.it'));
 		 }
 
@@ -182,25 +182,21 @@
 
 	  /**
 	  * wp_trksit_scrapeURL($url)
-	  * Scrapes the HTML of a page using cURL rather than the API
+	  * Scrapes the HTML of a page using wp_remote_get rather than the API
 	  * to safeguard against exploits
 	  */
 	  function wp_trksit_scrapeURL($url){
-		 $curl = curl_init(urldecode($url));
-		 curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1); // do not echo output
-		 curl_setopt( $curl, CURLOPT_FOLLOWLOCATION, 1); // follow 301s
-		 curl_setopt( $curl, CURLOPT_SSL_VERIFYPEER, 0);
-		 curl_setopt( $curl, CURLOPT_ENCODING, 'gzip,deflate');
-		 $status = curl_getinfo( $curl, CURLINFO_HTTP_CODE );
-		 $result = curl_exec( $curl );
-		 $curl_errno = curl_errno( $curl );
-		 $curl_error = curl_error( $curl );
-		 curl_close( $curl );
+
+		 $html = wp_remote_get(urldecode($url));
 
 		 $urldata = array();
 
-		 $urldata['error'] = array('error_number' => $curl_errno, 'error_message' => $curl_error);
-		 $urldata['body'] = base64_encode($result);
+		 if(is_wp_error($html) || 200 != wp_remote_retrieve_response_code($html)){
+			$urldata['error'] = array('error_code' => true, 'error_message' => $html->get_error_message());
+		 } else {
+			$urldata['error'] = array('error_code' => false, 'error_message' => null);
+			$urldata['body'] = base64_encode(wp_remote_retrieve_body($html));
+		 }
 
 		 return $urldata;
 
