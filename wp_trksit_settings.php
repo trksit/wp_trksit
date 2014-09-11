@@ -178,6 +178,7 @@
 
 				  if(count($table_data)){
 
+					 $footnote = '';
 					 foreach($table_data as $table_row){
 						$q = "SELECT url_id FROM " . $wpdb->prefix . "trksit_scripts_to_urls WHERE script_id = " . $table_row->script_id;
 						$times_used = $wpdb->get_results($q);
@@ -189,7 +190,19 @@
 					 ?>
 					 <tr <?php if($table_row->script_error) { echo "class='error-script'"; } ?>>
 						<td><?php echo $date_created; ?></td>
-						<td><?php echo stripslashes($table_row->label); if($table_row->script_error) { echo " - (Script has errors)"; } ?></td>
+						<td>
+						   <?php
+							  echo stripslashes($table_row->label);
+							  if($table_row->script_error) {
+								 echo " * &nbsp; <a href='#' class='script_debug'>[execute]</a>";
+								 $footnote = '<p style="color: #a94442; float: left; padding-top: 20px;">'
+									. '<span style="float: left;">*</span>'
+									. '<span style="float: left; padding-left: 10px;">'
+									. 'Scripts in red indicate an error has occured in its execution<br />'
+									. 'Click [execute] with console open to see error.</span></p>';
+							  }
+						   ?>
+						</td>
 						<td><?php echo $table_row->platform; ?></td>
 						<td><?php echo $used; ?></td>
 						<td>
@@ -216,6 +229,7 @@
 			<tfoot>
 			</tfoot>
 		 </table>
+		 <?php echo $footnote; ?>
 		 <button data-target="#add-script-window" role="button" id="add-script" class="btn btn-success" data-toggle="modal"><?php _e("+ Add New Script"); ?></button>
 
 	  </div>
