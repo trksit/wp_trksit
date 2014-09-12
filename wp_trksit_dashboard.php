@@ -248,7 +248,23 @@
 		 <?php
 			$trksit->wp_trksit_getAnalytics($start_date,$end_date);
 		 }
-		 $table_data = $wpdb->get_results("SELECT *,(SELECT COALESCE(SUM(tkhits.hit_count),0) as hit_total FROM ".$wpdb->prefix."trksit_hits tkhits WHERE tku.url_id = tkhits.url_id AND tkhits.hit_date BETWEEN '$start_date' AND '$end_date') AS hit_total FROM ".$wpdb->prefix."trksit_urls tku WHERE tku.url_id IN(SELECT DISTINCT tkhits.url_id FROM ".$wpdb->prefix."trksit_hits tkhits WHERE tku.url_id = tkhits.url_id AND tkhits.hit_date BETWEEN '$start_date' AND '$end_date') ORDER BY hit_total DESC");
+		 $trks_query = "SELECT *,"
+		 ."(SELECT COALESCE(SUM(tkhits.hit_count),0) as hit_total "
+		 ."FROM ".$wpdb->prefix."trksit_hits tkhits "
+		 ."WHERE tku.url_id = tkhits.url_id "
+		 ."AND tkhits.hit_date "
+		 ."BETWEEN '$start_date' AND '$end_date') "
+		 ."AS hit_total "
+		 ."FROM ".$wpdb->prefix."trksit_urls tku "
+		 //."WHERE tku.url_id IN("
+		 //."SELECT DISTINCT tkhits.url_id "
+		 //."FROM ".$wpdb->prefix."trksit_hits tkhits "
+		 //."WHERE tku.url_id = tkhits.url_id "
+		 //."AND tkhits.hit_date "
+		 //."BETWEEN '$start_date' AND '$end_date') "
+		 ."ORDER BY hit_total DESC";
+
+		 $table_data = $wpdb->get_results($trks_query);
 
 		 if( count($table_data) >= 1 ):
 	  ?>
@@ -257,11 +273,11 @@
 		 <table class="wp-list-table widefat fixed" id="trks_dashboard" style="width: 100%;display:table;white-space:nowrap;overflow: hidden;">
 			<thead>
 			   <tr>
-				  <th class="sortable desc" width="120"><a href="#"><span><?php _e('Created'); ?></span><span class="sorting-indicator"></span></a></th>
-				  <th class="sortable desc" width="60"><a href="#"><span><?php _e('Hits'); ?></span><span class="sorting-indicator"></span></a></th>
-				  <th width="80"><?php _e('Trks.it URL'); ?></th>
+				  <th class="sortable desc" width="100"><a href="#"><span><?php _e('Created'); ?></span><span class="sorting-indicator"></span></a></th>
+				  <th class="sortable desc" width="50"><a href="#"><span><?php _e('Hits'); ?></span><span class="sorting-indicator"></span></a></th>
+				  <th width="140"><?php _e('Trks.it URL'); ?></th>
 				  <th width="50"></th>
-				  <th id="trks_it_destination" width="60"><?php _e('Destination URL'); ?></th>
+				  <th id="trks_it_destination" width="180"><?php _e('Destination URL'); ?></th>
 				  <th><?php _e('Campaign'); ?></th>
 				  <th><?php _e('Source'); ?></th>
 				  <th><?php _e('Medium'); ?></th>
@@ -286,7 +302,12 @@
 					 <span class="copy-btn-wrap"><a class="trksit-copy-btn" id="trks-copy-btn-<?php echo $table_row->url_id; ?>" data-trksit-link="<?php echo $table_row->trksit_url; ?>"><?php _e('Copy');?></a></span>
 				  </td>
 				  <td class="truncate trks_it_destination">
-					 <a href="<?php echo $table_row->destination_url; ?>" target="_blank"><?php echo $table_row->destination_url; ?></a>
+					 <a href="<?php echo $table_row->destination_url; ?>"
+						target="_blank"
+						title="<?php echo $table_row->destination_url; ?>"
+					 >
+						<?php echo $table_row->destination_url; ?>
+					 </a>
 				  </td>
 				  <td class="trks_it_campaign"><?php _e(stripslashes($table_row->campaign)); ?></td>
 				  <td class="trks_it_source"><?php _e(stripslashes($table_row->source)); ?></td>

@@ -722,3 +722,7 @@ div#trks_dashboard_info{
 .widefat .error-script td {
    color: #a94442;
 }
+
+.trksit-admin-button {
+   text-decoration: none;
+}

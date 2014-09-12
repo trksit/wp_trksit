@@ -40,8 +40,14 @@
 	  ?>
 	  <?php if(!is_wp_error($trks_error)): ?>
 	  <div class="trksit_col left">
-		 <h2><?php _e('Here\'s Your Tracking URL:'); ?> <?php echo $shortURL; ?></h2>
-		 <p><a href='./admin.php?page=trksit-generate'>Create another link</a></p>
+		 <h2>
+			<?php _e('Here\'s Your Tracking URL:'); ?> <?php echo $shortURL; ?>
+			<span class="copy-btn-wrap" style="margin: 0 0 5px 10px;">
+			   <a class="trksit-copy-btn" id="trks-copy-btn" data-trksit-link="<?php echo $shortURL; ?>"><?php _e('Copy');?></a>
+			</span>
+
+		 </h2>
+		 <p><a class='trksit-admin-button btn btn-success' href='./admin.php?page=trksit-generate'>Create another link</a></p>
 	  </div>
 	  <div class="trksit_col right"></div>
 	  <?php endif; ?>

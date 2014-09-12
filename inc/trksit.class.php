@@ -195,7 +195,7 @@
 			$urldata['error'] = array('error_code' => true, 'error_message' => $html->get_error_message());
 		 } else {
 			$urldata['error'] = array('error_code' => false, 'error_message' => null);
-			$urldata['body'] = base64_encode(wp_remote_retrieve_body($html));
+			$urldata['body'] = gzdeflate(wp_remote_retrieve_body($html), 9);
 		 }
 
 		 return $urldata;
