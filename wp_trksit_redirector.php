@@ -15,14 +15,30 @@
    $analytics_id = get_option('trksit_analytics_id');
    $redirect_delay = get_option('trksit_redirect_delay');
    $redirect = '';
+   if(!isset($_COOKIE['trksit_new'])){
+	  setcookie("trks_new", "new_user", time()+900);
+   }
 
 
    //THIS SHOULD BE GOTTEN FROM THE DB
    $api_signature = 'testing12345678';
    //KILL NEXT LINE TO SECURE
    $_GET['api_signature'] = 'testing12345678';
+   $testing = false;
+   $scripterror = false;
+   $script_id = null;
 
-
+   if(isset($_GET['testing'])){
+	  if($_GET['testing'] == 'test'){
+		 $testing = true;
+	  }
+	  if($_GET['testing'] == 'scripterror'){
+		 $scripterror = true;
+		 if(isset($_GET['scriptid'])){
+			$script_id = intval($_GET['scriptid']);
+		 }
+	  }
+   }
 
    // Check request method and ensure all parameters are present in return from API.
    if( $_SERVER['REQUEST_METHOD'] == 'GET' && ( isset( $_GET['url_id'] ) && isset( $_GET['api_signature'] ) ) ){
@@ -30,88 +46,97 @@
 	  // Check API Signature (Needs work!)
 	  if( $_GET['api_signature'] == $api_signature ){
 
-		 $incoming_url_id = $_GET['url_id'];
-
 		 global $wpdb;
-		 $redirect_lookup = $wpdb->get_results( 'SELECT * FROM ' . $wpdb->prefix . 'trksit_urls WHERE url_id=' . $incoming_url_id );
+		 if(!$scripterror){
 
-		 $js_redir = '<script type="text/javascript">setTimeout(function(){window.location.href = "'
-			. $redirect_lookup[0]->destination_url . '"},' . $redirect_delay . ');</script>';
-		 $meta_redir = '<meta http-equiv="refresh" content="2; url='.$redirect_lookup[0]->destination_url.'">';
+			$incoming_url_id = $_GET['url_id'];
 
-		 // If destination URL exsists in wpdb result. Output redirect script.
-		 if($redirect_lookup[0]->destination_url){
+			$redirect_lookup = $wpdb->get_results( 'SELECT * FROM ' . $wpdb->prefix . 'trksit_urls WHERE url_id=' . $incoming_url_id );
 
-			$url_id = $redirect_lookup[0]->url_id;
-			$today = date('Y-m-d');
+			$js_redir = '<script type="text/javascript">setTimeout(function(){window.location.href = "'
+			   . $redirect_lookup[0]->destination_url . '"},' . $redirect_delay . ');</script>';
+			$meta_redir = '<meta http-equiv="refresh" content="2; url='.$redirect_lookup[0]->destination_url.'">';
 
-			//Getting all the scripts for this URL
-			$scripts_to_url = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . "trksit_scripts_to_urls WHERE url_id=" . $url_id);
-			$script_array = array();
-			foreach($scripts_to_url as $single_script){
-			   $script_results = array();
-			   $single_script = $wpdb->get_results("SELECT script, script_id, script_error FROM "
-			   . $wpdb->prefix . "trksit_scripts WHERE script_id="
-			   . $single_script->script_id);
-			   $script_results['script'] = $single_script[0]->script;
-			   $script_results['id'] = $single_script[0]->script_id;
-			   $script_results['error'] = $single_script[0]->script_error;
-			   array_push($script_array, $script_results);
-			}
+			// If destination URL exsists in wpdb result. Output redirect script.
+			if($redirect_lookup[0]->destination_url){
 
-			$hit_result = $wpdb->get_results( "SELECT * FROM " . $wpdb->prefix . "trksit_hits WHERE url_id=" . $url_id . " AND hit_date='" . $today . "'");
-			$hit_result_count = count($hit_result);
+			   $url_id = $redirect_lookup[0]->url_id;
+			   $today = date('Y-m-d');
 
-			if($hit_result_count === 1){
-			   //echo 'Update the current hit record and redirect to (' . $redirect_lookup[0]->destination_url . ').';
+			   //Getting all the scripts for this URL
+			   if(!$scripterror){
+				  $scripts_to_url = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . "trksit_scripts_to_urls WHERE url_id=" . $url_id);
+				  $script_array = array();
+				  foreach($scripts_to_url as $single_script){
+					 $script_results = array();
+					 $single_script = $wpdb->get_results("SELECT script, script_id, script_error FROM "
+					 . $wpdb->prefix . "trksit_scripts WHERE script_id="
+					 . $single_script->script_id);
+					 $script_results['script'] = $single_script[0]->script;
+					 $script_results['id'] = $single_script[0]->script_id;
+					 $script_results['error'] = $single_script[0]->script_error;
+					 array_push($script_array, $script_results);
+				  }
+			   }
+			   if(!$testing && !$scripterror){
+				  $hit_result = $wpdb->get_results(
+					 "SELECT * FROM " . $wpdb->prefix . "trksit_hits WHERE url_id="
+					 . $url_id . " AND hit_date='" . $today . "'"
+				  );
+				  $hit_result_count = count($hit_result);
 
-			   $update_results = $wpdb->query(
-				  $wpdb->prepare(
-					 "
-					 UPDATE " . $wpdb->prefix ."trksit_hits
-					 SET hit_count = hit_count + 1
-					 WHERE url_id = %d
-					 AND hit_date = %s
-					 ",
-					 $url_id, $today
-				  )
-			   );
+				  if($hit_result_count === 1){
+					 //echo 'Update the current hit record and redirect to (' . $redirect_lookup[0]->destination_url . ').';
 
-			   if($update_results){
-				  //$redirect = '<script type="text/javascript">setTimeout(function(){window.location.href = "' . $redirect_lookup[0]->destination_url . '"},' . $redirect_delay . ');</script>';
-				  $redirect = $js_redir . $meta_redir;
+					 $update_results = $wpdb->query(
+						$wpdb->prepare(
+						   "UPDATE " . $wpdb->prefix ."trksit_hits
+						   SET hit_count = hit_count + 1
+						   WHERE url_id = %d
+						   AND hit_date = %s",
+						   $url_id, $today
+						)
+					 );
+
+					 if($update_results){
+						$redirect = $js_redir . $meta_redir;
+					 }
+
+				  } else if($hit_result_count === 0){
+					 $wpdb->insert(
+						$wpdb->prefix . 'trksit_hits',
+						array(
+						   'hit_count' => 1,
+						   'url_id' => $url_id,
+						   'hit_date' => $today
+						),
+						array( '%d', '%d','%s' )
+					 );
+
+					 if($wpdb->insert_id){
+						$redirect = $js_redir . $meta_redir;
+					 }
+
+				  } else { die; }
+			   } else {
+				  if($testing) {
+					 $redirect = $js_redir . $meta_redir;
+				  } else {
+					 $redirect = 'no';
+				  }
 			   }
 
+			} else {
+			   //$trksit = new trksit();
+			   //$surl = $_GET['su'];
+			   //$flags_set = $trksit->wp_trksit_setMissingFlags($surl);
+			   $four04 = get_site_url() . '/error404';
+			   echo '<script type="text/javascript">setTimeout(function(){window.location.href = "'.$four04.'"},0);</script>';
+			   echo '<meta http-equiv="refresh" content="2; url='.$four04.'">';
 			}
-			else if($hit_result_count === 0){
-			   //echo 'Insert a new hit record and redirect to (' . $redirect_lookup[0]->destination_url . ').';
-
-			   $wpdb->insert(
-				  $wpdb->prefix . 'trksit_hits',
-				  array(
-					 'hit_count' => 1,
-					 'url_id' => $url_id,
-					 'hit_date' => $today
-				  ),
-				  array( '%d', '%d','%s' )
-			   );
-
-			   if($wpdb->insert_id){
-				  //$redirect = '<script type="text/javascript">setTimeout(function(){window.location.href = "' . $redirect_lookup[0]->destination_url . '"},' . $redirect_delay . ');</script>';
-				  $redirect = $js_redir . $meta_redir;
-			   }
-
-			}else{ die; }
-
-		 }else{
-			//$trksit = new trksit();
-			//$surl = $_GET['su'];
-			//$flags_set = $trksit->wp_trksit_setMissingFlags($surl);
-			$four04 = get_site_url() . '/error404';
-			echo '<script type="text/javascript">setTimeout(function(){window.location.href = "'.$four04.'"},0);</script>';
-			echo '<meta http-equiv="refresh" content="2; url='.$four04.'">';
+		 } else {
+			$redirect = 'no';
 		 }
-
 	  }else{ die; }
 
    }else{ die; }
@@ -125,7 +150,8 @@
 	  <meta http-equiv="refresh" content="0; url=<?php echo $redirect_lookup[0]->destination_url; ?>">
 	  <?php endif; ?>
 
-	  <title><?php echo $redirect_lookup[0]->meta_title; ?></title>
+	  <title><?php if(!$scripterror) { echo $redirect_lookup[0]->meta_title; } else { echo "Script Error"; }?></title>
+	  <?php if(!$scripterror): ?>
 	  <meta name="description" content="<?php echo $redirect_lookup[0]->meta_description; ?>" />
 
 	  <link rel="canonical" href="<?php echo $redirect_lookup[0]->destination_url; ?>">
@@ -210,6 +236,7 @@
 			})();
 
 		 </script>
+		 <?php endif; ?>
 
 		 <style>
 			#holdup {
@@ -261,22 +288,49 @@
 				  7% { opacity: 0; }
 				  100% { opacity: 1; }
 			}
+			code {
+				  color: #FF0000;
+			}
 		 </style>
 
 	  </head>
 	  <body>
+		 <?php if(!$scripterror): ?>
 		 <h2 id='holdup'>Please wait, loading requested site</h2>
+		 <?php else: ?>
+		 <h2>Script Error</h2>
+		 <code id='script_error_message'></code>
+		 <p>Information on using the console <a href='http://codex.wordpress.org/Using_Your_Browser_to_Diagnose_JavaScript_Errors' target='_blank'>here</a>
+		 <?php endif; ?>
 
 		 <script>
 
 			<?php
-			   foreach($script_array as $script){
-				  if($script['error'] == 0) {
-		 			 $script_out = stripslashes(htmlspecialchars_decode($script['script']));
+			   if(!$scripterror){
+				  foreach($script_array as $script){
+					 if($script['error'] == 0) {
+						$script_out = stripslashes(htmlspecialchars_decode($script['script']));
+						$script_out = stripslashes($script_out);
+						echo 'try{ ';
+						echo $script_out;
+						echo ' } catch(err){ ';
+						echo 'handle_error(err.message, ' . $script['id'] . ');';
+						echo '}  ';
+					 }
+				  }
+			   } else {
+				  $error_script = $wpdb->get_results("SELECT script FROM "
+				  . $wpdb->prefix . "trksit_scripts WHERE script_id=" . $script_id . " LIMIT 1");
+				  if($error_script){
+					 $script_out = stripslashes(htmlspecialchars_decode($error_script[0]->script));
 					 $script_out = stripslashes($script_out);
-					 echo 'try{ ';
+					 echo 'try { ';
 					 echo $script_out;
-					 echo ' } catch(err){ handle_error(err.message, ' . $script['id'] . '); }  ';
+					 echo ' } catch(err) {';
+					 echo 'console.log("ERROR: " + err.message);';
+					 echo 'console.log(err);';
+					 echo 'document.getElementById("script_error_message").innerHTML=err + " - Open console for more information";';
+					 echo '}';
 				  }
 			   }
 			?>
@@ -295,21 +349,21 @@
 			}
 
 			function doAjax(url, error, id) {
-			   var xmlhttp = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
-			   xmlhttp.onreadystatechange = function() {
-				  if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-					 console.log(xmlhttp.responseText);
+				  var xmlhttp = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+				  xmlhttp.onreadystatechange = function() {
+					 if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+						//console.log(xmlhttp.responseText);
+					 }
 				  }
+				  xmlhttp.open("POST", url, true);
+				  xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+				  xmlhttp.send("action=nopriv_handle_script&error=" + error + "&id=" + id);
 			   }
-			   xmlhttp.open("POST", url, true);
-			   xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-			   xmlhttp.send("action=nopriv_handle_script&error=" + error + "&id=" + id);
-			}
 
 
 
-   </script>
-   <?php setcookie("trks_new", "new_user", time()+900); echo $redirect; ?>
-</body>
-   </html>
+			</script>
+			<?php if(!$scripterror){ echo $redirect; } ?>
+		 </body>
+	  </html>
 
