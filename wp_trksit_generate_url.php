@@ -46,9 +46,13 @@
 			<span class="copy-btn-wrap" style="margin: 0 0 5px 10px;">
 			   <a class="trksit-copy-btn" id="trks-copy-btn" data-trksit-link="<?php echo $shortURL; ?>"><?php _e('Copy');?></a>
 			</span>
+			<span class="copy-btn-wrap" style="margin: 0 0 5px 10px;">
+			   <a class="trksit-copy-btn" id="trks-copy-btn" data-trksit-link="<?php echo $shortURL . '/test'; ?>"><?php _e('Test *');?></a>
+			</span>
 
 		 </h2>
 		 <p><a class='trksit-admin-button btn btn-success' href='./admin.php?page=trksit-generate'>Create another link</a></p>
+		 <p><small>* Test will not trigger analytics or count hit</small></p>
 	  </div>
 	  <div class="trksit_col right"></div>
 	  <?php endif; ?>
