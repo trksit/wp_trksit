@@ -33,10 +33,13 @@
 		 $testing = true;
 	  }
 	  if($_GET['testing'] == 'scripterror'){
-		 $scripterror = true;
 		 if(isset($_GET['scriptid'])){
 			$script_id = intval($_GET['scriptid']);
 		 }
+		 if(!isset($_GET['script_error_nonce']) || !wp_verify_nonce($_GET['script_error_nonce'], 'script_error_' . $script_id)){
+			die("Access denied");
+		 }
+		 $scripterror = true;
 	  }
    }
 

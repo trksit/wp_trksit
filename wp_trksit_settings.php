@@ -205,6 +205,7 @@
 							  echo stripslashes($table_row->label);
 							  if($table_row->script_error) {
 								 $url = '/index.php?trksitgo=1&url_id=scripterror&testing=scripterror&scriptid=' . $table_row->script_id;
+								 $url = wp_nonce_url($url, 'script_error_' . $table_row->script_id, 'script_error_nonce');
 								 echo " * &nbsp; <a href='".$url."' class='script_debug' target='_blank'>[execute]</a>";
 								 $footnote = '<p style="color: #a94442; float: left; padding-top: 20px;">'
 									. '<span style="float: left;">*</span>'
