@@ -15,7 +15,6 @@
    $analytics_id = get_option('trksit_analytics_id');
    $redirect_delay = get_option('trksit_redirect_delay');
    $redirect = '';
-   setcookie("trks_new", "new_user", time()+900);
 
 
    //THIS SHOULD BE GOTTEN FROM THE DB
@@ -310,7 +309,7 @@
 
 
    </script>
-   <?php echo $redirect; ?>
+   <?php setcookie("trks_new", "new_user", time()+900); echo $redirect; ?>
 </body>
    </html>
 

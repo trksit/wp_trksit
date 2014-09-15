@@ -12,6 +12,7 @@
 
 <?php if($_GET['page'] == 'trksit-generate'): ?>
 
+
 <div class="wrap" id="trksit-wrap"><!--wrap-->
    <h2 class="trksit-header top"><img src="<?php echo plugins_url( '/wp_trksit/img/trksit-icon-36x36.png' , dirname(__FILE__) ); ?>" class="trksit-header-icon" /><?php echo __( 'Generate a New Trks.it URL', 'trksit_menu' ); ?></h2>
    <?php
@@ -73,7 +74,28 @@
 
 
 	  <?php
-		 $trksit->wp_trksit_parseURL($_POST['destination_url']);
+		 if(!isset($_SESSION['opengraph'])){
+			$trksit->wp_trksit_parseURL($_POST['destination_url']);
+			$trksit_title = substr($trksit->wp_trksit_getTitle(), 0, 100);
+			$trksit_description = substr($trksit->wp_trksit_getDescription(), 0, 157);
+			$trksit_images = $trksit->imgArray;
+			if(strlen($trksit->wp_trksit_getDescription()) > 157) $trksit_description .= "...";
+		 } else {
+			$trksit_title = '';
+			if(isset($_SESSION['opengraph']['og:title'])){
+			   $trksit_title = $_SESSION['opengraph']['og:title'];
+			}
+			$trksit_description = '';
+			if(isset($_SESSION['opengraph']['og:description'])){
+			   $trksit_description = $_SESSION['opengraph']['og:description'];
+			}
+			$trksit_imgarray = $_SESSION['opengraph']['og:image'];
+			$trksit_images = array();
+			foreach($trksit_imgarray as $tk_img){
+			   array_push($trksit_images, $tk_img['og:image:url']);
+			}
+
+		 }
 		 $trks_error = $trksit->wp_trksit_getErrors();
 		 if(is_wp_error($trks_error)){
 			echo '<h2 class="trksit-header">' . $trks_error->get_error_message() . '</h2>';
@@ -101,13 +123,13 @@
 			   <div class="control-group">
 				  <label class="control-label" for="title"><?php _e('Title:'); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e('The title to be used when sharing the content. This is pulled from the pages Open Graph data if it already exists. If not, it defaults to the title of the page.'); ?>" data-original-title="<?php _e('Title'); ?>"><i class="icon-question-sign"></i></a></label>
 				  <div class="controls">
-					 <input name="meta_title" id="title" type="text" maxlength="100" value="<?php echo substr($trksit->wp_trksit_getTitle(), 0, 100);?>">
+					 <input name="meta_title" id="title" type="text" maxlength="100" value="<?php echo $trksit_title; ?>">
 				  </div>
 			   </div>
 			   <div class="control-group">
 				  <label class="control-label" for="description"><?php _e('Description:'); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e('The description to be used when sharing the content. This is pulled from the pages Open Graph data if it already exists. If not, it defaults to the meta description of the page.'); ?>" data-original-title="<?php _e('Description'); ?>"><i class="icon-question-sign"></i></a></label>
 				  <div class="controls">
-					 <textarea name="meta_description" id="description" rows="5" maxlength="255"><?php echo substr($trksit->wp_trksit_getDescription(), 0, 157); if(strlen($trksit->wp_trksit_getDescription()) > 157){echo "...";}?></textarea>
+					 <textarea name="meta_description" id="description" rows="5" maxlength="255"><?php echo $trksit_description; ?></textarea>
 				  </div>
 			   </div>
 			</div>
@@ -199,7 +221,7 @@
 			<div class="control-group controls">
 			   <select name="meta_image" id="preview-image-picker">
 				  <?php
-					 foreach($trksit->imgArray as $image){
+					 foreach($trksit_images as $image){
 						echo sprintf('<option data-img-src="%s" value="%s">%s</option>', $image, $image, $image);
 					 }
 				  ?>
@@ -227,6 +249,8 @@
 			$trksit = new trksit();
 			$trksit->wp_trksit_resetToken();
 		 }
+
+		 unset($_SESSION['opengraph']);
 
 	  ?>
 

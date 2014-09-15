@@ -182,13 +182,13 @@
 		 <tbody>
 
 			<?php
+			   $footnote = '';
 			   $table_data = $wpdb->get_results(
 				  "SELECT * FROM " . $wpdb->prefix . "trksit_scripts ORDER BY date_created DESC, script_id DESC" );
 
 
 				  if(count($table_data)){
 
-					 $footnote = '';
 					 foreach($table_data as $table_row){
 						$q = "SELECT url_id FROM " . $wpdb->prefix . "trksit_scripts_to_urls WHERE script_id = " . $table_row->script_id;
 						$times_used = $wpdb->get_results($q);

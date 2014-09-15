@@ -260,10 +260,19 @@ function trksit_flush_buffers() {
 	}
  }
 
+ //Add header encoding for output buffering
  add_action( 'wp_loaded','trksit_set_header_encoding' );
  function trksit_set_header_encoding(){
 	if(isset($_GET['page']) && ($_GET['page'] == 'trksit-generate' || $_GET['page'] == 'trksit-settings' || $_GET['page'] == 'trksit-dashboard') && !empty($_POST)){
 	   header('Content-Encoding: none;'); // Use with ob_start() and flushing of buffers!!!
+	}
+ }
+
+ //Start session for generate URL section
+ add_action( 'init', 'trksit_session_start');
+ function trksit_session_start(){
+	if(isset($_GET['page']) && $_GET['page'] == 'trksit-generate' && session_id() == ''){
+	   session_start();
 	}
  }
 

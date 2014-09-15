@@ -173,10 +173,15 @@
 			$this->imgArray = $opengraph_images;
 			if(isset($opengraph['open_graph']['og:title'])){
 			   $this->title = $opengraph['open_graph']['og:title'];
+			} else {
+			   $this->title = '';
 			}
 			if(isset($opengraph['open_graph']['og:description'])){
 			   $this->description = $opengraph['open_graph']['og:description'];
+			} else {
+			   $this->description = '';
 			}
+			$_SESSION['opengraph'] = $opengraph['open_graph'];
 		 }
 	  }	//END parseURL
 
