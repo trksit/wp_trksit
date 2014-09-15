@@ -51,7 +51,7 @@
 		 $email = get_option('admin_email');
 		 $site = str_replace("http://", "", get_site_url());
 		 $msg = "The script \"" . $script->label . "\" has thrown an execution error.  The script has been disabled in the database.  Please fix the script syntax and update in the trksit plugin settings.";
-		 $subject = "Script error om the " . $site . " website";
+		 $subject = "Script error on the " . $site . " website";
 		 $headers = 'From: <no-reply@'.$site.'>' . "\r\n";
 		 wp_mail($email, $subject, $msg, $headers);
 

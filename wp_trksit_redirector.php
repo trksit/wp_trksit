@@ -188,9 +188,8 @@
 			echo '<meta property="og:url" content="' . $redirect_lookup[0]->destination_url . '" />
 			';
 		 }
-
+		 if(!$testing):
 	  ?>
-
 	  <script type="text/javascript">
 		 function getCookie(c_name) {
 			   if (document.cookie.length > 0) {
@@ -239,7 +238,7 @@
 			})();
 
 		 </script>
-		 <?php endif; ?>
+		 <?php endif; endif; ?>
 
 		 <style>
 			#holdup {
@@ -362,9 +361,6 @@
 				  xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
 				  xmlhttp.send("action=nopriv_handle_script&error=" + error + "&id=" + id);
 			   }
-
-
-
 			</script>
 			<?php if(!$scripterror){ echo $redirect; } ?>
 		 </body>
