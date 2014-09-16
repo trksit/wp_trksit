@@ -276,6 +276,15 @@ function trksit_flush_buffers() {
 	}
  }
 
+ //cleaner way to force 404
+ function trksit_parse_query_404() {
+   	global $wp_query;
+	if ( $_GET['error404'] == 'true' )
+        $wp_query->set_404();
+        status_header( 404 );
+   }
+   add_action( 'wp', 'trksit_parse_query_404' );
+
  //Debug log function
  if(!function_exists('_log')){
 	function _log( $message ) {

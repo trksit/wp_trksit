@@ -1,4 +1,7 @@
 <?php
+   if(!isset($_COOKIE['trksit_new'])){
+	  setcookie("trks_new", "new_user", time()+900);
+   }
    // Setting cache-control headers
    header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
    header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0',false);
@@ -6,7 +9,7 @@
 
    //Forward to 404 page if id is not set.
    if(!isset($_GET['url_id'])){
-	  $four04 = get_site_url() . '/error404';
+	  $four04 = '/index.php?error404=true';
 	  echo '<script type="text/javascript">setTimeout(function(){window.location.href = "'.$four04.'"},0);</script>';
 	  echo '<meta http-equiv="refresh" content="2; url='.$four04.'">';
    }
@@ -15,9 +18,6 @@
    $analytics_id = get_option('trksit_analytics_id');
    $redirect_delay = get_option('trksit_redirect_delay');
    $redirect = '';
-   if(!isset($_COOKIE['trksit_new'])){
-	  setcookie("trks_new", "new_user", time()+900);
-   }
 
 
    //THIS SHOULD BE GOTTEN FROM THE DB
@@ -56,12 +56,12 @@
 
 			$redirect_lookup = $wpdb->get_results( 'SELECT * FROM ' . $wpdb->prefix . 'trksit_urls WHERE url_id=' . $incoming_url_id );
 
-			$js_redir = '<script type="text/javascript">setTimeout(function(){window.location.href = "'
-			   . $redirect_lookup[0]->destination_url . '"},' . $redirect_delay . ');</script>';
-			$meta_redir = '<meta http-equiv="refresh" content="2; url='.$redirect_lookup[0]->destination_url.'">';
 
 			// If destination URL exsists in wpdb result. Output redirect script.
-			if($redirect_lookup[0]->destination_url){
+			if($redirect_lookup && $redirect_lookup[0]->destination_url){
+			   $js_redir = '<script type="text/javascript">setTimeout(function(){window.location.href = "'
+				  . $redirect_lookup[0]->destination_url . '"},' . $redirect_delay . ');</script>';
+			   $meta_redir = '<meta http-equiv="refresh" content="2; url='.$redirect_lookup[0]->destination_url.'">';
 
 			   $url_id = $redirect_lookup[0]->url_id;
 			   $today = date('Y-m-d');
@@ -130,10 +130,10 @@
 			   }
 
 			} else {
-			   //$trksit = new trksit();
-			   //$surl = $_GET['su'];
-			   //$flags_set = $trksit->wp_trksit_setMissingFlags($surl);
-			   $four04 = get_site_url() . '/error404';
+			   $trksit = new trksit();
+			   $surl = $_GET['su'];
+			   $flags_set = $trksit->wp_trksit_setMissingFlags($surl);
+			   $four04 = '/index.php?error404=true';
 			   echo '<script type="text/javascript">setTimeout(function(){window.location.href = "'.$four04.'"},0);</script>';
 			   echo '<meta http-equiv="refresh" content="2; url='.$four04.'">';
 			}
@@ -144,7 +144,7 @@
 
    }else{ die; }
 
-
+   if($redirect_lookup){
 ?>
 <!DOCTYPE html>
 <html prefix="og: http://ogp.me/ns#" xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://www.facebook.com/2008/fbml">
@@ -365,4 +365,5 @@
 			<?php if(!$scripterror){ echo $redirect; } ?>
 		 </body>
 	  </html>
+   <?php } ?>
 
