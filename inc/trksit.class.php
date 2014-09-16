@@ -36,6 +36,14 @@
 
 	  }
 
+	  private function wp_trksit_handleError($error){
+		 if(!is_wp_error($this->trksit_errors)){
+			$this->trksit_errors = new WP_Error( 'broke', __($error, 'trks.it'));
+		 } else {
+			$this->trksit_errors->add( 'broke', __($error, 'trks.it'));
+		 }
+	  }
+
 	  /**
 	  * wp_trksit_handle_script - Called via ajax when a script errors to set db flags
 	  * This function runs on the try/catch of the output scripts on the go page
@@ -127,7 +135,7 @@
 
 		 //Handle cURL errors
 		 if($og_html['error']['error_code']) {
-			$this->trksit_errors = new WP_Error( 'broke', __($og_html['error']['error_message'], 'trks.it'));
+			$this->wp_trksit_handleError($og_html['error']['error_message']);
 		 }
 
 		 //Send encoded HTML to API for opengraph data
@@ -146,7 +154,7 @@
 		 );
 
 		 if($get_opengraph['response']['code'] === 400){
-			$this->trksit_errors = new WP_Error( 'broke', __( json_decode($get_opengraph['body'])->msg, "trks.it" ) );
+			$this->wp_trksit_handleError(json_decode($get_opengraph['body'])->msg);
 		 }
 		 // Need error handling here when API times out - 140820
 		 if( $get_opengraph['response']['code'] === 500 || $get_opengraph['response']['code'] === 400 ){
@@ -220,24 +228,29 @@
 		 $longURL = get_site_url() . '/index.php?trksitgo=1&url_id=' . $shareURL_ID . '&utm_source='.$postArray['source'].'&utm_medium='.$postArray['medium'].'&utm_campaign='.$postArray['campaign'];
 		 //shorten the URL
 		 $shortURL = $this->wp_trksit_generateURL($longURL,$postArray);
-		 //$shortURL = "https://trks.it/" . $shortURL;
-		 $shortURL = $this->short_url_base . $shortURL;
+		 if($shortURL){
+			$shortURL = $this->short_url_base . $shortURL;
 
+			//set the updateArray & whereArray for the shortened URL
+			$updateArray = array('trksit_url' => $shortURL);
+			$whereArray = array('url_id' => $shareURL_ID);
 
-		 //set the updateArray & whereArray for the shortened URL
-		 $updateArray = array('trksit_url' => $shortURL);
-		 $whereArray = array('url_id' => $shareURL_ID);
+			//Including database class
+			$wpdb->update(
+			   $wpdb->prefix . 'trksit_urls',
+			   $updateArray,
+			   $whereArray,
+			   array('%s'),
+			   array('%d')
+			);
 
-		 //Including database class
-		 $wpdb->update(
-			$wpdb->prefix . 'trksit_urls',
-			$updateArray,
-			$whereArray,
-			array('%s'),
-			array('%d')
-		 );
+			return $shortURL;
+		 } else {
+			$wpdb->delete( $wpdb->prefix . 'trksit_urls', array('url_id' => $shareURL_ID));
+			$this->wp_trksit_handleError('Short URL Unavailable.');
+			return false;
+		 }
 
-		 return $shortURL;
 
 
 	  }	//END shortenURL
@@ -418,9 +431,15 @@
 			);
 
 			if(is_wp_error($result)){
-			   $this->trksit_errors = new WP_Error( 'broke', __( $result->get_error_message(), "trks.it" ) );
-			   return "Error";
+			   $this->wp_trksit_handleError($result->get_error_message());
+			   return false;
 			}
+
+			if($result['response']['code'] == 500){
+			   $this->wp_trksit_handleError(json_decode($result['body'])->msg);
+			   return false;
+			}
+
 			//sometimes the API returns a 404 when the og_data is sent, so resend the data to shorten URL with og data removed
 			if( $result['response']['code'] != 201 ){
 			   unset($body["og_data"]);
@@ -434,7 +453,7 @@
 			   $result = $result2;
 			}
 			if($result['response']['code'] === 400){
-			   $this->trksit_errors = new WP_Error( 'broke', __( json_decode($result['body'])->msg, "trks.it" ) );
+			   $this->wp_trksit_handleError(json_decode($result['body'])->msg);
 			}
 
 			$output = json_decode($result['body']);

@@ -35,27 +35,28 @@
 	  </div>
 	  <?php
 		 if(is_wp_error($trks_error)){
-			echo '<h2 class="trksit-header">' . $trks_error->get_error_message() . '</h2>';
-			echo '<p><a href="/wp-admin/admin.php?page=trksit-settings">Please visit settings to correct</a></p>';
-		 }
+			$wp_errors = $trks_error->get_error_messages();
+			foreach($wp_errors as $e){
+			   echo '<h2 class="trksit-header">'.$e.'</h2>';
+			}
+		 } else {
 	  ?>
-	  <?php if(!is_wp_error($trks_error)): ?>
 	  <div class="trksit_col left">
 		 <h2>
 			<?php _e('Here\'s Your Tracking URL:'); ?> <?php echo $shortURL; ?>
 			<span class="copy-btn-wrap" style="margin: 0 0 5px 10px;">
 			   <a class="trksit-copy-btn" id="trks-copy-btn" data-trksit-link="<?php echo $shortURL; ?>"><?php _e('Copy');?></a>
 			</span>
-			<span class="copy-btn-wrap" style="margin: 0 0 5px 10px;">
-			   <a class="trksit-copy-btn" id="trks-copy-btn" data-trksit-link="<?php echo $shortURL . '/test'; ?>"><?php _e('Test *');?></a>
-			</span>
 
 		 </h2>
 		 <p><a class='trksit-admin-button btn btn-success' href='./admin.php?page=trksit-generate'>Create another link</a></p>
+		 <span class="copy-btn-wrap">
+			<a class="trksit-copy-btn" id="trks-copy-btn" data-trksit-link="<?php echo $shortURL . '/test'; ?>"><?php _e('Copy Test URL *');?></a>
+		 </span>
 		 <p><small>* Test will not trigger analytics or count hit</small></p>
 	  </div>
 	  <div class="trksit_col right"></div>
-	  <?php endif; ?>
+	  <?php } ?>
 
 	  <?php
 		 /* ---- Step 2 ---- */
@@ -104,19 +105,13 @@
 		 if(is_wp_error($trks_error)){
 			echo '<h2 class="trksit-header">' . $trks_error->get_error_message() . '</h2>';
 			echo '<p><a href="/wp-admin/admin.php?page=trksit-settings">Please visit settings to correct</a></p>';
-		 }
+		 } else {
 	  ?>
-
-	  <?php if(!is_wp_error($trks_error)): ?>
-
 
 	  <form class="trksit-form"  method="post">
 		 <div class="trksit_col left">
-
 			<div class="trksit-section">
-
 			   <h2 class="trksit-header"><?php _e('Sharing Options'); ?></h2>
-
 			   <div class="control-group">
 				  <label class="control-label"><?php _e('Destination URL:'); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e('The user will end up at this url.'); ?>" data-original-title="<?php _e('Destination URL'); ?>"><i class="icon-question-sign"></i></a></label>
 				  <div class="controls">
@@ -137,11 +132,8 @@
 				  </div>
 			   </div>
 			</div>
-
 			<div class="trksit-section">
-
 			   <h2 class="trksit-header"><?php _e('Analytics Tracking Data'); ?> <button class="btn btn-small" id="advanced-toggle" data-toggle="button"><?php _e('Show Advanced Options'); ?></button></h2>
-
 			   <div class="control-group">
 				  <label class="control-label" for="campaign"><?php _e('Campaign Name:'); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e('Use this field to define a unique campaign value to be sent into your Google Analytics dashboard.'); ?>" data-original-title="<?php _e('Campaign Name'); ?>"><i class="icon-question-sign"></i></a></label>
 				  <div class="controls">
@@ -241,7 +233,7 @@
 		 </div>
 
 	  </form>
-	  <?php endif; ?>
+	  <?php } ?>
 
 	  <?php
 		 /* ---- Step 1 ---- */
