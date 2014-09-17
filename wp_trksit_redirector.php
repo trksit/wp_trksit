@@ -59,6 +59,18 @@
 
 			// If destination URL exsists in wpdb result. Output redirect script.
 			if($redirect_lookup && $redirect_lookup[0]->destination_url){
+			   //get the short URL code
+			   $surl = $_GET['su'];
+
+			   //Check for transient that is set when a link is not in the database
+			   //If found, API call to revert the flag set at trks.it
+			   if(get_transient('trksit_404_' . $surl)){
+				  $trksit = new trksit();
+				  $flags_set = $trksit->wp_trksit_setMissingFlags($surl, true);
+				  delete_transient( 'trksit_404_' . $surl );
+			   }
+
+			   //Set redirect URLs
 			   $js_redir = '<script type="text/javascript">setTimeout(function(){window.location.href = "'
 				  . $redirect_lookup[0]->destination_url . '"},' . $redirect_delay . ');</script>';
 			   $meta_redir = '<meta http-equiv="refresh" content="2; url='.$redirect_lookup[0]->destination_url.'">';
@@ -81,6 +93,8 @@
 					 array_push($script_array, $script_results);
 				  }
 			   }
+
+			   //Do not increment hit counter if testing link or debugging javascript
 			   if(!$testing && !$scripterror){
 				  $hit_result = $wpdb->get_results(
 					 "SELECT * FROM " . $wpdb->prefix . "trksit_hits WHERE url_id="
@@ -89,7 +103,6 @@
 				  $hit_result_count = count($hit_result);
 
 				  if($hit_result_count === 1){
-					 //echo 'Update the current hit record and redirect to (' . $redirect_lookup[0]->destination_url . ').';
 
 					 $update_results = $wpdb->query(
 						$wpdb->prepare(
@@ -122,6 +135,7 @@
 
 				  } else { die; }
 			   } else {
+				  //testing redirects, script_error should not
 				  if($testing) {
 					 $redirect = $js_redir . $meta_redir;
 				  } else {
@@ -132,7 +146,14 @@
 			} else {
 			   $trksit = new trksit();
 			   $surl = $_GET['su'];
+
+			   //set transient to let us know that a 404 has ocurred with this short URL
+			   set_transient('trksit_404_'.$surl, '404', 60*60*24*30);
+
+			   //flag the URL in the API
 			   $flags_set = $trksit->wp_trksit_setMissingFlags($surl);
+
+			   //If we have a redirect URL returned use it, otherwise 404
 			   if($redir_url = json_decode($flags_set['body'])->url){
 				  $four04 = $redir_url;
 			   } else {
@@ -192,6 +213,8 @@
 			echo '<meta property="og:url" content="' . $redirect_lookup[0]->destination_url . '" />
 			';
 		 }
+
+		 //skip analytics if testing
 		 if(!$testing):
 	  ?>
 	  <script type="text/javascript">
@@ -312,6 +335,7 @@
 		 <script>
 
 			<?php
+			   //testing outputs user defined scripts
 			   if(!$scripterror){
 				  foreach($script_array as $script){
 					 if($script['error'] == 0) {
@@ -325,6 +349,7 @@
 					 }
 				  }
 			   } else {
+				  //scrit execute/debug only outputs the script being debugged
 				  $error_script = $wpdb->get_results("SELECT script FROM "
 				  . $wpdb->prefix . "trksit_scripts WHERE script_id=" . $script_id . " LIMIT 1");
 				  if($error_script){
@@ -343,7 +368,9 @@
 
 			<?php echo 'var ajaxurl = "wp-admin/admin-ajax.php"'; ?>
 
-
+			//In catch block, ajax call to set error flags
+			//if a script produces an error
+			//emails site admin
 			function handle_error(error, id){
 			   var dd = {
 				  action: 'nopriv_handle_script',

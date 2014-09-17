@@ -67,7 +67,7 @@
 		 exit;
 	  }
 
-	  function wp_trksit_setMissingFlags($shorturl){
+	  function wp_trksit_setMissingFlags($shorturl, $revert = false){
 		 $flags = wp_remote_post(
 			$this->api."/urls/missing", array(
 			   'user-agent'=>'trks.it WordPress '.get_bloginfo('version'),
@@ -78,7 +78,7 @@
 				  'Content-Type' => 'application/x-www-form-urlencoded'
 			   ),
 			   //POST parameters
-			   'body' => array('short_url' => $shorturl)
+			   'body' => array('short_url' => $shorturl, 'revert' => $revert)
 			)
 		 );
 
