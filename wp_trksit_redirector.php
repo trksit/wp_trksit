@@ -144,7 +144,7 @@
 
    }else{ die; }
 
-   if($redirect_lookup){
+   if((isset($redirect_lookup) && $redirect_lookup) || $scripterror){
 ?>
 <!DOCTYPE html>
 <html prefix="og: http://ogp.me/ns#" xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://www.facebook.com/2008/fbml">

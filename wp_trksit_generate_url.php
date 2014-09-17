@@ -43,16 +43,14 @@
 	  ?>
 	  <div class="trksit_col left">
 		 <h2>
+			<!-- trksit-admin-button btn btn-success -->
 			<?php _e('Here\'s Your Tracking URL:'); ?> <?php echo $shortURL; ?>
-			<span class="copy-btn-wrap" style="margin: 0 0 5px 10px;">
-			   <a class="trksit-copy-btn" id="trks-copy-btn" data-trksit-link="<?php echo $shortURL; ?>"><?php _e('Copy');?></a>
-			</span>
-
 		 </h2>
-		 <p><a class='trksit-admin-button btn btn-success' href='./admin.php?page=trksit-generate'>Create another link</a></p>
-		 <span class="copy-btn-wrap">
-			<a class="trksit-copy-btn" id="trks-copy-btn" data-trksit-link="<?php echo $shortURL . '/test'; ?>"><?php _e('Copy Test URL *');?></a>
-		 </span>
+		 <a class="trksit-copy-btn" id="trks-copy-btn" data-trksit-link="<?php echo $shortURL; ?>"><?php _e('Copy to Clipboard');?></a>
+		 <p>
+			<a class="trksit-copy-btn" id="trks-copy-btn-test" data-trksit-link="<?php echo $shortURL . '/test'; ?>"><?php _e('Copy Test URL *');?></a>
+			<a class='trksit-copy-btn' href='./admin.php?page=trksit-generate'>Create another link</a>
+		 </p>
 		 <p><small>* Test will not trigger analytics or count hit</small></p>
 	  </div>
 	  <div class="trksit_col right"></div>

@@ -246,7 +246,7 @@
 
 	  </div>
 
-	  <div id="add-script-window" class="modal fade hide" tabindex="-1" role="dialog" aria-labelledby="add-script-window" aria-hidden="true">
+	  <div id="add-script-window" class="modal fade hide" tabindex="-1" role="dialog" aria-labelledby="add-script-window" aria-hidden="true" style="display:none;">
 		 <div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 			<h3 id="myModalLabel"><?php _e("Add a New Custom Script"); ?></h3>
