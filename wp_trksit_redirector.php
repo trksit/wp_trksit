@@ -133,7 +133,11 @@
 			   $trksit = new trksit();
 			   $surl = $_GET['su'];
 			   $flags_set = $trksit->wp_trksit_setMissingFlags($surl);
-			   $four04 = '/index.php?error404=true';
+			   if($redir_url = json_decode($flags_set['body'])->url){
+				  $four04 = $redir_url;
+			   } else {
+				  $four04 = '/index.php?error404=true';
+			   }
 			   echo '<script type="text/javascript">setTimeout(function(){window.location.href = "'.$four04.'"},0);</script>';
 			   echo '<meta http-equiv="refresh" content="2; url='.$four04.'">';
 			}
