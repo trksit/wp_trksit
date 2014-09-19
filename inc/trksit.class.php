@@ -67,6 +67,14 @@
 		 exit;
 	  }
 
+	  /*
+	   * wp_trksit_setMissingFlags - API call to set 404 found or purge_request
+	   *
+	   * @param shortURL - the short URL code
+	   *
+	   * @param revert = false - Set to true if a page 404d due to deletion then was found later
+	   *
+	   */
 	  function wp_trksit_setMissingFlags($shorturl, $revert = false){
 		 $flags = wp_remote_post(
 			$this->api."/urls/missing", array(
@@ -83,6 +91,28 @@
 		 );
 
 		 return $flags;
+	  }
+
+	  function wp_trksit_api_uninstall($secret){
+		  $purge = wp_remote_post(
+			  $this->api."/urls/uninstall", array(
+				  'user-agent'=>'trks.it WordPress '.get_bloginfo('version'),
+				  'timeout'=>10,
+				  'blocking'=>true,
+				  'headers'=>array(
+					  'Authorization' => 'Bearer ' . get_option('trksit_token'),
+					  'Content-Type' => 'application/x-www-form-urlencoded'
+				  ),
+				  //POST parameters
+				  'body' => array('secret' => $secret)
+			  )
+		  );
+
+		  if($purge){
+			  return $purge;
+		  } else {
+			  return false;
+		  }
 	  }
 
 

@@ -1,5 +1,5 @@
 <?php
-   if(!empty($_POST)){
+   //if(!empty($_POST)){
    	  //Header setting moved to action hook
 	  //header('Content-Encoding: none;'); // Use with ob_start() and flushing of buffers!!!
 	  ob_start();
@@ -7,7 +7,7 @@
 	  echo '<h2>Loading...</h2><br />';
 	  echo '<img src="' . plugins_url( '/wp_trksit/img/loading.gif' , dirname(__FILE__) ) . '" alt="Loading" /></div>';
 	  trksit_flush_buffers();
-   }
+   //}
 ?>
 
 <?php if($_GET['page'] == 'trksit-generate'): ?>

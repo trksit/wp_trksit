@@ -78,6 +78,8 @@
 			   $url_id = $redirect_lookup[0]->url_id;
 			   $today = date('Y-m-d');
 
+				$redirect = $js_redir . $meta_redir;
+
 			   //Getting all the scripts for this URL
 			   if(!$scripterror){
 				  $scripts_to_url = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . "trksit_scripts_to_urls WHERE url_id=" . $url_id);
@@ -129,16 +131,11 @@
 						array( '%d', '%d','%s' )
 					 );
 
-					 if($wpdb->insert_id){
-						$redirect = $js_redir . $meta_redir;
-					 }
 
 				  } else { die; }
 			   } else {
 				  //testing redirects, script_error should not
-				  if($testing) {
-					 $redirect = $js_redir . $meta_redir;
-				  } else {
+				  if(!$testing) {
 					 $redirect = 'no';
 				  }
 			   }

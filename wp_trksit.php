@@ -82,6 +82,18 @@ function trksit_Install(){
 
 }
 
+register_uninstall_hook( __FILE__, 'trksit_uninstall');
+function trksit_uninstall(){
+	global $wpdb;
+	$trksit = new trksit();
+	$trksit->wp_trksit_resetToken();
+	$success = $trksit->wp_trksit_api_uninstall(get_option('trksit_private_api_key'));
+	$wpdb->query('DROP TABLE IF EXISTS ' . $wpdb->prefix . 'trksit_hits');
+	$wpdb->query('DROP TABLE IF EXISTS ' . $wpdb->prefix . 'trksit_scripts');
+	$wpdb->query('DROP TABLE IF EXISTS ' . $wpdb->prefix . 'trksit_scripts_to_urls');
+	$wpdb->query('DROP TABLE IF EXISTS ' . $wpdb->prefix . 'trksit_urls');
+}
+
 include( plugin_dir_path( __FILE__ ) . 'inc/trksit.class.php');
 add_action( 'init', array( new trksit, '__construct' ) );
 //load the needed scripts
@@ -197,7 +209,7 @@ function trksit_github_plugin_updater_init() {
       'zip_url' => 'https://github.com/trksit/wp_trksit/archive/master.zip', // the zip url of the github repo
       'sslverify' => false,
       'requires' => '1.1', // which version of WordPress does your plugin require?
-      'tested' => '3.7', // which version of WordPress is your plugin tested up to?
+      'tested' => '4.0', // which version of WordPress is your plugin tested up to?
       'readme' => 'README.md'
     );
 	  new WP_GitHub_Updater($config);
