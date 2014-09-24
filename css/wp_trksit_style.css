@@ -135,6 +135,7 @@ table#trks_dashboard td{
   }
   .popover.right .arrow{
   border-right-color: #333 !important;
+  margin-left: 0 !important;
   }
   .popover.right .arrow:after {
     border-right-color:#333 !important;
