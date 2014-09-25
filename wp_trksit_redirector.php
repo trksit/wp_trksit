@@ -213,6 +213,7 @@
 
 		 //skip analytics if testing
 		 if(!$testing):
+			 if(!is_null($analytics_id) && $analytics_id != ''):
 	  ?>
 	  <script type="text/javascript">
 		 function getCookie(c_name) {
@@ -262,7 +263,7 @@
 			})();
 
 		 </script>
-		 <?php endif; endif; ?>
+		 <?php endif; endif; endif; ?>
 
 		 <style>
 			#holdup {
