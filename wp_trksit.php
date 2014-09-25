@@ -164,6 +164,10 @@ function trksit_update_settings_redirect(){
 add_action('admin_menu', 'trksit_add_pages');
 function trksit_add_pages() {
 	$active = false;
+	if(!get_option('trksit_token') || time() > get_option('trksit_token_expires')){
+		$trksit = new trksit();
+		$trksit->wp_trksit_resetToken();
+	}
 	if(!get_transient('trksit_active_user')){
 		$trksit = new trksit();
 		if($trksit->wp_trksit_user_is_active()){
