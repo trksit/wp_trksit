@@ -409,21 +409,20 @@ $this->api."/parse/urls?".$url_paramaters, array(
 	}
 
 	function wp_trksit_user_is_active(){
-		$url = $this->api.'/clients/'.get_option('trksit_public_api_key');
+		$url = $this->api.'/active';
 		$headers = array(
 			'Authorization' => 'Bearer ' . get_option('trksit_token'),
 			'Content-Type' => 'aplication/x-www-form-urlencoded'
 		);
-
 		$request = new WP_Http;
-		$result = $request->request( $url, array('method' => 'GET', 'body' => array(), 'headers' => $headers));
-		$client_array = json_decode($result['body']);
-		$client = json_decode($client_array->client_ids);
-
-		if($client->active == 0) {
+		$result = $request->request( $url, array('method' => 'POST', 'body' => array(), 'headers' => $headers));
+		if(json_decode($result['body'])->error){
+			set_transient('trksit_active_user', 'inactive', 60*60*24);
 			return false;
+		} else {
+			set_transient('trksit_active_user', 'active', 60*60*24);
+			return true;
 		}
-		return true;
 	}
 
 	//Generating the shortened URL from trks.it
@@ -527,9 +526,11 @@ $this->api."/parse/urls?".$url_paramaters, array(
 		if(isset($output->code->access_token)){
 			update_option('trksit_token', $output->code->access_token);
 			update_option('trksit_token_expires', $output->code->expires);
+			set_transient('trksit_active_user', 'active', 60*60*24);
 		} else {
 			delete_option('trksit_token');
 			delete_option('trksit_token_expires');
+			set_transient('trksit_active_user', 'inactive', 60*60*24);
 		}
 
 		return $output;

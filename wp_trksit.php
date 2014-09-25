@@ -117,8 +117,8 @@ function trksit_load_scripts() {
 		wp_enqueue_script('trksit-main-js');
 
 	}
-  if(isset($_GET['page']) && $_GET['page'] == 'trksit-dashboard'){
-  	wp_enqueue_script('jquery-ui-datepicker');
+	if(isset($_GET['page']) && $_GET['page'] == 'trksit-dashboard'){
+		wp_enqueue_script('jquery-ui-datepicker');
 		wp_enqueue_style('morris-css', plugins_url( '/wp_trksit/js/morris.js/morris.css',dirname(__FILE__)),'','0.4.3');
 		wp_register_script('raphael-js', plugins_url( '/wp_trksit/js/raphael-min.js',dirname(__FILE__)) , '','2.1.2');
 		wp_enqueue_script('raphael-js');
@@ -126,28 +126,98 @@ function trksit_load_scripts() {
 		wp_enqueue_script('datatables', plugins_url( '/wp_trksit/js/datatables/js/jquery.dataTables.min.js',dirname(__FILE__)),array('jquery'),'1.9.4',true);
 		wp_enqueue_style('jquery-ui-bootstrap', plugins_url( '/wp_trksit/css/jquery-ui-1.10.0.custom.css',dirname(__FILE__)),'','0.4.3');
 	}
-  if(isset($_GET['page']) && $_GET['page'] == 'trksit-generate'){
+	if(isset($_GET['page']) && $_GET['page'] == 'trksit-generate'){
 
 		wp_register_script('trksit-generate-js', plugins_url( '/wp_trksit/js/generate.js' , dirname(__FILE__)),array('jquery'),'1.2.1',true);
 		wp_enqueue_script('trksit-generate-js');
 	}
 }
 
+// Saves options from settings then redirects to refresh the admin menu
+// If the plugin is active, all pages show in admin menu
+// If not, only settings.  See trksit_add_pages() function.
+add_action('plugins_loaded', 'trksit_update_settings_redirect');
+function trksit_update_settings_redirect(){
+	if((isset($_POST['trksit_page']) && $_POST['trksit_page'] == 'settings')
+		&& ( !empty($_POST) && check_admin_referer('trksit_save_settings','trksit_general_settings') )) {
+		$trksit_analytics_id = $_POST['trksit_analytics_id'];
+		$trksit_public_api_key = $_POST['trksit_public_api_key'];
+		$trksit_private_api_key = $_POST['trksit_private_api_key'];
+		$trksit_jquery = $_POST['trksit_jquery'];
+		$trksit_redirect_delay = $_POST['trksit_redirect_delay'];
+
+		if($trksit_public_api_key != '' && $trksit_private_api_key != ''){
+			update_option('trksit_analytics_id', $trksit_analytics_id);
+			update_option('trksit_public_api_key', $trksit_public_api_key);
+			update_option('trksit_private_api_key', $trksit_private_api_key);
+			update_option('trksit_jquery', $trksit_jquery);
+			update_option('trksit_redirect_delay', $trksit_redirect_delay);
+		}
+		$trksit = new trksit();
+		$trksit->wp_trksit_resetToken();
+		//Refresh so the admin menu has the correct pages
+		wp_redirect('/wp-admin/admin.php?page=trksit-settings');
+	}
+}
+
 //add pages to WordPress sidebar
 add_action('admin_menu', 'trksit_add_pages');
 function trksit_add_pages() {
-  add_menu_page(__('Dashboard &lsaquo; Trks.it','trksit_menu'), __('Trks.it','trksit_menu'), 'manage_options', 'trksit-dashboard', 'trksit_dashboard', plugins_url( '/wp_trksit/img/trksit-icon-16x16.png' , dirname(__FILE__) ) );
-  add_submenu_page('trksit-dashboard', __('Generate URL &lsaquo; Trks.it','trksit_menu'), __('Generate URL','trksit_menu'), 'manage_options', 'trksit-generate', 'trksit_generate');
-  add_submenu_page('trksit-dashboard', __('Plugin Settings &lsaquo; Trks.it','trksit_menu'), __('Settings','trksit_menu'), 'manage_options', 'trksit-settings', 'trksit_settings');
+	$active = false;
+	if(!get_transient('trksit_active_user')){
+		$trksit = new trksit();
+		if($trksit->wp_trksit_user_is_active()){
+			$active = true;
+		}
+	} else {
+		if('active' == get_transient('trksit_active_user')){
+			$active = true;
+		}
+	}
+	if(!$active){
+		add_menu_page(
+			__('Plugin Settings &lsaquo; Trks.it','trksit_menu'),
+			__('Trks.it Settings','trksit_menu'),
+			'manage_options',
+			'trksit-settings',
+			'trksit_settings',
+			plugins_url( '/wp_trksit/img/trksit-icon-16x16.png' , dirname(__FILE__) )
+		);
+	} else {
+		add_menu_page(
+			__('Dashboard &lsaquo; Trks.it','trksit_menu'),
+			__('Trks.it','trksit_menu'),
+			'manage_options',
+			'trksit-dashboard',
+			'trksit_dashboard',
+			plugins_url( '/wp_trksit/img/trksit-icon-16x16.png' , dirname(__FILE__) )
+		);
+		add_submenu_page(
+			'trksit-dashboard',
+			__('Generate URL &lsaquo; Trks.it','trksit_menu'),
+			__('Generate URL','trksit_menu'),
+			'manage_options',
+			'trksit-generate',
+			'trksit_generate'
+		);
+		add_submenu_page(
+			'trksit-dashboard',
+			__('Plugin Settings &lsaquo; Trks.it','trksit_menu'),
+			__('Settings','trksit_menu'),
+			'manage_options',
+			'trksit-settings',
+			'trksit_settings'
+		);
+	}
 }
 
 // Dashboard Page Content
 function trksit_dashboard() {
 
-  if (!current_user_can('manage_options'))  {
+	if (!current_user_can('manage_options'))  {
 		wp_die( __('You do not have sufficient permissions to access this page.') );
 	}else{
-    global $wpdb;
+		global $wpdb;
 		include('wp_trksit_dashboard.php');
 	}
 
@@ -156,10 +226,10 @@ function trksit_dashboard() {
 // Generate URL Page Content
 function trksit_generate() {
 
-  if (!current_user_can('manage_options'))  {
+	if (!current_user_can('manage_options'))  {
 		wp_die( __('You do not have sufficient permissions to access this page.') );
 	}else{
-    global $wpdb;
+		global $wpdb;
 		include('wp_trksit_generate_url.php');
 	}
 
@@ -168,10 +238,10 @@ function trksit_generate() {
 // Settings Page Content
 function trksit_settings() {
 
-  if (!current_user_can('manage_options'))  {
+	if (!current_user_can('manage_options'))  {
 		wp_die( __('You do not have sufficient permissions to access this page.') );
 	}else{
-    global $wpdb;
+		global $wpdb;
 		include('wp_trksit_settings.php');
 	}
 
@@ -180,7 +250,7 @@ function trksit_settings() {
 function trksit_current_page() {
 	$pageURL = 'http';
 	if ($_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
-		$pageURL .= "://";
+	$pageURL .= "://";
 	if ($_SERVER["SERVER_PORT"] != "80") {
 		$pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
 	} else {
@@ -200,112 +270,111 @@ function trksit_github_plugin_updater_init() {
 	define( 'WP_GITHUB_FORCE_UPDATE', false );
 
 	if ( is_admin() ) { // note the use of is_admin() to double check that this is happening in the admin
-    $config = array(
-      'slug' => plugin_basename(__FILE__), // this is the slug of your plugin
-      'proper_folder_name' => 'wp_trksit', // this is the name of the folder your plugin lives in
-      'api_url' => 'https://api.github.com/repos/trksit/wp_trksit', // the github API url of your github repo
-      'raw_url' => 'https://raw.github.com/trksit/wp_trksit/master', // the github raw url of your github repo
-      'github_url' => 'https://github.com/trksit/wp_trksit', // the github url of your github repo
-      'zip_url' => 'https://github.com/trksit/wp_trksit/archive/master.zip', // the zip url of the github repo
-      'sslverify' => false,
-      'requires' => '1.1', // which version of WordPress does your plugin require?
-      'tested' => '4.0', // which version of WordPress is your plugin tested up to?
-      'readme' => 'README.md'
-    );
-	  new WP_GitHub_Updater($config);
+		$config = array(
+			'slug' => plugin_basename(__FILE__), // this is the slug of your plugin
+			'proper_folder_name' => 'wp_trksit', // this is the name of the folder your plugin lives in
+			'api_url' => 'https://api.github.com/repos/trksit/wp_trksit', // the github API url of your github repo
+			'raw_url' => 'https://raw.github.com/trksit/wp_trksit/master', // the github raw url of your github repo
+			'github_url' => 'https://github.com/trksit/wp_trksit', // the github url of your github repo
+			'zip_url' => 'https://github.com/trksit/wp_trksit/archive/master.zip', // the zip url of the github repo
+			'sslverify' => false,
+			'requires' => '1.1', // which version of WordPress does your plugin require?
+			'tested' => '4.0', // which version of WordPress is your plugin tested up to?
+			'readme' => 'README.md'
+		);
+		new WP_GitHub_Updater($config);
 	}
- }
+}
 //Increase http request timeout
 define('WP_TRKSIT_CURL_TIMEOUT', 15);
 add_filter('http_request_args', 'trksit_http_request_args', 100, 1);
-function trksit_http_request_args($r)
-{
-   $r['timeout'] = WP_TRKSIT_CURL_TIMEOUT;
+function trksit_http_request_args($r){
+	$r['timeout'] = WP_TRKSIT_CURL_TIMEOUT;
 	return $r;
 }
 
 add_action('http_api_curl', 'trksit_http_api_curl', 100, 1);
-function trksit_http_api_curl($handle)
-{
-   curl_setopt( $handle, CURLOPT_CONNECTTIMEOUT, WP_TRKSIT_CURL_TIMEOUT );
-   curl_setopt( $handle, CURLOPT_TIMEOUT, WP_TRKSIT_CURL_TIMEOUT );
+function trksit_http_api_curl($handle){
+	curl_setopt( $handle, CURLOPT_CONNECTTIMEOUT, WP_TRKSIT_CURL_TIMEOUT );
+	curl_setopt( $handle, CURLOPT_TIMEOUT, WP_TRKSIT_CURL_TIMEOUT );
 }
 
 function trksit_flush_buffers() {
-   ob_end_flush();
-   @ob_flush();
-   flush();
-   ob_start();
+	ob_end_flush();
+	@ob_flush();
+	flush();
+	ob_start();
 }
 
 
- // Sets the URL and sets an arbitrary query variable
- add_action( 'init', 'trksit_init_internal' );
- function trksit_init_internal(){
+// Sets the URL and sets an arbitrary query variable
+add_action( 'init', 'trksit_init_internal' );
+function trksit_init_internal(){
 	add_rewrite_rule( 'trksitgo$', 'index.php?trksitgo=1', 'top' );
- }
+}
 
- // Registers the query variable
- add_filter( 'query_vars', 'trksit_query_vars' );
- function trksit_query_vars( $query_vars ){
+// Registers the query variable
+add_filter( 'query_vars', 'trksit_query_vars' );
+function trksit_query_vars( $query_vars ){
 	$query_vars[] = 'trksitgo';
 	return $query_vars;
- }
+}
 
- // Include the template when loaded
- add_action( 'parse_request', 'trksit_parse_request' );
- function trksit_parse_request( &$wp ){
+// Include the template when loaded
+add_action( 'parse_request', 'trksit_parse_request' );
+function trksit_parse_request( &$wp ){
 	if ( array_key_exists( 'trksitgo', $wp->query_vars ) ) {
-	   include 'wp_trksit_redirector.php';
-	   exit();
+		include 'wp_trksit_redirector.php';
+		exit();
 	}
 	return;
- }
+}
 
- // flush_rules() if our rules are not yet included
- add_action( 'wp_loaded','trksit_flush_rules' );
- function trksit_flush_rules(){
+// flush_rules() if our rules are not yet included
+add_action( 'wp_loaded','trksit_flush_rules' );
+function trksit_flush_rules(){
 	$rules = get_option( 'rewrite_rules' );
 	if ( ! isset( $rules['trksitgo$'] ) ) {
-	   global $wp_rewrite;
-	   $wp_rewrite->flush_rules();
+		global $wp_rewrite;
+		$wp_rewrite->flush_rules();
 	}
- }
+}
 
- //Add header encoding for output buffering
- add_action( 'wp_loaded','trksit_set_header_encoding' );
- function trksit_set_header_encoding(){
+//Add header encoding for output buffering
+add_action( 'wp_loaded','trksit_set_header_encoding' );
+function trksit_set_header_encoding(){
 	if(isset($_GET['page']) && ($_GET['page'] == 'trksit-generate' || $_GET['page'] == 'trksit-settings' || $_GET['page'] == 'trksit-dashboard') && !empty($_POST)){
-	   header('Content-Encoding: none;'); // Use with ob_start() and flushing of buffers!!!
+		header('Content-Encoding: none;'); // Use with ob_start() and flushing of buffers!!!
 	}
- }
+}
 
- //Start session for generate URL section
- add_action( 'init', 'trksit_session_start');
- function trksit_session_start(){
+//Start session for generate URL section
+add_action( 'init', 'trksit_session_start');
+function trksit_session_start(){
 	if(isset($_GET['page']) && $_GET['page'] == 'trksit-generate' && session_id() == ''){
-	   session_start();
+		session_start();
 	}
- }
+}
 
- //cleaner way to force 404
- function trksit_parse_query_404() {
-   	global $wp_query;
-	if ( $_GET['error404'] == 'true' )
-        $wp_query->set_404();
-        status_header( 404 );
-   }
-   add_action( 'wp', 'trksit_parse_query_404' );
+//cleaner way to force 404
+function trksit_parse_query_404() {
+	global $wp_query;
+	if ( isset($_GET['error404']) && $_GET['error404'] == 'true' ){
+		$wp_query->set_404();
+		status_header( 404 );
+	}
+}
+add_action( 'wp', 'trksit_parse_query_404' );
 
- //Debug log function
- if(!function_exists('_log')){
+//Debug log function
+if(!function_exists('_log')){
 	function _log( $message ) {
-	   if( WP_DEBUG === true && WP_DEBUG_LOG === true ){
-		  if( is_array( $message ) || is_object( $message ) ){
-			 error_log( print_r( $message, true ) );
-		  } else {
-			 error_log( $message );
-		  }
-	   }
+		if( WP_DEBUG === true && WP_DEBUG_LOG === true ){
+			if( is_array( $message ) || is_object( $message ) ){
+				error_log( print_r( $message, true ) );
+			} else {
+				error_log( $message );
+			}
+		}
 	}
- }
+}

@@ -113,4 +113,7 @@ jQuery(document).ready(function($){
    	  window.location = url;
    });
 
+	$("#trksit_settings_form").validate();
+
+
 });

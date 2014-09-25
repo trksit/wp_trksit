@@ -24,45 +24,33 @@ if(isset($_GET['purge-data']) && $_GET['purge-data'] == 'true'){
 		die('<h1>Unauthorized Operation</h1>');
 	}
 }
-if($_GET['page'] == 'trksit-settings'):
-	if((isset($_POST['trksit_page']) && $_POST['trksit_page'] == 'settings') && ( !empty($_POST) && check_admin_referer('trksit_save_settings','trksit_general_settings') )) {
+if($_GET['page'] == 'trksit-settings'){
 
-		$trksit_analytics_id = $_POST['trksit_analytics_id'];
-		$trksit_public_api_key = $_POST['trksit_public_api_key'];
-		$trksit_private_api_key = $_POST['trksit_private_api_key'];
-		$trksit_jquery = $_POST['trksit_jquery'];
-		$trksit_redirect_delay = $_POST['trksit_redirect_delay'];
-
-		update_option('trksit_analytics_id', $trksit_analytics_id);
-		update_option('trksit_public_api_key', $trksit_public_api_key);
-		update_option('trksit_private_api_key', $trksit_private_api_key);
-		update_option('trksit_jquery', $trksit_jquery);
-		update_option('trksit_redirect_delay', $trksit_redirect_delay);
-
-		$trksit = new trksit();
-		$trksit->wp_trksit_resetToken();
-
-		$trksit_confirmation = '<div class="alert alert-success" style="margin:30px 0px 0px 0px;">' . __('Trks.it Settings Updated') . '</div>';
-
-	}else{
-
+	//see trksit_update_settings_redirect() in main plugin file
+	//Options are saved in action hook, then page is refreshed to update menu
+	if(!isset($_POST['trksit_page']) && empty($_POST)) {
 		$trksit_analytics_id = get_option('trksit_analytics_id');
 		$trksit_public_api_key = get_option('trksit_public_api_key');
 		$trksit_private_api_key = get_option('trksit_private_api_key');
 		$trksit_jquery = get_option('trksit_jquery');
 		$trksit_redirect_delay = get_option('trksit_redirect_delay');
-
-	}
-
-if((isset($_POST['trksit_page']) && $_POST['trksit_page'] == 'add_script') && ( !empty($_POST) && check_admin_referer('trksit_save_settings','trksit_add_script') )) {
-	$trksit = new trksit();
-	if($_POST['script-id'] == ''){
-		$trksit_confirmation = $trksit->wp_trksit_saveCustomScript($wpdb, $_POST, false);
 	} else {
-		$trksit_confirmation = $trksit->wp_trksit_saveCustomScript($wpdb, $_POST, true);
+		$trksit_analytics_id = $_POST['trksit_analytics_id'];
+		$trksit_public_api_key = $_POST['trksit_public_api_key'];
+		$trksit_private_api_key = $_POST['trksit_private_api_key'];
+		$trksit_jquery = $_POST['trksit_jquery'];
+		$trksit_redirect_delay = $_POST['trksit_redirect_delay'];
 	}
 
-}
+	if((isset($_POST['trksit_page']) && $_POST['trksit_page'] == 'add_script') && ( !empty($_POST) && check_admin_referer('trksit_save_settings','trksit_add_script') )) {
+		$trksit = new trksit();
+		if($_POST['script-id'] == ''){
+			$trksit_confirmation = $trksit->wp_trksit_saveCustomScript($wpdb, $_POST, false);
+		} else {
+			$trksit_confirmation = $trksit->wp_trksit_saveCustomScript($wpdb, $_POST, true);
+		}
+
+	}
 ?>
 
 <div class="wrap" id="trksit-wrap">
@@ -75,7 +63,7 @@ if((isset($_POST['trksit_page']) && $_POST['trksit_page'] == 'add_script') && ( 
 	  </ul>
    </div>
 
-   <?php if((isset($_GET['tab']) && $_GET['tab'] == 'general') || empty($_GET['tab'])): ?>
+   <?php if((isset($_GET['tab']) && $_GET['tab'] == 'general') || empty($_GET['tab'])){ ?>
 
    <form name="trksit_settings_form" id="trksit_settings_form" class="trksit-form" method="post" action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI']); ?>" style="float:left; display:block;">
 
@@ -84,6 +72,11 @@ if((isset($_POST['trksit_page']) && $_POST['trksit_page'] == 'add_script') && ( 
 		 <div class="trksit-section">
 
 			<h2 class="trksit-header"><?php _e("API Settings"); ?></h2>
+			<?php if(get_transient('trksit_active_user') && get_transient('trksit_active_user') == 'inactive'): ?>
+			<div class="alert alert-danger">
+				<p>Plugin not activated.  Please <a href="#" target="_blank">register here</a> then enter valid API keys</p>
+			</div>
+			<?php endif; ?>
 
 			<input type="hidden" name="trksit_page" value="settings" />
 			<?php wp_nonce_field('trksit_save_settings','trksit_general_settings'); ?>
@@ -91,13 +84,13 @@ if((isset($_POST['trksit_page']) && $_POST['trksit_page'] == 'add_script') && ( 
 			<div class="control-group">
 			   <label for="trksit_public_api_key" class="control-label"><?php _e("Trks.it Public API Key:"); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e("Enter your public API key, this was emailed to you."); ?>" data-original-title="<?php _e("Public API Key"); ?>"><i class="icon-question-sign"></i></a></label>
 			   <div class="controls">
-				  <input name="trksit_public_api_key" type="text" id="trksit_public_api_key" value="<?php echo $trksit_public_api_key; ?>" />
+				  <input name="trksit_public_api_key" type="text" id="trksit_public_api_key" value="<?php echo $trksit_public_api_key; ?>" required />
 			   </div>
 			</div>
 			<div class="control-group">
 			   <label for="trksit_private_api_key" class="control-label"><?php _e("Trks.it Private API Key:"); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e("Enter your private API key, this was emailed to you."); ?>" data-original-title="<?php _e("Private API Key"); ?>"><i class="icon-question-sign"></i></a></label>
 			   <div class="controls">
-				  <input name="trksit_private_api_key" type="text" id="trksit_private_api_key" value="<?php echo $trksit_private_api_key; ?>" />
+				  <input name="trksit_private_api_key" type="text" id="trksit_private_api_key" value="<?php echo $trksit_private_api_key; ?>" required />
 			   </div>
 			</div>
 
@@ -145,7 +138,7 @@ if((isset($_POST['trksit_page']) && $_POST['trksit_page'] == 'add_script') && ( 
 
 		 </div>
 
-		<input type="submit" name="Submit" class="btn btn-success" value="<?php _e('Update Options', 'trksit_menu' ) ?>" />
+		<input type="submit" name="Submit" class="btn btn-success" value="<?php _e('Update Options', 'trksit_menu' ) ?>" id="trksit_settings_update" />
 		<div style='margin-top: 40px;'>
 			<div class='alert alert-danger' role='alert'>This can not be undone, proceed with caution</div>
 			<a
@@ -161,30 +154,30 @@ if((isset($_POST['trksit_page']) && $_POST['trksit_page'] == 'add_script') && ( 
 	  </div>
    </form>
 
-   <?php endif; ?>
+   <?php } ?>
 
-   <?php if(isset($_GET['tab']) && $_GET['tab'] == 'scripts'): ?>
+   <?php if(isset($_GET['tab']) && $_GET['tab'] == 'scripts'){ ?>
 
 <?php
-$s_label = '';
-$s_platform = '';
-$s_script = '';
-$s_sid = '';
-$form_url = remove_query_arg( array('act','id','edit_nonce','delete_nonce'), str_replace( '%7E', '~', $_SERVER['REQUEST_URI']));
-$trksit = new trksit();
-if(isset($_GET['edit_nonce']) && $_GET['act'] == 'edit' && wp_verify_nonce($_GET['edit_nonce'], 'edit_script')){
-	$script_details = $trksit->wp_trksit_scriptDetails($wpdb, $_GET['id']);
-	$s_label = $script_details[0]->label;
-	$s_platform = $script_details[0]->platform;
-	$s_script = stripslashes(htmlspecialchars_decode($script_details[0]->script));
-	$s_sid = $script_details[0]->script_id;
+	$s_label = '';
+	$s_platform = '';
+	$s_script = '';
+	$s_sid = '';
+	$form_url = remove_query_arg( array('act','id','edit_nonce','delete_nonce'), str_replace( '%7E', '~', $_SERVER['REQUEST_URI']));
+	$trksit = new trksit();
+	if(isset($_GET['edit_nonce']) && $_GET['act'] == 'edit' && wp_verify_nonce($_GET['edit_nonce'], 'edit_script')){
+		$script_details = $trksit->wp_trksit_scriptDetails($wpdb, $_GET['id']);
+		$s_label = $script_details[0]->label;
+		$s_platform = $script_details[0]->platform;
+		$s_script = stripslashes(htmlspecialchars_decode($script_details[0]->script));
+		$s_sid = $script_details[0]->script_id;
 
-	echo "<script>jQuery(window).load(function(){ jQuery('#add-script-window').modal('show'); });</script>";
-}
+		echo "<script>jQuery(window).load(function(){ jQuery('#add-script-window').modal('show'); });</script>";
+	}
 
-if(isset($_GET['delete_nonce']) && $_GET['act'] == 'delete' && wp_verify_nonce($_GET['delete_nonce'], 'delete_script')){
-	$trksit->wp_trksit_deleteScript($wpdb, $_GET['id']);
-}
+	if(isset($_GET['delete_nonce']) && $_GET['act'] == 'delete' && wp_verify_nonce($_GET['delete_nonce'], 'delete_script')){
+		$trksit->wp_trksit_deleteScript($wpdb, $_GET['id']);
+	}
 ?>
 
    <div class="trksit_col_full">
@@ -206,37 +199,37 @@ if(isset($_GET['delete_nonce']) && $_GET['act'] == 'delete' && wp_verify_nonce($
 		 <tbody>
 
 <?php
-$footnote = '';
-$table_data = $wpdb->get_results(
-	"SELECT * FROM " . $wpdb->prefix . "trksit_scripts ORDER BY date_created DESC, script_id DESC" );
+	$footnote = '';
+	$table_data = $wpdb->get_results(
+		"SELECT * FROM " . $wpdb->prefix . "trksit_scripts ORDER BY date_created DESC, script_id DESC" );
 
 
-if(count($table_data)){
+	if(count($table_data)){
 
-	foreach($table_data as $table_row){
-		$q = "SELECT url_id FROM " . $wpdb->prefix . "trksit_scripts_to_urls WHERE script_id = " . $table_row->script_id;
-		$times_used = $wpdb->get_results($q);
-		$used = count($times_used);
-		$datetime = strtotime($table_row->date_created);
-		$date_created = date('F j, Y', $datetime);
-		$edit_url = wp_nonce_url(admin_url('admin.php?page=trksit-settings&tab=scripts&act=edit&id=' . $table_row->script_id), 'edit_script', 'edit_nonce');
-		$delete_url = wp_nonce_url(admin_url('admin.php?page=trksit-settings&tab=scripts&act=delete&id=' . $table_row->script_id), 'delete_script', 'delete_nonce');
+		foreach($table_data as $table_row){
+			$q = "SELECT url_id FROM " . $wpdb->prefix . "trksit_scripts_to_urls WHERE script_id = " . $table_row->script_id;
+			$times_used = $wpdb->get_results($q);
+			$used = count($times_used);
+			$datetime = strtotime($table_row->date_created);
+			$date_created = date('F j, Y', $datetime);
+			$edit_url = wp_nonce_url(admin_url('admin.php?page=trksit-settings&tab=scripts&act=edit&id=' . $table_row->script_id), 'edit_script', 'edit_nonce');
+			$delete_url = wp_nonce_url(admin_url('admin.php?page=trksit-settings&tab=scripts&act=delete&id=' . $table_row->script_id), 'delete_script', 'delete_nonce');
 ?>
 					 <tr <?php if($table_row->script_error) { echo "class='error-script'"; } ?>>
 						<td><?php echo $date_created; ?></td>
 						<td>
 <?php
-		echo stripslashes($table_row->label);
-		if($table_row->script_error) {
-			$url = '/index.php?trksitgo=1&url_id=scripterror&testing=scripterror&scriptid=' . $table_row->script_id;
-			$url = wp_nonce_url($url, 'script_error_' . $table_row->script_id, 'script_error_nonce');
-			echo " * &nbsp; <a href='".$url."' class='script_debug' target='_blank'>[execute]</a>";
-			$footnote = '<p style="color: #a94442; float: left; padding-top: 20px;">'
-				. '<span style="float: left;">*</span>'
-				. '<span style="float: left; padding-left: 10px;">'
-				. 'Scripts in red indicate an error has occured in its execution<br />'
-				. 'Click [execute] with console open to see error.</span></p>';
-		}
+			echo stripslashes($table_row->label);
+			if($table_row->script_error) {
+				$url = '/index.php?trksitgo=1&url_id=scripterror&testing=scripterror&scriptid=' . $table_row->script_id;
+				$url = wp_nonce_url($url, 'script_error_' . $table_row->script_id, 'script_error_nonce');
+				echo " * &nbsp; <a href='".$url."' class='script_debug' target='_blank'>[execute]</a>";
+				$footnote = '<p style="color: #a94442; float: left; padding-top: 20px;">'
+					. '<span style="float: left;">*</span>'
+					. '<span style="float: left; padding-left: 10px;">'
+					. 'Scripts in red indicate an error has occured in its execution<br />'
+					. 'Click [execute] with console open to see error.</span></p>';
+			}
 ?>
 						</td>
 						<td><?php echo $table_row->platform; ?></td>
@@ -249,8 +242,8 @@ if(count($table_data)){
 						</td>
 					 </tr>
 <?php
-	}
-}else{
+		}
+	}else{
 ?>
 				  <tr>
 					 <td colspan="5">
@@ -258,7 +251,7 @@ if(count($table_data)){
 					 </td>
 				  </tr>
 <?php
-}
+	}
 ?>
 			</tbody>
 
@@ -314,10 +307,10 @@ if(count($table_data)){
 		 </form>
 	  </div>
 
-	  <?php endif; ?>
+	  <?php } ?>
 
    </div>
-   <?php endif; ?>
+   <?php } ?>
 
 <style>
 	  #loading-indicator {
