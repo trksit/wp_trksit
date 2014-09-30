@@ -394,7 +394,7 @@ $this->api."/parse/urls?".$url_paramaters, array(
 			array_push($values, '%s');
 			$upd = $wpdb->update($wpdb->prefix . 'trksit_scripts', $fields, array('script_id' => $trksit_id), $values);
 			if(!$upd){
-				$trksit_confirmation = $trks_conf_fail;
+				$trksit_confirmation = $trksit_conf_fail;
 			} else {
 				$trksit_confirmation = $trksit_update;
 			}

@@ -35,11 +35,13 @@ if($_GET['page'] == 'trksit-settings'){
 		$trksit_jquery = get_option('trksit_jquery');
 		$trksit_redirect_delay = get_option('trksit_redirect_delay');
 	} else {
-		$trksit_analytics_id = $_POST['trksit_analytics_id'];
-		$trksit_public_api_key = $_POST['trksit_public_api_key'];
-		$trksit_private_api_key = $_POST['trksit_private_api_key'];
-		$trksit_jquery = $_POST['trksit_jquery'];
-		$trksit_redirect_delay = $_POST['trksit_redirect_delay'];
+		if(isset($_GET['tab']) && $_GET['tab'] != 'scripts'){
+			$trksit_analytics_id = $_POST['trksit_analytics_id'];
+			$trksit_public_api_key = $_POST['trksit_public_api_key'];
+			$trksit_private_api_key = $_POST['trksit_private_api_key'];
+			$trksit_jquery = $_POST['trksit_jquery'];
+			$trksit_redirect_delay = $_POST['trksit_redirect_delay'];
+		}
 	}
 
 	if((isset($_POST['trksit_page']) && $_POST['trksit_page'] == 'add_script') && ( !empty($_POST) && check_admin_referer('trksit_save_settings','trksit_add_script') )) {
