@@ -82,17 +82,19 @@ function trksit_Install(){
 
 }
 
-register_uninstall_hook( __FILE__, 'trksit_uninstall');
-function trksit_uninstall(){
-	global $wpdb;
-	$trksit = new trksit();
-	$trksit->wp_trksit_resetToken();
-	$success = $trksit->wp_trksit_api_uninstall(get_option('trksit_private_api_key'));
-	$wpdb->query('DROP TABLE IF EXISTS ' . $wpdb->prefix . 'trksit_hits');
-	$wpdb->query('DROP TABLE IF EXISTS ' . $wpdb->prefix . 'trksit_scripts');
-	$wpdb->query('DROP TABLE IF EXISTS ' . $wpdb->prefix . 'trksit_scripts_to_urls');
-	$wpdb->query('DROP TABLE IF EXISTS ' . $wpdb->prefix . 'trksit_urls');
-}
+/*
+ *register_uninstall_hook( __FILE__, 'trksit_uninstall');
+ *function trksit_uninstall(){
+ *    global $wpdb;
+ *    $trksit = new trksit();
+ *    $trksit->wp_trksit_resetToken();
+ *    $success = $trksit->wp_trksit_api_uninstall(get_option('trksit_private_api_key'));
+ *    $wpdb->query('DROP TABLE IF EXISTS ' . $wpdb->prefix . 'trksit_hits');
+ *    $wpdb->query('DROP TABLE IF EXISTS ' . $wpdb->prefix . 'trksit_scripts');
+ *    $wpdb->query('DROP TABLE IF EXISTS ' . $wpdb->prefix . 'trksit_scripts_to_urls');
+ *    $wpdb->query('DROP TABLE IF EXISTS ' . $wpdb->prefix . 'trksit_urls');
+ *}
+ */
 
 include( plugin_dir_path( __FILE__ ) . 'inc/trksit.class.php');
 add_action( 'init', array( new trksit, '__construct' ) );
