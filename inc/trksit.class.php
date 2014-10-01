@@ -255,7 +255,7 @@ $this->api."/parse/urls?".$url_paramaters, array(
 
 		//Build the longURL with query string params
 
-		$longURL = get_site_url() . '/index.php?trksitgo=1&url_id=' . $shareURL_ID . '&utm_source='.$postArray['source'].'&utm_medium='.$postArray['medium'].'&utm_campaign='.$postArray['campaign'];
+		$longURL = get_site_url() . '/index.php?trksitgo=1&url_id=' . $shareURL_ID . '&su=&utm_source='.$postArray['source'].'&utm_medium='.$postArray['medium'].'&utm_campaign='.$postArray['campaign'];
 		//shorten the URL
 		$shortURL = $this->wp_trksit_generateURL($longURL,$postArray);
 		if($shortURL){
