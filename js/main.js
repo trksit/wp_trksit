@@ -73,7 +73,7 @@ jQuery(document).ready(function($){
 	  $('#trks_dashboard').dataTable({
 		 "fnInitComplete": function(oSettings, json) {
 		 },
-		 "aaSorting": [[ 1, "desc" ]],
+		 "aaSorting": [[ 0, "desc" ]],
 	  });
    }
 

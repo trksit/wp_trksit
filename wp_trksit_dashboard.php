@@ -248,7 +248,7 @@
 		 <?php
 			$trksit->wp_trksit_getAnalytics($start_date,$end_date);
 		 }
-		 $trks_query = "SELECT *,"
+		 $trks_query = "SELECT *, "
 		 ."(SELECT COALESCE(SUM(tkhits.hit_count),0) as hit_total "
 		 ."FROM ".$wpdb->prefix."trksit_hits tkhits "
 		 ."WHERE tku.url_id = tkhits.url_id "
@@ -262,7 +262,7 @@
 		 //."WHERE tku.url_id = tkhits.url_id "
 		 //."AND tkhits.hit_date "
 		 //."BETWEEN '$start_date' AND '$end_date') "
-		 ."ORDER BY hit_total DESC";
+		 ."ORDER BY date_created DESC";
 
 		 $table_data = $wpdb->get_results($trks_query);
 
@@ -274,7 +274,7 @@
 			<thead>
 			   <tr>
 				  <th class="sortable desc" width="100"><a href="#"><span><?php _e('Created'); ?></span><span class="sorting-indicator"></span></a></th>
-				  <th class="sortable desc" width="50"><a href="#"><span><?php _e('Hits'); ?></span><span class="sorting-indicator"></span></a></th>
+				  <th class="sortable desc" width="75"><a href="#"><span><?php _e('Hits'); ?></span><span class="sorting-indicator"></span></a></th>
 				  <th width="140"><?php _e('Trks.it URL'); ?></th>
 				  <th width="50"></th>
 				  <th id="trks_it_destination" width="180"><?php _e('Destination URL'); ?></th>
