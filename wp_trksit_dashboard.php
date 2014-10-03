@@ -296,7 +296,8 @@
 				  <td class="trks_it_date"><?php _e($date_created); ?></td>
 				  <td class="trks_it_hits"><?php _e($table_row->hit_total); ?></td>
 				  <td class="trks_it_url">
-					 <a href="<?php echo $table_row->trksit_url; ?>?preview=true" target="_blank" class="trksit-link" id="trksit-link-<?php echo $table_row->url_id; ?>"><?php echo str_replace("https://", "", $table_row->trksit_url); ?></a>
+					 <!-- <a href="<?php echo $table_row->trksit_url; ?>?preview=true" target="_blank" class="trksit-link" id="trksit-link-<?php echo $table_row->url_id; ?>"><?php echo str_replace("https://", "", $table_row->trksit_url); ?></a> -->
+					<?php echo str_replace("https://", "", $table_row->trksit_url); ?>
 				  </td>
 				  <td class="trks_it_copy">
 					 <span class="copy-btn-wrap"><a class="trksit-copy-btn" id="trks-copy-btn-<?php echo $table_row->url_id; ?>" data-trksit-link="<?php echo $table_row->trksit_url; ?>"><?php _e('Copy');?></a></span>
