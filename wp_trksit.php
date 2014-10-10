@@ -6,7 +6,7 @@ Description: Ever wonder how many people click links that lead to 3rd party site
 Author: Arsham Mirshah, De'Yonte Wilkinson, Derek Cavaliero
 Version: 1.3.1
 Author URI: http://get.trks.it?utm_source=WordPress%20Admin%20Link
-*/
+ */
 
 // Installation Script
 register_activation_hook( __FILE__, 'trksit_Install' );
@@ -16,69 +16,72 @@ function trksit_Install(){
 
 	$charset_collate = '';
 
-		if ( ! empty($wpdb->charset) )
-			$charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
-		if ( ! empty($wpdb->collate) )
-			$charset_collate .= " COLLATE $wpdb->collate";
+	if ( ! empty($wpdb->charset) )
+		$charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
+	if ( ! empty($wpdb->collate) )
+		$charset_collate .= " COLLATE $wpdb->collate";
 
 	$table_1_name = $wpdb->prefix . "trksit_urls";
 	$table_1_sql = "CREATE TABLE $table_1_name (
-	  url_id INT(10) unsigned NOT NULL AUTO_INCREMENT,
-	  date_created DATE DEFAULT '0000-00-00' NOT NULL,
-	  destination_url VARCHAR(255) DEFAULT '' NOT NULL,
-	  trksit_url VARCHAR(255) DEFAULT '' NOT NULL,
-	  source VARCHAR(255) DEFAULT '' NOT NULL,
-	  medium VARCHAR(255) DEFAULT '' NOT NULL,
-	  campaign VARCHAR(255) DEFAULT '' NOT NULL,
-	  meta_title VARCHAR(255) DEFAULT '' NOT NULL,
-	  meta_description VARCHAR(255) DEFAULT '' NOT NULL,
-	  meta_image VARCHAR(255) DEFAULT '' NOT NULL,
-	  og_data TEXT NOT NULL,
-	  PRIMARY KEY  url_id (url_id))
+		url_id INT(10) unsigned NOT NULL AUTO_INCREMENT,
+		date_created DATE DEFAULT '0000-00-00' NOT NULL,
+		destination_url VARCHAR(255) DEFAULT '' NOT NULL,
+		trksit_url VARCHAR(255) DEFAULT '' NOT NULL,
+		source VARCHAR(255) DEFAULT '' NOT NULL,
+		medium VARCHAR(255) DEFAULT '' NOT NULL,
+		campaign VARCHAR(255) DEFAULT '' NOT NULL,
+		meta_title VARCHAR(255) DEFAULT '' NOT NULL,
+		meta_description VARCHAR(255) DEFAULT '' NOT NULL,
+		meta_image VARCHAR(255) DEFAULT '' NOT NULL,
+		og_data TEXT NOT NULL,
+		PRIMARY KEY  url_id (url_id))
 		ENGINE = InnoDB
-    $charset_collate;";
+		$charset_collate;";
 
-	$table_2_name = $wpdb->prefix . "trksit_hits";
-	$table_2_sql = "CREATE TABLE $table_2_name (
-	  hit_count INT(10) unsigned NOT NULL,
-	  url_id INT(10) unsigned NOT NULL,
-	  hit_date DATE DEFAULT '0000-00-00' NOT NULL,
-	  PRIMARY KEY  (url_id, hit_date))
-		ENGINE = InnoDB
-    $charset_collate;";
+$table_2_name = $wpdb->prefix . "trksit_hits";
+$table_2_sql = "CREATE TABLE $table_2_name (
+	hit_count INT(10) unsigned NOT NULL,
+	url_id INT(10) unsigned NOT NULL,
+	hit_date DATE DEFAULT '0000-00-00' NOT NULL,
+	PRIMARY KEY  (url_id, hit_date))
+	ENGINE = InnoDB
+	$charset_collate;";
 
-	$table_3_name = $wpdb->prefix . "trksit_scripts";
-	$table_3_sql = "CREATE TABLE $table_3_name (
-	  script_id INT(10) unsigned NOT NULL AUTO_INCREMENT,
-	  date_created DATE DEFAULT '0000-00-00' NOT NULL,
-	  label VARCHAR(255) DEFAULT '' NOT NULL,
-	  script TEXT DEFAULT '' NOT NULL,
-	  platform VARCHAR(25) DEFAULT 'Google' NOT NULL,
-	  script_error tinyint(1) NOT NULL DEFAULT '0',
-	  PRIMARY KEY  script_id (script_id))
-		ENGINE = InnoDB
-    $charset_collate;";
+$table_3_name = $wpdb->prefix . "trksit_scripts";
+$table_3_sql = "CREATE TABLE $table_3_name (
+	script_id INT(10) unsigned NOT NULL AUTO_INCREMENT,
+	date_created DATE DEFAULT '0000-00-00' NOT NULL,
+	label VARCHAR(255) DEFAULT '' NOT NULL,
+	script TEXT DEFAULT '' NOT NULL,
+	platform VARCHAR(25) DEFAULT 'Google' NOT NULL,
+	script_error tinyint(1) NOT NULL DEFAULT '0',
+	PRIMARY KEY  script_id (script_id))
+	ENGINE = InnoDB
+	$charset_collate;";
 
-	$table_4_name = $wpdb->prefix . "trksit_scripts_to_urls";
-	$table_4_sql = "CREATE TABLE $table_4_name (
-	  assignment_id INT(10) unsigned NOT NULL AUTO_INCREMENT,
-	  script_id INT(10) unsigned NOT NULL,
-	  url_id INT NOT NULL,
-	  PRIMARY KEY  (assignment_id, script_id, url_id))
-		ENGINE = InnoDB
-    $charset_collate;";
+$table_4_name = $wpdb->prefix . "trksit_scripts_to_urls";
+$table_4_sql = "CREATE TABLE $table_4_name (
+	assignment_id INT(10) unsigned NOT NULL AUTO_INCREMENT,
+	script_id INT(10) unsigned NOT NULL,
+	url_id INT NOT NULL,
+	PRIMARY KEY  (assignment_id, script_id, url_id))
+	ENGINE = InnoDB
+	$charset_collate;";
 
-	update_option('trksit_jquery', 0);
-	update_option('trksit_redirect_delay', 500);
-	update_option('trksit_token', '');
-	update_option('trksit_token_expires', 1);
+update_option('trksit_jquery', 0);
+update_option('trksit_redirect_delay', 500);
+update_option('trksit_token', '');
+update_option('trksit_token_expires', 1);
 
-	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
-	dbDelta( $table_1_sql ); // This is a WordPress function, cool huh?
-	dbDelta( $table_2_sql );
-	dbDelta( $table_3_sql );
-	dbDelta( $table_4_sql );
+dbDelta( $table_1_sql ); // This is a WordPress function, cool huh?
+dbDelta( $table_2_sql );
+dbDelta( $table_3_sql );
+dbDelta( $table_4_sql );
+
+$sources = serialize(array('Auto Detect (recommended)'));
+update_option('trksit_sources', $sources);
 
 }
 
@@ -359,6 +362,26 @@ add_action( 'init', 'trksit_session_start');
 function trksit_session_start(){
 	if(isset($_GET['page']) && $_GET['page'] == 'trksit-generate' && session_id() == ''){
 		session_start();
+	}
+}
+
+add_action('init', 'trksit_delete_source_redirect');
+function trksit_delete_source_redirect(){
+	if(isset($_GET['deletesource']) && wp_verify_nonce($_GET['ds_nonce'], 'delete_source')){
+		$d_sources = maybe_unserialize(get_option('trksit_sources'));
+		array_splice($d_sources, (int) $_GET['deletesource'], 1);
+		update_option('trksit_sources', serialize($d_sources));
+		$url = remove_query_arg(array('ds_nonce', 'deletesource'), str_replace( '%7E', '~', $_SERVER['REQUEST_URI']));
+		wp_redirect($url);
+	}
+}
+
+//Check that the default sources are set, if not, set them
+add_action( 'init', 'trksit_default_sources' );
+function trksit_default_sources(){
+	if(!get_option('trksit_sources')){
+		$sources = serialize(array('Auto Detect (recommended)'));
+		update_option('trksit_sources', $sources);
 	}
 }
 

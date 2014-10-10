@@ -131,7 +131,7 @@
 			   </div>
 			</div>
 			<div class="trksit-section">
-			   <h2 class="trksit-header"><?php _e('Analytics Tracking Data'); ?> <button class="btn btn-small" id="advanced-toggle" data-toggle="button"><?php _e('Show Advanced Options'); ?></button></h2>
+			   <h2 class="trksit-header"><?php _e('Analytics Tracking Data'); ?> <!-- <button class="btn btn-small" id="advanced-toggle" data-toggle="button"><?php _e('Show Advanced Options'); ?></button> --></h2>
 			   <div class="control-group">
 				  <label class="control-label" for="campaign"><?php _e('Campaign Name:'); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e('Use this field to define a unique campaign value to be sent into your Google Analytics dashboard.'); ?>" data-original-title="<?php _e('Campaign Name'); ?>"><i class="icon-question-sign"></i></a></label>
 				  <div class="controls">
@@ -139,14 +139,23 @@
 				  </div>
 			   </div>
 
-			   <div id="advanced-tracking-panel">
+			   <div id="advanced-tracking-panel-lll">
 				  <h3><?php _e('Advanced Tracking Options'); ?></h3>
 				  <div class="control-group">
 					 <label class="control-label" for="source"><?php _e('Source:'); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e('Use this field to define a unique source value to be sent into your Google Analytics dashboard.'); ?>" data-original-title="<?php _e('Campaign Source'); ?>"><i class="icon-question-sign"></i></a></label>
 					 <div class="controls">
-						<select name="source" id="source">
-						   <option value="" selected><?php _e('Auto Detect (recommended)'); ?></option>
-						   <option value="custom"><?php _e('Custom'); ?></option>
+						<select name="source" id="source_select">
+<?php
+			 $sources = maybe_unserialize(get_option("trksit_sources"));
+			 for($i = 0; $i < count($sources); $i++){
+				 if($i == 0){
+					 $val = "";
+				 } else {
+					 $val = strtolower($sources[$i]);
+				 }
+				 echo '<option value="'.$val.'">'.$sources[$i].'</option>';
+			 }
+?>
 						</select>
 					 </div>
 				  </div>

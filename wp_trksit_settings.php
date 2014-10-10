@@ -62,6 +62,7 @@ if($_GET['page'] == 'trksit-settings'){
 	  <ul>
 		 <li <?php if((isset($_GET['tab']) && $_GET['tab'] == 'general') || empty($_GET['tab'])): ?>class="active"<?php endif; ?>><a href="/wp-admin/admin.php?page=trksit-settings&tab=general"><?php _e('General Settings'); ?></a></li>
 		 <li <?php if(isset($_GET['tab']) && $_GET['tab'] == 'scripts'): ?>class="active"<?php endif; ?>><a href="/wp-admin/admin.php?page=trksit-settings&tab=scripts"><?php _e('Custom Scripts'); ?></a></li>
+		 <li <?php if(isset($_GET['tab']) && $_GET['tab'] == 'sources'): ?>class="active"<?php endif; ?>><a href="/wp-admin/admin.php?page=trksit-settings&tab=sources"><?php _e('Sources'); ?></a></li>
 	  </ul>
    </div>
 
@@ -313,6 +314,46 @@ if($_GET['page'] == 'trksit-settings'){
 
    </div>
    <?php } ?>
+   <?php if(isset($_GET['tab']) && $_GET['tab'] == 'sources'){ ?>
+	<?php
+		if(isset($_POST['source_submit'])){
+			$t_sources = maybe_unserialize(get_option('trksit_sources'));
+			array_push($t_sources, $_POST['source']);
+			update_option('trksit_sources', serialize($t_sources));
+		}
+	?>
+   <div class="trksit_col_full">
+	   <h2 class="trksit-header">Sources</h2>
+	   <p>Here you can add sources to the drop down available when creating a new link</p>
+	   <table class="wp-list-table widefat fixed">
+		   <thead>
+			   <tr>
+				   <th><?php _e("Source"); ?></th>
+				   <th width="100"><?php _e("Delete"); ?></th>
+			   </tr>
+		   </thead>
+
+		   <tbody>
+<?php
+	$sources = maybe_unserialize(get_option('trksit_sources'));
+	for($i = 0; $i < count($sources); $i++){
+		$source_url = wp_nonce_url(str_replace( '%7E', '~', $_SERVER['REQUEST_URI']) . '&deletesource=' . $i, 'delete_source', 'ds_nonce');
+?>
+			<tr>
+			<td><?php echo $sources[$i]; ?></td>
+			<td><a href="<? echo $source_url; ?>">Delete</a></td>
+			</tr>
+<? } ?>
+		   </tbody>
+	   </table>
+		<div style="padding-top: 20px;">
+		<form action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI']); ?>" class="trksit-form" method="post">
+			<input type="text" name="source" id="source" class="medium-text" value="" />
+			<input type="submit" name="source_submit" id="source_submit" class="btn btn-success" value="Add Source" />
+		</form>
+</div>
+   </div>
+	<? } ?>
 
 <style>
 	  #loading-indicator {
