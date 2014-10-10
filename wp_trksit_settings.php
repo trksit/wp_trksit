@@ -35,7 +35,7 @@ if($_GET['page'] == 'trksit-settings'){
 		$trksit_jquery = get_option('trksit_jquery');
 		$trksit_redirect_delay = get_option('trksit_redirect_delay');
 	} else {
-		if(isset($_GET['tab']) && $_GET['tab'] != 'scripts'){
+		if(isset($_GET['tab']) && ($_GET['tab'] != 'scripts' && $_GET['tab'] != 'sources')){
 			$trksit_analytics_id = $_POST['trksit_analytics_id'];
 			$trksit_public_api_key = $_POST['trksit_public_api_key'];
 			$trksit_private_api_key = $_POST['trksit_private_api_key'];
