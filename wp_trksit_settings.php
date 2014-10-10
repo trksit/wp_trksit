@@ -341,7 +341,11 @@ if($_GET['page'] == 'trksit-settings'){
 ?>
 			<tr>
 			<td><?php echo $sources[$i]; ?></td>
-			<td><a href="<? echo $source_url; ?>">Delete</a></td>
+			<td>
+				<?php if($i > 0): ?>
+				<a href="<? echo $source_url; ?>">Delete</a>
+				<?php endif; ?>
+			</td>
 			</tr>
 <? } ?>
 		   </tbody>
