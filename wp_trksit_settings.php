@@ -347,7 +347,7 @@ if($_GET['page'] == 'trksit-settings'){
 				<?php endif; ?>
 			</td>
 			</tr>
-<? } ?>
+<?php } ?>
 		   </tbody>
 	   </table>
 		<div style="padding-top: 20px;">
@@ -357,7 +357,7 @@ if($_GET['page'] == 'trksit-settings'){
 		</form>
 </div>
    </div>
-	<? } ?>
+	<?php } ?>
 
 <style>
 	  #loading-indicator {
