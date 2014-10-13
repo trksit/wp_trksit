@@ -285,6 +285,7 @@ if($_GET['page'] == 'trksit-settings'){
 				  <label for="trksit_script_platform" class="control-label"><?php _e("Platform"); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e("What is this script for? Google? Bing? Facebook? etc..."); ?>" data-original-title="<?php _e("Platform"); ?>"><i class="icon-question-sign"></i></a></label>
 				  <div class="controls">
 					 <select name="trksit_script_platform" id="trksit_script_platform">
+						<option value="">--Please choose a platform--</option>
 						<option value="google" <?php if ($s_platform == 'google') { echo 'selected="selected"'; } ?>>Google Remarketing</option>
 						<option value="bing" <?php if ($s_platform == 'bing') { echo 'selected="selected"'; } ?>>Bing</option>
 						<option value="facebook" <?php if ($s_platform == 'facebook') { echo 'selected="selected"'; } ?>>Facebook</option>
@@ -352,11 +353,11 @@ if($_GET['page'] == 'trksit-settings'){
 	   </table>
 		<div style="padding-top: 20px;">
 		<form action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI']); ?>" class="trksit-form" method="post">
-			<input type="text" name="source" id="source" class="medium-text" value="" />
+			<input type="text" name="source" id="source" class="medium-text" value="" autofocus="autofocus" />
 			<input type="submit" name="source_submit" id="source_submit" class="btn btn-success" value="Add Source" />
 		</form>
 </div>
-   </div>
+   <!-- </div> -->
 	<?php } ?>
 
 <style>
