@@ -417,12 +417,17 @@ $this->api."/parse/urls?".$url_paramaters, array(
 		);
 		$request = new WP_Http;
 		$result = $request->request( $url, array('method' => 'POST', 'body' => array(), 'headers' => $headers));
-		if(json_decode($result['body'])->error){
+		if(is_wp_error($result)){
 			set_transient('trksit_active_user', 'inactive', 60*60*24);
-			return false;
+			return $result;
 		} else {
-			set_transient('trksit_active_user', 'active', 60*60*24);
-			return true;
+			if(json_decode($result['body'])->error){
+				set_transient('trksit_active_user', 'inactive', 60*60*24);
+				return false;
+			} else {
+				set_transient('trksit_active_user', 'active', 60*60*24);
+				return true;
+			}
 		}
 	}
 
@@ -514,8 +519,9 @@ $this->api."/parse/urls?".$url_paramaters, array(
 
 		//check if wp_http has thrown an error message
 		if( $result instanceof WP_Error ){
-			echo $result->get_error_message();
-			exit;
+			//echo $result->get_error_message();
+			//exit;
+			return $result;
 		}
 
 		$output = json_decode($result['body']);

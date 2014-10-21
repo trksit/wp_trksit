@@ -21,8 +21,15 @@ function trksit_Install(){
 	if ( ! empty($wpdb->collate) )
 		$charset_collate .= " COLLATE $wpdb->collate";
 
+	$trksit = new trksit();
+	$active = $trksit->wp_trksit_user_is_active();
+	if(is_wp_error($active)){
+		echo "<code>Trks.it API unavailable.  Plugin can not be activated.</code>";
+		exit;
+	}
+
 	$table_1_name = $wpdb->prefix . "trksit_urls";
-	$table_1_sql = "CREATE TABLE $table_1_name (
+	$table_1_sql = "CREATE TABLE IF NOT EXISTS $table_1_name (
 		url_id INT(10) unsigned NOT NULL AUTO_INCREMENT,
 		date_created DATE DEFAULT '0000-00-00' NOT NULL,
 		destination_url VARCHAR(255) DEFAULT '' NOT NULL,
@@ -39,7 +46,7 @@ function trksit_Install(){
 		$charset_collate;";
 
 $table_2_name = $wpdb->prefix . "trksit_hits";
-$table_2_sql = "CREATE TABLE $table_2_name (
+$table_2_sql = "CREATE TABLE IF NOT EXISTS $table_2_name (
 	hit_count INT(10) unsigned NOT NULL,
 	url_id INT(10) unsigned NOT NULL,
 	hit_date DATE DEFAULT '0000-00-00' NOT NULL,
@@ -48,7 +55,7 @@ $table_2_sql = "CREATE TABLE $table_2_name (
 	$charset_collate;";
 
 $table_3_name = $wpdb->prefix . "trksit_scripts";
-$table_3_sql = "CREATE TABLE $table_3_name (
+$table_3_sql = "CREATE TABLE IF NOT EXISTS $table_3_name (
 	script_id INT(10) unsigned NOT NULL AUTO_INCREMENT,
 	date_created DATE DEFAULT '0000-00-00' NOT NULL,
 	label VARCHAR(255) DEFAULT '' NOT NULL,
@@ -60,7 +67,7 @@ $table_3_sql = "CREATE TABLE $table_3_name (
 	$charset_collate;";
 
 $table_4_name = $wpdb->prefix . "trksit_scripts_to_urls";
-$table_4_sql = "CREATE TABLE $table_4_name (
+$table_4_sql = "CREATE TABLE IF NOT EXISTS $table_4_name (
 	assignment_id INT(10) unsigned NOT NULL AUTO_INCREMENT,
 	script_id INT(10) unsigned NOT NULL,
 	url_id INT NOT NULL,
@@ -165,6 +172,18 @@ function trksit_update_settings_redirect(){
 	}
 }
 
+add_action('admin_notices', 'trksit_admin_notices');
+function trksit_admin_notices(){
+	global $pagenow;
+	if($pagenow == "plugins.php" || $pagenow == "admin.php"){
+		$trksit = new trksit();
+		$active = $trksit->wp_trksit_user_is_active();
+		if(is_wp_error($active)){
+			echo "<div class='error'><p>Trks.it API offline.</p></div>";
+		}
+	}
+}
+
 //add pages to WordPress sidebar
 add_action('admin_menu', 'trksit_add_pages');
 function trksit_add_pages() {
@@ -175,6 +194,10 @@ function trksit_add_pages() {
 	}
 	if(!get_transient('trksit_active_user')){
 		$trksit = new trksit();
+		$active = $trksit->wp_trksit_user_is_active();
+		if(is_wp_error($active)){
+			//echo $active->get_error_message();
+		}
 		if($trksit->wp_trksit_user_is_active()){
 			$active = true;
 		}
@@ -258,7 +281,7 @@ function trksit_settings() {
 
 function trksit_current_page() {
 	$pageURL = 'http';
-	if ($_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
+	if (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
 	$pageURL .= "://";
 	if ($_SERVER["SERVER_PORT"] != "80") {
 		$pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
