@@ -238,7 +238,8 @@ $this->api."/parse/urls?".$url_paramaters, array(
 			$urldata['error'] = array('error_code' => true, 'error_message' => $html->get_error_message());
 		} else {
 			$urldata['error'] = array('error_code' => false, 'error_message' => null);
-			$urldata['body'] = gzdeflate(wp_remote_retrieve_body($html), 9);
+			//$urldata['body'] = gzdeflate(wp_remote_retrieve_body($html), 9);
+			$urldata['body'] = wp_remote_retrieve_body($html);
 		}
 
 		return $urldata;
