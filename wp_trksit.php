@@ -106,6 +106,11 @@ update_option('trksit_sources', $sources);
  *}
  */
 
+//Determine production or development
+$wp_host = explode('.', $_SERVER['HTTP_HOST']);
+$wp_host = array_pop($wp_host);
+define('TRKSIT_PROD', ($wp_host == 'local' || $wp_host == 'dev') ? false : true);
+
 include( plugin_dir_path( __FILE__ ) . 'inc/trksit.class.php');
 add_action( 'init', array( new trksit, '__construct' ) );
 //load the needed scripts
@@ -176,10 +181,19 @@ add_action('admin_notices', 'trksit_admin_notices');
 function trksit_admin_notices(){
 	global $pagenow;
 	if($pagenow == "plugins.php" || $pagenow == "admin.php"){
+		$pubapi = get_option('trksit_public_api_key');
+		$privapi = get_option('trksit_private_api_key');
+		if(!$pubapi || !$privapi || $privapi == "" || $pubapi == ""){
+			if($pagenow == "plugins.php" || ($pagenow == "admin.php" && isset($_GET['page']) && $_GET['page'] != 'trksit-settings')){
+				echo "<div id='message' class='updated'>";
+				echo "<p>Please visit the <a href='/wp-admin/admin.php?page=trksit-settings'>trks.it settings page</a> ";
+				echo "to enter your API keys.</p></div>";
+			}
+		}
 		$trksit = new trksit();
 		$active = $trksit->wp_trksit_user_is_active();
 		if(is_wp_error($active)){
-			echo "<div class='error'><p>Trks.it API offline.</p></div>";
+			echo "<div id='message' class='error'><p>Trks.it API offline.</p></div>";
 		}
 	}
 }

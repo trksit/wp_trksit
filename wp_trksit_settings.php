@@ -76,8 +76,15 @@ if($_GET['page'] == 'trksit-settings'){
 
 			<h2 class="trksit-header"><?php _e("API Settings"); ?></h2>
 			<?php if(get_transient('trksit_active_user') && get_transient('trksit_active_user') == 'inactive'): ?>
+<?php
+	if(!TRKSIT_PROD){
+		$regurl = 'http://manage.trksit.local/subscribe';
+	} else {
+		$regurl = 'http://manage.trks.it/subscribe';
+	}
+?>
 			<div class="alert alert-danger">
-				<p>Plugin not activated.  Please <a href="#" target="_blank">register here</a> then enter valid API keys</p>
+			<p>Plugin not activated.  Please <a href="<?php echo $regurl; ?>" target="_blank">register here</a> then enter valid API keys</p>
 			</div>
 			<?php endif; ?>
 
@@ -162,25 +169,25 @@ if($_GET['page'] == 'trksit-settings'){
    <?php if(isset($_GET['tab']) && $_GET['tab'] == 'scripts'){ ?>
 
 <?php
-	$s_label = '';
-	$s_platform = '';
-	$s_script = '';
-	$s_sid = '';
-	$form_url = remove_query_arg( array('act','id','edit_nonce','delete_nonce'), str_replace( '%7E', '~', $_SERVER['REQUEST_URI']));
-	$trksit = new trksit();
-	if(isset($_GET['edit_nonce']) && $_GET['act'] == 'edit' && wp_verify_nonce($_GET['edit_nonce'], 'edit_script')){
-		$script_details = $trksit->wp_trksit_scriptDetails($wpdb, $_GET['id']);
-		$s_label = $script_details[0]->label;
-		$s_platform = $script_details[0]->platform;
-		$s_script = stripslashes(htmlspecialchars_decode($script_details[0]->script));
-		$s_sid = $script_details[0]->script_id;
+			$s_label = '';
+		$s_platform = '';
+		$s_script = '';
+		$s_sid = '';
+		$form_url = remove_query_arg( array('act','id','edit_nonce','delete_nonce'), str_replace( '%7E', '~', $_SERVER['REQUEST_URI']));
+		$trksit = new trksit();
+		if(isset($_GET['edit_nonce']) && $_GET['act'] == 'edit' && wp_verify_nonce($_GET['edit_nonce'], 'edit_script')){
+			$script_details = $trksit->wp_trksit_scriptDetails($wpdb, $_GET['id']);
+			$s_label = $script_details[0]->label;
+			$s_platform = $script_details[0]->platform;
+			$s_script = stripslashes(htmlspecialchars_decode($script_details[0]->script));
+			$s_sid = $script_details[0]->script_id;
 
-		echo "<script>jQuery(window).load(function(){ jQuery('#add-script-window').modal('show'); });</script>";
-	}
+			echo "<script>jQuery(window).load(function(){ jQuery('#add-script-window').modal('show'); });</script>";
+		}
 
-	if(isset($_GET['delete_nonce']) && $_GET['act'] == 'delete' && wp_verify_nonce($_GET['delete_nonce'], 'delete_script')){
-		$trksit->wp_trksit_deleteScript($wpdb, $_GET['id']);
-	}
+		if(isset($_GET['delete_nonce']) && $_GET['act'] == 'delete' && wp_verify_nonce($_GET['delete_nonce'], 'delete_script')){
+			$trksit->wp_trksit_deleteScript($wpdb, $_GET['id']);
+		}
 ?>
 
    <div class="trksit_col_full">
@@ -202,37 +209,37 @@ if($_GET['page'] == 'trksit-settings'){
 		 <tbody>
 
 <?php
-	$footnote = '';
-	$table_data = $wpdb->get_results(
-		"SELECT * FROM " . $wpdb->prefix . "trksit_scripts ORDER BY date_created DESC, script_id DESC" );
+		$footnote = '';
+		$table_data = $wpdb->get_results(
+			"SELECT * FROM " . $wpdb->prefix . "trksit_scripts ORDER BY date_created DESC, script_id DESC" );
 
 
-	if(count($table_data)){
+		if(count($table_data)){
 
-		foreach($table_data as $table_row){
-			$q = "SELECT url_id FROM " . $wpdb->prefix . "trksit_scripts_to_urls WHERE script_id = " . $table_row->script_id;
-			$times_used = $wpdb->get_results($q);
-			$used = count($times_used);
-			$datetime = strtotime($table_row->date_created);
-			$date_created = date('F j, Y', $datetime);
-			$edit_url = wp_nonce_url(admin_url('admin.php?page=trksit-settings&tab=scripts&act=edit&id=' . $table_row->script_id), 'edit_script', 'edit_nonce');
-			$delete_url = wp_nonce_url(admin_url('admin.php?page=trksit-settings&tab=scripts&act=delete&id=' . $table_row->script_id), 'delete_script', 'delete_nonce');
+			foreach($table_data as $table_row){
+				$q = "SELECT url_id FROM " . $wpdb->prefix . "trksit_scripts_to_urls WHERE script_id = " . $table_row->script_id;
+				$times_used = $wpdb->get_results($q);
+				$used = count($times_used);
+				$datetime = strtotime($table_row->date_created);
+				$date_created = date('F j, Y', $datetime);
+				$edit_url = wp_nonce_url(admin_url('admin.php?page=trksit-settings&tab=scripts&act=edit&id=' . $table_row->script_id), 'edit_script', 'edit_nonce');
+				$delete_url = wp_nonce_url(admin_url('admin.php?page=trksit-settings&tab=scripts&act=delete&id=' . $table_row->script_id), 'delete_script', 'delete_nonce');
 ?>
 					 <tr <?php if($table_row->script_error) { echo "class='error-script'"; } ?>>
 						<td><?php echo $date_created; ?></td>
 						<td>
 <?php
-			echo stripslashes($table_row->label);
-			if($table_row->script_error) {
-				$url = '/index.php?trksitgo=1&url_id=scripterror&testing=scripterror&scriptid=' . $table_row->script_id;
-				$url = wp_nonce_url($url, 'script_error_' . $table_row->script_id, 'script_error_nonce');
-				echo " * &nbsp; <a href='".$url."' class='script_debug' target='_blank'>[execute]</a>";
-				$footnote = '<p style="color: #a94442; float: left; padding-top: 20px;">'
-					. '<span style="float: left;">*</span>'
-					. '<span style="float: left; padding-left: 10px;">'
-					. 'Scripts in red indicate an error has occured in its execution<br />'
-					. 'Click [execute] with console open to see error.</span></p>';
-			}
+				echo stripslashes($table_row->label);
+				if($table_row->script_error) {
+					$url = '/index.php?trksitgo=1&url_id=scripterror&testing=scripterror&scriptid=' . $table_row->script_id;
+					$url = wp_nonce_url($url, 'script_error_' . $table_row->script_id, 'script_error_nonce');
+					echo " * &nbsp; <a href='".$url."' class='script_debug' target='_blank'>[execute]</a>";
+					$footnote = '<p style="color: #a94442; float: left; padding-top: 20px;">'
+						. '<span style="float: left;">*</span>'
+						. '<span style="float: left; padding-left: 10px;">'
+						. 'Scripts in red indicate an error has occured in its execution<br />'
+						. 'Click [execute] with console open to see error.</span></p>';
+				}
 ?>
 						</td>
 						<td><?php echo $table_row->platform; ?></td>
@@ -245,8 +252,8 @@ if($_GET['page'] == 'trksit-settings'){
 						</td>
 					 </tr>
 <?php
-		}
-	}else{
+			}
+		}else{
 ?>
 				  <tr>
 					 <td colspan="5">
@@ -254,7 +261,7 @@ if($_GET['page'] == 'trksit-settings'){
 					 </td>
 				  </tr>
 <?php
-	}
+		}
 ?>
 			</tbody>
 
@@ -316,13 +323,13 @@ if($_GET['page'] == 'trksit-settings'){
    </div>
    <?php } ?>
    <?php if(isset($_GET['tab']) && $_GET['tab'] == 'sources'){ ?>
-	<?php
+<?php
 		if(isset($_POST['source_submit'])){
 			$t_sources = maybe_unserialize(get_option('trksit_sources'));
 			array_push($t_sources, $_POST['source']);
 			update_option('trksit_sources', serialize($t_sources));
 		}
-	?>
+?>
    <div class="trksit_col_full">
 	   <h2 class="trksit-header">Sources</h2>
 	   <p>Here you can add sources to the drop down available when creating a new link</p>
@@ -336,9 +343,9 @@ if($_GET['page'] == 'trksit-settings'){
 
 		   <tbody>
 <?php
-	$sources = maybe_unserialize(get_option('trksit_sources'));
-	for($i = 0; $i < count($sources); $i++){
-		$source_url = wp_nonce_url(str_replace( '%7E', '~', $_SERVER['REQUEST_URI']) . '&deletesource=' . $i, 'delete_source', 'ds_nonce');
+		$sources = maybe_unserialize(get_option('trksit_sources'));
+		for($i = 0; $i < count($sources); $i++){
+			$source_url = wp_nonce_url(str_replace( '%7E', '~', $_SERVER['REQUEST_URI']) . '&deletesource=' . $i, 'delete_source', 'ds_nonce');
 ?>
 			<tr>
 			<td><?php echo $sources[$i]; ?></td>
