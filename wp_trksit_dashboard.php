@@ -138,7 +138,7 @@
 						   endforeach;
 
 						}else{
-						   _e('You haven\'t setup any scripts yet! <a href="#">Click here to create one now!</a>');
+						   _e('<p>You haven\'t setup any scripts yet! <a href="#">Click here to create one now!</a></p>');
 						}
 
 					 ?>
@@ -320,7 +320,8 @@
 		 </table>
 		 <?php
 			else:
-			_e('You haven\'t created a Trks.it URL yet...'); ?> <a href="/wp-admin/admin.php?page=trksit-generate"><?php _e('Create one now!'); ?></a>
+			_e('<p>You haven\'t created a Trks.it URL yet...</p>'); ?> 
+			<p><a href="/wp-admin/admin.php?page=trksit-generate" class="btn btn-success" style="text-decoration: none;"><?php _e('Create one now!'); ?></a></p>
 			<?php endif;?>
 		 </div>
 		 <?php

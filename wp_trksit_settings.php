@@ -169,7 +169,7 @@ if($_GET['page'] == 'trksit-settings'){
    <?php if(isset($_GET['tab']) && $_GET['tab'] == 'scripts'){ ?>
 
 <?php
-			$s_label = '';
+		$s_label = '';
 		$s_platform = '';
 		$s_script = '';
 		$s_sid = '';
@@ -297,7 +297,19 @@ if($_GET['page'] == 'trksit-settings'){
 						<option value="bing" <?php if ($s_platform == 'bing') { echo 'selected="selected"'; } ?>>Bing</option>
 						<option value="facebook" <?php if ($s_platform == 'facebook') { echo 'selected="selected"'; } ?>>Facebook</option>
 						<option value="custom" <?php if ($s_platform == 'custom') { echo 'selected="selected"'; } ?>>Custom</option>
+						<?php
+							$custom_opts = get_option('trksit_script_platforms');
+							$co = maybe_unserialize($custom_opts);
+							foreach($co as $c){
+								echo '<option value="'.$c.'"';
+									if($s_platform == $c){ echo ' selected="selected" ';
+								}
+								echo '>'.$c.'</option>';
+							}
+						?>
+						<option value="other" id="other">Other</option>
 					 </select>
+					<input type="text" name="trksit_script_platform_other" id="trksit_script_platform_other" value="" placeholder="Add platform..." style="display: none;" />
 				  </div>
 			   </div>
 

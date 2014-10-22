@@ -118,4 +118,11 @@ jQuery(document).ready(function($){
 	//Makes IE honor autofocus attribute on inputs
 	$('[autofocus]:not(:focus)').eq(0).focus();
 
+	//Handle "other" platform
+	$("#trksit_script_platform").change(function(){
+		if($(this).val() == "other"){
+			$("#trksit_script_platform_other").show();
+		}
+	});
+
 });

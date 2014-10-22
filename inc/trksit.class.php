@@ -372,11 +372,26 @@ $this->api."/parse/urls?".$url_paramaters, array(
 	}
 
 	function wp_trksit_saveCustomScript($wpdb, $post, $update = false){
+		$platform = $post['trksit_script_platform'];
+		if($post['trksit_script_platform_other'] != ""){
+			$platform = $post['trksit_script_platform_other'];
+			if($opt = get_option('trksit_script_platforms')){
+				$o = maybe_unserialize($opt);
+				if(!in_array($post['trksit_script_platform_other'], $o)){
+					$o[] = $post['trksit_script_platform_other'];
+					$ser_o = serialize($o);
+					update_option('trksit_script_platforms', $ser_o);
+				}
+			} else {
+				$p = serialize(array($post['trksit_script_platform_other']));
+				update_option('trksit_script_platforms', $p);
+			}
+		}
 		$trksit_replace = array('http://', 'https://', '<script>', '</script>');
 		$trksit_replacements = array('//', '//', '', '');
 		$trksit_script_label = $post['trksit_script_label'];
 		$trksit_script = htmlspecialchars(str_replace($trksit_replace, $trksit_replacements, $post['trksit_script']));
-		$trksit_platform = $post['trksit_script_platform'];
+		$trksit_platform = $platform;
 		$trksit_id = $post['script-id'];
 		$trksit_confirmation = '<div class="alert alert-success" style="margin:30px 0px 0px 0px;">' . __('Script successfully added') . '</div>';
 		$trksit_update = '<div class="alert alert-success" style="margin:30px 0px 0px 0px;">' . __('Script successfully updated') . '</div>';
