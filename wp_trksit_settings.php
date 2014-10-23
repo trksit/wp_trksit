@@ -89,7 +89,7 @@ if($_GET['page'] == 'trksit-settings'){
 	if($status = get_transient('trksit_status_messages')){
 		echo '<h3>Recent Status Messages</h3>';
 		foreach(maybe_unserialize($status) as $s){
-			echo '<p>'.$s->status_msg . ' - '. $s->date_created . '</p>';
+			echo '<p>'.$s->status_msg . ' on '. date('M d, Y - g:ia', strtotime($s->date_created)) . '</p>';
 		}
 	}
 ?>
