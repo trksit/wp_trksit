@@ -437,7 +437,9 @@ $this->api."/parse/urls?".$url_paramaters, array(
 			return $result;
 		} else {
 			if(json_decode($result['body'])->error){
+				$status_msg = json_decode($result['body'])->status_messages;
 				set_transient('trksit_active_user', 'inactive', 60*60*24);
+				set_transient('trksit_status_messages', serialize($status_msg), 60*60*24);
 				return false;
 			} else {
 				set_transient('trksit_active_user', 'active', 60*60*24);

@@ -174,6 +174,19 @@ function trksit_update_settings_redirect(){
 		$trksit->wp_trksit_resetToken();
 		//Refresh so the admin menu has the correct pages
 		wp_redirect('/wp-admin/admin.php?page=trksit-settings');
+	} else {
+		//This is to refresh the settings page so the menu is correct
+		//Also redirects if a user is on generate or dashboard and becomes inactive
+		//A refresh will force user to the trksit-settings page
+		$trksit = new trksit();
+		$page = array();
+		if(isset($_GET['page'])){
+			$page = explode('-', $_GET['page']);
+		}
+		if(count($page) > 0 && $page[0] == 'trksit' && !$trksit->wp_trksit_user_is_active() && !isset($_GET['trksit_active'])){
+			wp_redirect('/wp-admin/admin.php?page=trksit-settings&trksit_active=false');
+			exit;
+		}
 	}
 }
 
@@ -317,16 +330,16 @@ function trksit_github_plugin_updater_init() {
 
 	if ( is_admin() ) { // note the use of is_admin() to double check that this is happening in the admin
 		$config = array(
-			'slug' => plugin_basename(__FILE__), // this is the slug of your plugin
+			'slug'               => plugin_basename(__FILE__), // this is the slug of your plugin
 			'proper_folder_name' => 'wp_trksit', // this is the name of the folder your plugin lives in
-			'api_url' => 'https://api.github.com/repos/trksit/wp_trksit', // the github API url of your github repo
-			'raw_url' => 'https://raw.github.com/trksit/wp_trksit/master', // the github raw url of your github repo
-			'github_url' => 'https://github.com/trksit/wp_trksit', // the github url of your github repo
-			'zip_url' => 'https://github.com/trksit/wp_trksit/archive/master.zip', // the zip url of the github repo
-			'sslverify' => false,
-			'requires' => '1.1', // which version of WordPress does your plugin require?
-			'tested' => '4.0', // which version of WordPress is your plugin tested up to?
-			'readme' => 'README.md'
+			'api_url'            => 'https://api.github.com/repos/trksit/wp_trksit', // the github API url of your github repo
+			'raw_url'            => 'https://raw.github.com/trksit/wp_trksit/master', // the github raw url of your github repo
+			'github_url'         => 'https://github.com/trksit/wp_trksit', // the github url of your github repo
+			'zip_url'            => 'https://github.com/trksit/wp_trksit/archive/master.zip', // the zip url of the github repo
+			'sslverify'          => false,
+			'requires'           => '1.1', // which version of WordPress does your plugin require?
+			'tested'             => '4.0', // which version of WordPress is your plugin tested up to?
+			'readme'             => 'README.md'
 		);
 		new WP_GitHub_Updater($config);
 	}
