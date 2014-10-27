@@ -5,6 +5,8 @@ if(isset($_GET['ping']) && $_GET['ping'] == 'true'){
 	if(!isset($_COOKIE['trksit_new'])){
 		setcookie("trks_new", "new_user", time()+900);
 	}
+
+
 	// Setting cache-control headers
 	header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
 	header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0',false);
@@ -65,6 +67,22 @@ if(isset($_GET['ping']) && $_GET['ping'] == 'true'){
 				if($redirect_lookup && $redirect_lookup[0]->destination_url){
 					//get the short URL code
 					$surl = $_GET['su'];
+					$domain_party = "third";
+					$dest = $redirect_lookup[0]->destination_url;
+					$domains = maybe_unserialize(get_option('trksit_domains'));
+					if(in_array($dest, $domains)){
+						$domain_party = "first";
+					}
+
+					if(isset($_COOKIE['trks_party'])){
+						$party = $_COOKIE['trks_party'];
+						if($party == 'first' && $domain_party == 'third'){
+							setcookie('trks_party', 'both', time()+(60*60*24*30));
+						}
+					} else {
+						setcookie('trks_party', $domain_party, time()+(60*60*24*30));
+						$party = $domain_party;
+					}
 
 					//Check for transient that is set when a link is not in the database
 					//If found, API call to revert the flag set at trks.it
@@ -237,6 +255,11 @@ if($update_results){
 	  //always set the GA account
 	  var _gaq = _gaq || [];
 	  _gaq.push(['_setAccount', '<?php echo $analytics_id; ?>']);
+<?php
+				if($domain_party == 'third'){
+					echo "_gaq.push(['_setSessionCookieTimeout', 0])";
+				}
+?>
 
 	  //REQUIRED FOR LOCAL DEVELOPMENT
 	  _gaq.push(['_setDomainName', 'none']);
@@ -253,8 +276,10 @@ if($update_results){
 	  //		pushing a custom variable & event to Google Analytics to track this clicked link
 	  setTimeout(function(){
 
-		  _gaq.push(['_setCustomVar', 1, 'trks.it', '<?php echo $redirect_lookup[0]->destination_url; ?>', 1]);
-		  _gaq.push(['_trackEvent', 'trks.it', 'Clicked Link', '<?php echo $redirect_lookup[0]->destination_url; ?>'], 0, true);
+		  _gaq.push(['_setCustomVar', 1, 'trks.it', '<?php echo $redirect_lookup[0]->destination_url; ?>', 2]);
+		  _gaq.push(['_setCustomVar', 2, 'trks.it', '<?php echo $party; ?>', 2]);
+		  _gaq.push(['_trackEvent', 'trks.it', 'Clicked <?php echo $domain_party; ?> Party Link', '<?php echo $_GET['su'] . " - " . $redirect_lookup[0]->destination_url; ?>'], 0, true);
+
 		  _gaq.push(['_trackPageview', '<?php echo $_GET['su']; ?> : <?php echo $redirect_lookup[0]->destination_url; ?>']);
 	  }, delay);
 

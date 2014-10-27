@@ -401,7 +401,7 @@ if($_GET['page'] == 'trksit-settings'){
 
    <div class="trksit_col_full">
 	   <h2 class="trksit-header">Domains</h2>
-	   <p>Here you can add first-level domain names</p>
+	   <p>Here you can add first-party domain names</p>
 	   <table class="wp-list-table widefat fixed">
 		   <thead>
 			   <tr>
