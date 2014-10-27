@@ -90,6 +90,9 @@ dbDelta( $table_4_sql );
 $sources = serialize(array('Auto Detect (recommended)'));
 update_option('trksit_sources', $sources);
 
+$domains = serialize(array(get_option('siteurl')));
+update_option('trksit_domains', $domains);
+
 }
 
 /*
@@ -422,6 +425,13 @@ function trksit_delete_source_redirect(){
 		array_splice($d_sources, (int) $_GET['deletesource'], 1);
 		update_option('trksit_sources', serialize($d_sources));
 		$url = remove_query_arg(array('ds_nonce', 'deletesource'), str_replace( '%7E', '~', $_SERVER['REQUEST_URI']));
+		wp_redirect($url);
+	}
+	if(isset($_GET['deletedomain']) && wp_verify_nonce($_GET['dd_nonce'], 'delete_domain')){
+		$d_domains = maybe_unserialize(get_option('trksit_domains'));
+		array_splice($d_domains, (int) $_GET['deletedomain'], 1);
+		update_option('trksit_domains', serialize($d_domains));
+		$url = remove_query_arg(array('dd_nonce', 'deletedomain'), str_replace( '%7E', '~', $_SERVER['REQUEST_URI']));
 		wp_redirect($url);
 	}
 }

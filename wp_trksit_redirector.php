@@ -117,8 +117,8 @@ if(isset($_GET['ping']) && $_GET['ping'] == 'true'){
 									WHERE url_id = %d
 									AND hit_date = %s",
 $url_id, $today
-						)
-					);
+								)
+							);
 
 if($update_results){
 	$redirect = $js_redir . $meta_redir;
@@ -199,74 +199,72 @@ if($update_results){
 		$ogArray = unserialize($redirect_lookup[0]->og_data);
 
 		foreach($ogArray as $key => $value){
-			echo '<meta property="' . $key . '" content="' . $value . '" />
-';
+			echo '<meta property="' . $key . '" content="' . $value . '" />';
 		}
 
 		//if the open graph image is NOT set, we need to set it
 		if(!isset($ogArray['og:image'])){
-			echo '<meta property="og:image" content="' . $redirect_lookup[0]->meta_image . '" />
-';
+			echo '<meta property="og:image" content="' . $redirect_lookup[0]->meta_image . '" />';
 		}
 
 		//if the open graph URL is NOT set, we need to set it
 		if(!isset($ogArray['og:url'])){
-			echo '<meta property="og:url" content="' . $redirect_lookup[0]->destination_url . '" />
-';
+			echo '<meta property="og:url" content="' . $redirect_lookup[0]->destination_url . '" />';
 		}
 
 		//skip analytics if testing
 		if(!$testing):
 			if(!is_null($analytics_id) && $analytics_id != ''):
 ?>
-				<script type="text/javascript">
-				function getCookie(c_name) {
-					if (document.cookie.length > 0) {
-						c_start = document.cookie.indexOf(c_name + "=");
-						if (c_start != -1) {
-							c_start = c_start + c_name.length + 1;
-							c_end = document.cookie.indexOf(";", c_start);
-							if (c_end == -1) c_end = document.cookie.length;
-							return unescape(document.cookie.substring(c_start, c_end));
-	}
-	}
-	return "";
-	}
-	</script>
+	  <script type="text/javascript">
+		function getCookie(c_name) {
+			if (document.cookie.length > 0) {
+				c_start = document.cookie.indexOf(c_name + "=");
+				if (c_start != -1) {
+					c_start = c_start + c_name.length + 1;
+					c_end = document.cookie.indexOf(";", c_start);
+					if (c_end == -1) c_end = document.cookie.length;
+					return unescape(document.cookie.substring(c_start, c_end));
+				}
+			}
+			return "";
+		}
+	  </script>
 
 
 
-				<script type="text/javascript">
-				//		always set the GA account
-				var _gaq = _gaq || [];
-		_gaq.push(['_setAccount', '<?php echo $analytics_id; ?>']);
+	  <script type="text/javascript">
+	  //always set the GA account
+	  var _gaq = _gaq || [];
+	  _gaq.push(['_setAccount', '<?php echo $analytics_id; ?>']);
 
-		//REQUIRED FOR LOCAL DEVELOPMENT
-		//		_gaq.push(['_setDomainName', 'none']);
-		//		_gaq.push(['_setAllowLinker', true]);
+	  //REQUIRED FOR LOCAL DEVELOPMENT
+	  _gaq.push(['_setDomainName', 'none']);
+	  _gaq.push(['_setAllowLinker', true]);
 
-		// 		if they haven't been here.. push an event to set their GA cookies
-		var delay = 0;
-		if(!getCookie("trks_new")){
-			// Fire an event to set it
-			_gaq.push(['_trackEvent', 'trks.it', 'New Visitor', '<?php echo $redirect_lookup[0]->destination_url; ?>', 0, true]);
-			delay = 100;
-	}
+	  //if they haven't been here.. push an event to set their GA cookies
+	  var delay = 0;
+	  if(!getCookie("trks_new")){
+		  // Fire an event to set it
+		  _gaq.push(['_trackEvent', 'trks.it', 'New Visitor', '<?php echo $redirect_lookup[0]->destination_url; ?>', 0, true]);
+		  delay = 100;
+	  }
 
-	//		pushing a custom variable & event to Google Analytics to track this clicked link
-	setTimeout(function(){
+	  //		pushing a custom variable & event to Google Analytics to track this clicked link
+	  setTimeout(function(){
 
-		_gaq.push(['_setCustomVar', 1, 'trks.it', '<?php echo $redirect_lookup[0]->destination_url; ?>', 1]);
-		_gaq.push(['_trackEvent', 'trks.it', 'Clicked Link', '<?php echo $redirect_lookup[0]->destination_url; ?>'], 0, true);
-	}, delay);
+		  _gaq.push(['_setCustomVar', 1, 'trks.it', '<?php echo $redirect_lookup[0]->destination_url; ?>', 1]);
+		  _gaq.push(['_trackEvent', 'trks.it', 'Clicked Link', '<?php echo $redirect_lookup[0]->destination_url; ?>'], 0, true);
+		  _gaq.push(['_trackPageview', '<?php echo $_GET['su']; ?> : <?php echo $redirect_lookup[0]->destination_url; ?>']);
+	  }, delay);
 
-	(function() {
-		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-	})();
+	  (function() {
+		  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	  })();
 
-	</script>
+	  </script>
 		 <?php endif; endif; endif; ?>
 
 		 <style>
