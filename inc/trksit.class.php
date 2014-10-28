@@ -36,6 +36,12 @@ class trksit {
 
 	}
 
+	/*
+	 * Private function to handle wp_errors
+	 *
+	 * @param error - error message to set in wp_error
+	 *
+	 */
 	private function wp_trksit_handleError($error){
 		if(!is_wp_error($this->trksit_errors)){
 			$this->trksit_errors = new WP_Error( 'broke', __($error, 'trks.it'));
@@ -92,7 +98,14 @@ class trksit {
 
 		return $flags;
 	}
-
+	/*
+	 * API call to purge links, sets go_page to false and timestamps purge_request field.
+	 *
+	 * @param secret - API secret key
+	 *
+	 * @return success message or false
+	 *
+	 */
 	function wp_trksit_api_uninstall($secret){
 		$purge = wp_remote_post(
 			$this->api."/urls/uninstall", array(
@@ -146,21 +159,6 @@ class trksit {
 				$url .= "?_fb_noscript=1";
 		}
 
-		/** Old method, leaving for testing if needed. */
-/* $get_opengraph = wp_remote_get(
-$this->api."/parse/urls?".$url_paramaters, array(
-'user-agent'=>'trks.it WordPress '.get_bloginfo('version'),
-'timeout'=>10,
-'blocking'=>true,
-'headers'=>array(
-	'Authorization' => 'Bearer ' . get_option('trksit_token'),
-	'Content-Type' => 'application/x-www-form-urlencoded'
-)
-)
-); */
-
-
-		//Get base64 encoded HTML
 		$og_html = $this->wp_trksit_scrapeURL($url);
 
 		//Handle cURL errors
@@ -168,7 +166,7 @@ $this->api."/parse/urls?".$url_paramaters, array(
 			$this->wp_trksit_handleError($og_html['error']['error_message']);
 		}
 
-		//Send encoded HTML to API for opengraph data
+		//Send HTML to API for opengraph data
 		$get_opengraph = wp_remote_post(
 			$this->api."/parse/opengraph", array(
 				'user-agent'=>'trks.it WordPress '.get_bloginfo('version'),
@@ -227,6 +225,11 @@ $this->api."/parse/urls?".$url_paramaters, array(
 	 * wp_trksit_scrapeURL($url)
 	 * Scrapes the HTML of a page using wp_remote_get rather than the API
 	 * to safeguard against exploits
+	 *
+	 * @param url - url to be scraped of HTML content
+	 *
+	 * @return array - ['body'] contains the HTML
+	 *
 	 */
 	function wp_trksit_scrapeURL($url){
 
@@ -247,7 +250,14 @@ $this->api."/parse/urls?".$url_paramaters, array(
 	}
 
 
-	//Shorten the URL (STEP 2)
+	/*
+	 * Shorten the URL
+	 *
+	 * @param postarray - $_POST array
+	 *
+	 * @return short_url or false
+	 *
+	 */
 	function wp_trksit_shortenURL($postArray){
 		global $wpdb;
 
@@ -286,6 +296,14 @@ $this->api."/parse/urls?".$url_paramaters, array(
 
 	}	//END shortenURL
 
+	/*
+	 * Save custom javascript to database
+	 *
+	 * @param wpdb - wordpress database object
+	 * @param mainArray - list of script IDs to add to this URL
+	 * @param id - URL ID
+	 *
+	 */
 	private function wp_trksit_saveScripts($wpdb, $mainArray, $id){
 		$wpdb->delete($wpdb->prefix . 'trksit_scripts_to_urls', array('url_id' => $id));
 		$script_count = 0;
@@ -305,7 +323,17 @@ $this->api."/parse/urls?".$url_paramaters, array(
 		}
 	}
 
-	//Save URL to database
+	/*
+	 * Save URL to database
+	 *
+	 * @param wpdb - wordpress database object
+	 * @param postarray - $_POST array
+	 * @param update - boolean to send update or not
+	 * @param updateid - id of URL if update
+	 *
+	 * @return ShortenedURL ID
+	 *
+	 */
 	function wp_trksit_saveURL($wpdb, $postArray, $update = false, $updateid = null){
 
 		//Setting up our 2 arrays, 1 from main data & other for Open Graph data
@@ -361,11 +389,29 @@ $this->api."/parse/urls?".$url_paramaters, array(
 
 	}//END saveURL
 
+	/*
+	 * Delete script
+	 *
+	 * @param wpdb - wordpress database object
+	 * @param id - id of script to delete
+	 *
+	 * @return success or error messages
+	 *
+	 */
 	function wp_trksit_deleteScript($wpdb, $id) {
 		$wpdb->delete($wpdb->prefix . 'trksit_scripts', array('script_id' => intval($id)));
 		$wpdb->delete($wpdb->prefix . 'trksit_scripts_to_urls', array('script_id' => intval($id)));
 	}
 
+	/*
+	 * Get script details
+	 *
+	 * @param wpdb - wordpress database object
+	 * @param id - script id
+	 *
+	 * @return label, script, platform, script_id
+	 *
+	 */
 	function wp_trksit_scriptDetails($wpdb, $id){
 		$query = 'SELECT label, script, platform, script_id FROM ' . $wpdb->prefix . 'trksit_scripts WHERE script_id = ' . intval($id);
 		return $wpdb->get_results($query);
@@ -424,6 +470,11 @@ $this->api."/parse/urls?".$url_paramaters, array(
 		return $trksit_confirmation;
 	}
 
+	/*
+	 * API call to see if current user is active
+	 *
+	 * @return boolean
+	 */
 	function wp_trksit_user_is_active(){
 		$url = $this->api.'/active';
 		$headers = array(
@@ -448,7 +499,15 @@ $this->api."/parse/urls?".$url_paramaters, array(
 		}
 	}
 
-	//Generating the shortened URL from trks.it
+	/*
+	 * API call to generate short URL
+	 *
+	 * @param long_url - the long URL to the go page
+	 * @param data - OG and meta information
+	 *
+	 * @return error or URL
+	 *
+	 */
 	function wp_trksit_generateURL($long_url,$data){
 
 		$url = $this->api.'/urls';
@@ -522,8 +581,13 @@ $this->api."/parse/urls?".$url_paramaters, array(
 
 	}
 
-
-	//resetToken
+	/*
+	 * API call to reset OAuth2 token
+	 * Also checks associated URL with siteurl to make sure they match
+	 *
+	 * @return success or error
+	 *
+	 */
 	function wp_trksit_resetToken(){
 		$url = $this->api.'/token?grant_type=creds';
 		$body = array(
@@ -584,7 +648,12 @@ $this->api."/parse/urls?".$url_paramaters, array(
 		return $output;
 	}
 
-	//checkToken
+	/*
+	 * Check the validity of issued token
+	 *
+	 * @return error or true
+	 *
+	 */
 	function wp_trksit_checkToken(){
 		$url = $this->api.'/token?grant_type=authorization';
 		$body = array(
@@ -616,7 +685,14 @@ $this->api."/parse/urls?".$url_paramaters, array(
 
 	}
 
-	//get the hits for the links
+	/*
+	 * Get URL hits from database.  Outputs javascript to chart data.
+	 *
+	 * @param start_date
+	 * @param end_date
+	 * @param short_url_id
+	 *
+	 */
 	function wp_trksit_getAnalytics($start_date = null,$end_date = null,$short_url_id = null){
 		global $wpdb;
 
