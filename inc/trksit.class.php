@@ -541,20 +541,44 @@ $this->api."/parse/urls?".$url_paramaters, array(
 			return $result;
 		}
 
+		$urlsmatch = false;
+
+		//Compare the siteurl to the associated URL saved in oauth_clients
+		$site_url = get_option('siteurl');
+		$associated_url = wp_remote_get(
+			$this->api."/active/url/".get_option('trksit_public_api_key'), array(
+				'user-agent'=>'trks.it WordPress '.get_bloginfo('version'),
+				'timeout'=>10,
+				'blocking'=>true,
+				'headers'=>array(
+					'Authorization' => 'Bearer ' . get_option('trksit_token'),
+					'Content-Type' => 'application/x-www-form-urlencoded'
+				)
+			)
+		);
+
+		$au = json_decode($associated_url['body']);
+		if($site_url == $au->msg){
+			$urlsmatch = true;
+		}
+
+
 		$output = json_decode($result['body']);
 		//if the wp_http cannot get the json data without weird, encoded characters, this may be because wp_http added padding to the body
 		if( !$output ){
 			$output = json_decode($this->wp_trksit_removePadding($result['body']));
 		}
 
-		if(isset($output->code->access_token)){
+		if(isset($output->code->access_token) && $urlsmatch){
 			update_option('trksit_token', $output->code->access_token);
 			update_option('trksit_token_expires', $output->code->expires);
 			set_transient('trksit_active_user', 'active', 60*60*24);
+			delete_transient('trksit_url_status_msg');
 		} else {
 			delete_option('trksit_token');
 			delete_option('trksit_token_expires');
 			set_transient('trksit_active_user', 'inactive', 60*60*24);
+			set_transient('trksit_url_status_msg', 'URL associated with this public key ('.$au->msg.') does not match this site\'s URL', 60*60*24*365);
 		}
 
 		return $output;

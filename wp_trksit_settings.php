@@ -92,6 +92,9 @@ if($_GET['page'] == 'trksit-settings'){
 		foreach(maybe_unserialize($status) as $s){
 			echo '<p>'.$s->status_msg . ' on '. date('M d, Y - g:ia', strtotime($s->date_created)) . '</p>';
 		}
+		if(get_transient('trksit_url_status_msg')){
+			echo '<p>'.get_transient('trksit_url_status_msg') . '</p>';
+		}
 	}
 ?>
 			</div>

@@ -175,7 +175,7 @@ function trksit_update_settings_redirect(){
 			update_option('trksit_redirect_delay', $trksit_redirect_delay);
 		}
 		$trksit = new trksit();
-		$trksit->wp_trksit_resetToken();
+		$reset_token = $trksit->wp_trksit_resetToken();
 		//Refresh so the admin menu has the correct pages
 		wp_redirect('/wp-admin/admin.php?page=trksit-settings');
 	} else {
