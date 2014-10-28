@@ -1,49 +1,48 @@
 <?php
-   if(isset($_GET['view'])){
-	  //Added to action hook
-	  //header('Content-Encoding: none;'); // Use with ob_start() and flushing of buffers!!!
-	  ob_start();
-	  echo '<div id="loading-indicator" style="margin: 0px auto; width: 200px; text-align: center; padding-top: 200px;">';
-	  echo '<h2>Loading...</h2><br />';
-	  echo '<img src="' . plugins_url( '/wp_trksit/img/loading.gif' , dirname(__FILE__) ) . '" alt="Loading" /></div>';
-	  trksit_flush_buffers();
-   }
+if(isset($_GET['view'])){
+	//Added to action hook
+	//header('Content-Encoding: none;'); // Use with ob_start() and flushing of buffers!!!
+	ob_start();
+	echo '<div id="loading-indicator" style="margin: 0px auto; width: 200px; text-align: center; padding-top: 200px;">';
+	echo '<h2>Loading...</h2><br />';
+	echo '<img src="' . plugins_url( '/wp_trksit/img/loading.gif' , dirname(__FILE__) ) . '" alt="Loading" /></div>';
+	trksit_flush_buffers();
+}
 ?>
 <div class="wrap" id="trksit-wrap">
-   <?php
-	  $trksit = new trksit();
+<?php
+$trksit = new trksit();
 
+if((isset($_GET['view']) && $_GET['view'] == 'link-detail') && is_numeric($_GET['linkid'])){
+	$details_nonce = $_REQUEST['_wpnonce'];
+	if(!wp_verify_nonce($details_nonce, 'trksit-view-details')){
+		die();
+	}else {
+		if(isset($_POST["meta_title"]) && !empty($_POST) ){
+			$trksit->wp_trksit_saveURL($wpdb, $_POST, true, $_GET['linkid']);
+		}
+		$link_id = $_GET['linkid'];
+		$url_details = $wpdb->get_results( "SELECT * FROM " . $wpdb->prefix . "trksit_urls WHERE url_id = " . $link_id . "" );
+		if(count($url_details === 1)){
 
-	  if((isset($_GET['view']) && $_GET['view'] == 'link-detail') && is_numeric($_GET['linkid'])){
-		 $details_nonce = $_REQUEST['_wpnonce'];
-		 if(!wp_verify_nonce($details_nonce, 'trksit-view-details')){
-			die();
-		 }else {
-			if(isset($_POST["meta_title"]) && !empty($_POST) ){
-			   $trksit->wp_trksit_saveURL($wpdb, $_POST, true, $_GET['linkid']);
+			$trksit->wp_trksit_parseURL($url_details[0]->destination_url);
+			$og_data = unserialize ( $url_details[0]->og_data );
+			$date = $url_details[0]->date_created;
+			$trksit_url = $url_details[0]->trksit_url;
+			if( isset($_GET['trksit_start_date']) AND !empty($_GET['trksit_start_date']) AND isset($_GET['trksit_end_date']) AND !empty($_GET['trksit_end_date']) ){
+				$start_date = date('Y-m-d',strtotime($_GET['trksit_start_date']));
+				$end_date = date('Y-m-d',strtotime($_GET['trksit_end_date']));
+			}else{
+				$start_date = date('Y-m-d',strtotime("last week"));
+				$end_date = date('Y-m-d', time());
 			}
-			$link_id = $_GET['linkid'];
-			$url_details = $wpdb->get_results( "SELECT * FROM " . $wpdb->prefix . "trksit_urls WHERE url_id = " . $link_id . "" );
-			if(count($url_details === 1)){
-
-			   $trksit->wp_trksit_parseURL($url_details[0]->destination_url);
-			   $og_data = unserialize ( $url_details[0]->og_data );
-			   $date = $url_details[0]->date_created;
-			   $trksit_url = $url_details[0]->trksit_url;
-			   if( isset($_GET['trksit_start_date']) AND !empty($_GET['trksit_start_date']) AND isset($_GET['trksit_end_date']) AND !empty($_GET['trksit_end_date']) ){
-				  $start_date = date('Y-m-d',strtotime($_GET['trksit_start_date']));
-				  $end_date = date('Y-m-d',strtotime($_GET['trksit_end_date']));
-			   }else{
-				  $start_date = date('Y-m-d',strtotime("last week"));
-				  $end_date = date('Y-m-d', time());
-			   }
-			?>
+?>
 			<h2 class="trksit-header top"><img src="<?php echo plugins_url( '/wp_trksit/img/trksit-icon-36x36.png' , dirname(__FILE__) ); ?>" class="trksit-header-icon" /><?php echo __( 'Trks.it - Details for Link ID #' . $url_details[0]->url_id, 'trksit_menu' ); ?></h2>
 
 			<div id="trks_hits"></div>
-			<?php
-			   $trksit->wp_trksit_getAnalytics($start_date,$end_date,$link_id);
-			?>
+<?php
+			$trksit->wp_trksit_getAnalytics($start_date,$end_date,$link_id);
+?>
 			<div class="trksit_tab_nav"></div>
 
 			<form class="trksit-form"  method="post">
@@ -113,45 +112,45 @@
 
 				  <div class="trksit-section">
 					 <h2 class="trskit-header"><?php _e('Attached Scripts'); ?></h2><br />
-					 <?php
+<?php
 
-						$active_scripts = $wpdb->get_results( "SELECT script_id FROM " . $wpdb->prefix . "trksit_scripts_to_urls WHERE url_id=" . $url_details[0]->url_id );
-						$active_scripts_array = array();
-						foreach($active_scripts as $active_script){
-						   $active_scripts_array[] = $active_script->script_id;
-						}
+			$active_scripts = $wpdb->get_results( "SELECT script_id FROM " . $wpdb->prefix . "trksit_scripts_to_urls WHERE url_id=" . $url_details[0]->url_id );
+			$active_scripts_array = array();
+			foreach($active_scripts as $active_script){
+				$active_scripts_array[] = $active_script->script_id;
+			}
 
-						$scripts = $wpdb->get_results( "SELECT * FROM " . $wpdb->prefix . "trksit_scripts order by label" );
+			$scripts = $wpdb->get_results( "SELECT * FROM " . $wpdb->prefix . "trksit_scripts order by label" );
 
-						if(count($scripts)){
-						   $count = 1;
-						   foreach($scripts as $script):
+			if(count($scripts)){
+				$count = 1;
+				foreach($scripts as $script):
 
-						   $even_odd = ($count&1 ? 'odd' : 'even');
+					$even_odd = ($count&1 ? 'odd' : 'even');
 
-						   $checked = (in_array($script->script_id, $active_scripts_array)) ? ' checked' :  '';
+				$checked = (in_array($script->script_id, $active_scripts_array)) ? ' checked' :  '';
 
-						   echo '<label class="checkbox ' . $even_odd . '"><input type="checkbox" name="trksit_scripts[]" value="' . $script->script_id . '"' . $checked . ' />' . stripslashes($script->label) . '</label>';
+				echo '<label class="checkbox ' . $even_odd . '"><input type="checkbox" name="trksit_scripts[]" value="' . $script->script_id . '"' . $checked . ' />' . stripslashes($script->label) . '</label>';
 
-						   $count++;
+				$count++;
 
-						   endforeach;
+endforeach;
 
-						}else{
-						   _e('<p>You haven\'t setup any scripts yet! <a href="#">Click here to create one now!</a></p>');
-						}
+			}else{
+				_e('<p>You haven\'t setup any scripts yet! <a href="#">Click here to create one now!</a></p>');
+			}
 
-					 ?>
+?>
 					 <div class="clearfix"></div>
 				  </div>
 
 				  <div class="clearfix"></div>
 
-				  <?php
-					 foreach($trksit->wp_trksit_getOGMetaArray() as $property => $content){
-						echo sprintf('<input type="hidden" name="%s" value="%s">', $property, $content);
-					 }
-				  ?>
+<?php
+			foreach($trksit->wp_trksit_getOGMetaArray() as $property => $content){
+				echo sprintf('<input type="hidden" name="%s" value="%s">', $property, $content);
+			}
+?>
 
 				  <?php wp_nonce_field('trksit_update_url','trksit_update_url'); ?>
 				  <input type="submit" class="btn btn-success" data-loading-text="<?php _e('Please wait...'); ?>" value="<?php _e('Update URL'); ?>" />
@@ -171,32 +170,32 @@
 					 </div><div class="clear"></div>
 				  </div><!-- #preview -->
 
-				  <?php
-					 if(isset($og_data['og:image']) || isset($og_data['og:title']) || isset($og_data['og:description'])){
-						echo '<div class="alert alert-warning">
-						   We have detected the following open graph tags on this URL:<br /><br />';
-						   echo (isset($og_data['og:image'])) ? '<strong>og:image</strong><br />' : '';
-						   echo (isset($og_data['og:title'])) ? '<strong>og:title</strong><br />' : '';
-						   echo (isset($og_data['og:description'])) ? '<strong>og:description</strong><br />' : '';
-						   echo '<br />Trks.it will use the specified open graph tags above instead of the custom values defined on the left.</div>';
-					 }
-					 if(!isset($og_data['og:image'])){
-					 ?>
+<?php
+			if(isset($og_data['og:image']) || isset($og_data['og:title']) || isset($og_data['og:description'])){
+				echo '<div class="alert alert-warning">
+					We have detected the following open graph tags on this URL:<br /><br />';
+echo (isset($og_data['og:image'])) ? '<strong>og:image</strong><br />' : '';
+echo (isset($og_data['og:title'])) ? '<strong>og:title</strong><br />' : '';
+echo (isset($og_data['og:description'])) ? '<strong>og:description</strong><br />' : '';
+echo '<br />Trks.it will use the specified open graph tags above instead of the custom values defined on the left.</div>';
+			}
+			if(!isset($og_data['og:image'])){
+?>
 
 					 <div class="control-group controls">
 						<select name="meta_image" id="preview-image-picker">
-						   <?php
-							  foreach($trksit->imgArray as $image){
-								 if (strpos($image,'www.googleadservices.com') === false) {
-									echo sprintf('<option data-img-src="%s" value="%s">%s</option>', $image, $image, $image);
-								 }
-							  }
-						   ?>
+<?php
+				foreach($trksit->imgArray as $image){
+					if (strpos($image,'www.googleadservices.com') === false) {
+						echo sprintf('<option data-img-src="%s" value="%s">%s</option>', $image, $image, $image);
+					}
+				}
+?>
 						</select>
 					 </div>
-					 <?php
-					 }
-				  ?>
+<?php
+			}
+?>
 
 				  <div class="clearfix"></div>
 
@@ -207,29 +206,29 @@
 
 
 
-			<?php
-			}
-		 }
-	  }
-	  else if($_GET['page'] == 'trksit-dashboard'){
-	  ?>
+<?php
+		}
+	}
+}
+else if($_GET['page'] == 'trksit-dashboard'){
+?>
 	  <h2 class="trksit-header top"><img src="<?php echo plugins_url( '/wp_trksit/img/trksit-icon-36x36.png' , dirname(__FILE__) ); ?>" class="trksit-header-icon" /><?php echo __( 'Trks.it Dashboard', 'trksit_menu' ); ?></h2>
-	  <?php
-		 if( isset($_GET['trksit_start_date']) AND !empty($_GET['trksit_start_date']) AND isset($_GET['trksit_end_date']) AND !empty($_GET['trksit_end_date']) ){
-			$start_date = date('Y-m-d',strtotime($_GET['trksit_start_date']));
-			$end_date = date('Y-m-d',strtotime($_GET['trksit_end_date']));
-		 }else{
-			$start_date = date('Y-m-d',strtotime("last week"));
-			$end_date = date('Y-m-d', time());
-		 }
-		 //get the date of the last week so we can select all links created within the past week
-		 $last_week = date('Y-m-d',strtotime("last week"));
-		 $today = date('Y-m-d', time());
+<?php
+	if( isset($_GET['trksit_start_date']) AND !empty($_GET['trksit_start_date']) AND isset($_GET['trksit_end_date']) AND !empty($_GET['trksit_end_date']) ){
+		$start_date = date('Y-m-d',strtotime($_GET['trksit_start_date']));
+		$end_date = date('Y-m-d',strtotime($_GET['trksit_end_date']));
+	}else{
+		$start_date = date('Y-m-d',strtotime("last week"));
+		$end_date = date('Y-m-d', time());
+	}
+	//get the date of the last week so we can select all links created within the past week
+	$last_week = date('Y-m-d',strtotime("last week"));
+	$today = date('Y-m-d', time());
 
-		 $timeline_points = $wpdb->get_results( "SELECT date_created FROM " . $wpdb->prefix . "trksit_urls LIMIT 1" );
-		 if( count($timeline_points) === 1){
-			$date = $timeline_points[0]->date_created;
-		 ?>
+	$timeline_points = $wpdb->get_results( "SELECT date_created FROM " . $wpdb->prefix . "trksit_urls LIMIT 1" );
+	if( count($timeline_points) === 1){
+		$date = $timeline_points[0]->date_created;
+?>
 		 <form action="<?php echo trksit_current_page();?>" class="wp-core-ui" method="GET" id="trksit_date_selector">
 			<input type="hidden" name="page" value="trksit-dashboard">
 			<div class="trksit_date">
@@ -245,29 +244,29 @@
 		 <br class="clear">
 		 <div id="trks_hits"></div>
 
-		 <?php
-			$trksit->wp_trksit_getAnalytics($start_date,$end_date);
-		 }
-		 $trks_query = "SELECT *, "
-		 ."(SELECT COALESCE(SUM(tkhits.hit_count),0) as hit_total "
-		 ."FROM ".$wpdb->prefix."trksit_hits tkhits "
-		 ."WHERE tku.url_id = tkhits.url_id "
-		 ."AND tkhits.hit_date "
-		 ."BETWEEN '$start_date' AND '$end_date') "
-		 ."AS hit_total "
-		 ."FROM ".$wpdb->prefix."trksit_urls tku "
-		 //."WHERE tku.url_id IN("
-		 //."SELECT DISTINCT tkhits.url_id "
-		 //."FROM ".$wpdb->prefix."trksit_hits tkhits "
-		 //."WHERE tku.url_id = tkhits.url_id "
-		 //."AND tkhits.hit_date "
-		 //."BETWEEN '$start_date' AND '$end_date') "
-		 ."ORDER BY date_created DESC";
+<?php
+		$trksit->wp_trksit_getAnalytics($start_date,$end_date);
+	}
+	$trks_query = "SELECT *, "
+		."(SELECT COALESCE(SUM(tkhits.hit_count),0) as hit_total "
+		."FROM ".$wpdb->prefix."trksit_hits tkhits "
+		."WHERE tku.url_id = tkhits.url_id "
+		."AND tkhits.hit_date "
+		."BETWEEN '$start_date' AND '$end_date') "
+		."AS hit_total "
+		."FROM ".$wpdb->prefix."trksit_urls tku "
+		//."WHERE tku.url_id IN("
+		//."SELECT DISTINCT tkhits.url_id "
+		//."FROM ".$wpdb->prefix."trksit_hits tkhits "
+		//."WHERE tku.url_id = tkhits.url_id "
+		//."AND tkhits.hit_date "
+		//."BETWEEN '$start_date' AND '$end_date') "
+		."ORDER BY date_created DESC";
 
-		 $table_data = $wpdb->get_results($trks_query);
+	$table_data = $wpdb->get_results($trks_query);
 
-		 if( count($table_data) >= 1 ):
-	  ?>
+	if( count($table_data) >= 1 ):
+?>
 
 	  <div id="trks_dashboard_par" style="display: none;">
 		 <table class="wp-list-table widefat fixed" id="trks_dashboard" style="width: 100%;display:table;white-space:nowrap;overflow: hidden;">
@@ -285,13 +284,13 @@
 			   </tr>
 			</thead>
 			<tbody>
-			   <?php
-				  foreach($table_data as $table_row):
-				  $datetime = strtotime($table_row->date_created);
-				  $date_created = date('M j, Y', $datetime);
-				  $details_nonce = wp_create_nonce('trksit-view-details');
-				  $details_link = 'admin.php?page=trksit-dashboard&view=link-detail&linkid=' . $table_row->url_id . '&_wpnonce=' . $details_nonce;
-			   ?>
+<?php
+		foreach($table_data as $table_row):
+			$datetime = strtotime($table_row->date_created);
+	$date_created = date('M j, Y', $datetime);
+	$details_nonce = wp_create_nonce('trksit-view-details');
+	$details_link = 'admin.php?page=trksit-dashboard&view=link-detail&linkid=' . $table_row->url_id . '&_wpnonce=' . $details_nonce;
+?>
 			   <tr>
 				  <td class="trks_it_date"><?php _e($date_created); ?></td>
 				  <td class="trks_it_hits"><?php _e($table_row->hit_total); ?></td>
@@ -318,15 +317,15 @@
 			   <?php endforeach;?>
 			</tbody>
 		 </table>
-		 <?php
-			else:
-			_e('<p>You haven\'t created a Trks.it URL yet...</p>'); ?> 
+<?php
+	else:
+	_e('<p>You haven\'t created a Trks.it URL yet...</p>'); ?> 
 			<p><a href="/wp-admin/admin.php?page=trksit-generate" class="btn btn-success" style="text-decoration: none;"><?php _e('Create one now!'); ?></a></p>
 			<?php endif;?>
 		 </div>
-		 <?php
-		 }
-	  ?>
+<?php
+}
+?>
 	  <style>
 		 #loading-indicator {
 			display: none;

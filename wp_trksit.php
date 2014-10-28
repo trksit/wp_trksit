@@ -115,6 +115,7 @@ $wp_host = array_pop($wp_host);
 define('TRKSIT_PROD', ($wp_host == 'local' || $wp_host == 'dev') ? false : true);
 
 include( plugin_dir_path( __FILE__ ) . 'inc/trksit.class.php');
+include( plugin_dir_path( __FILE__ ) . 'inc/trksit.ga_parse.php');
 add_action( 'init', array( new trksit, '__construct' ) );
 //load the needed scripts
 add_action('admin_enqueue_scripts', 'trksit_load_scripts');
@@ -454,6 +455,61 @@ function trksit_parse_query_404() {
 	}
 }
 add_action( 'wp', 'trksit_parse_query_404' );
+
+//set original source, medium, campaign cookie
+function original_cookies($party = false, $notgo = false){
+	if( isset($_POST['utmz']) ){
+		list($source,$campaign,$medium) = explode('|',$_POST['utmz']);
+		//source
+		$source = explode('=',$source);
+		$source = $source[1];
+		//campaign
+		$campaign = explode('=',$campaign);
+		$campaign = $campaign[1];
+		//medium
+		$medium = explode('=',$medium);
+		$medium = $medium[1];
+	}else{
+		$ga_parse = new GA_Parse($_COOKIE);
+		$source = (isset($_GET['utm_source'])?$_GET['utm_source']:$ga_parse->campaign_source);
+		$medium = (isset($_GET['utm_medium'])?$_GET['utm_medium']:$ga_parse->campaign_medium);
+		$campaign = (isset($_GET['utm_campaign'])?$_GET['utm_campaign']:$ga_parse->campaign_name);
+	}
+
+	//set original source, medium and campaign
+	setcookie('original_source',$source,time()+400000);
+	setcookie('original_medium',$medium,time()+400000);
+	setcookie('original_campaign',$campaign,time()+400000);
+
+	//set converting source, medium and campaign
+	converting_cookies($party, $notgo);
+}
+//set converting source, medium, campaign cookie
+function converting_cookies($party = false, $notgo = false){
+	if( isset($_COOKIE['__utmz']) ){
+		list($source,$campaign,$medium) = explode('|',$_COOKIE['__utmz']);
+		//source
+		$source = explode('=',$source);
+		$source = $source[1];
+		//campaign
+		$campaign = explode('=',$campaign);
+		$campaign = $campaign[1];
+		//medium
+		$medium = explode('=',$medium);
+		$medium = $medium[1];
+	}else{
+		$ga_parse = new GA_Parse($_COOKIE);
+		$source = (isset($_GET['utm_source'])?$_GET['utm_source']:$ga_parse->campaign_source);
+		$medium = (isset($_GET['utm_medium'])?$_GET['utm_medium']:$ga_parse->campaign_medium);
+		$campaign = (isset($_GET['utm_campaign'])?$_GET['utm_campaign']:$ga_parse->campaign_name);
+	}
+
+	//set converting source, medium and campaign
+	setcookie('converting_source',$source,time()+400000);
+	setcookie('converting_medium',$medium,time()+400000);
+	setcookie('converting_campaign',$campaign,time()+400000);
+
+}
 
 //Debug log function
 if(!function_exists('_log')){

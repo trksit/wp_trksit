@@ -3,7 +3,7 @@ if(isset($_GET['ping']) && $_GET['ping'] == 'true'){
 	echo json_encode(array('alive' => true));
 } else {
 	if(!isset($_COOKIE['trksit_new'])){
-		setcookie("trks_new", "new_user", time()+900);
+		setcookie("trks_new", "new_user", time()+400000);
 	}
 
 
@@ -77,11 +77,17 @@ if(isset($_GET['ping']) && $_GET['ping'] == 'true'){
 					if(isset($_COOKIE['trks_party'])){
 						$party = $_COOKIE['trks_party'];
 						if($party == 'first' && $domain_party == 'third'){
-							setcookie('trks_party', 'both', time()+(60*60*24*30));
+							setcookie('trks_party', 'both', time()+400000);
 						}
 					} else {
-						setcookie('trks_party', $domain_party, time()+(60*60*24*30));
+						setcookie('trks_party', $domain_party, time()+400000);
 						$party = $domain_party;
+					}
+
+					if( !isset($_COOKIE['original_source']) ){
+						original_cookies(false, true);
+					} else {
+						converting_cookies(false, true);
 					}
 
 					//Check for transient that is set when a link is not in the database
