@@ -282,12 +282,9 @@ if($update_results){
 	  //		pushing a custom variable & event to Google Analytics to track this clicked link
 	  setTimeout(function(){
 
-		  _gaq.push(['_setCustomVar', 1, 'trks.it', '<?php echo $redirect_lookup[0]->destination_url; ?>', 2]);
-		  _gaq.push(['_setCustomVar', 2, 'trks.it', '<?php echo $party; ?>', 2]);
+		  _gaq.push(['_setCustomVar', 1, 'trks.it', '<?php echo $party; ?>', 1]);
 		  _gaq.push(['_trackEvent', 'trks.it', 'Clicked <?php echo $domain_party; ?> Party Link', '<?php echo $_GET['su'] . " - " . $redirect_lookup[0]->destination_url; ?>'], 0, true);
-
-		  _gaq.push(['_trackPageview', '<?php echo $_GET['su']; ?> : <?php echo $redirect_lookup[0]->destination_url; ?>']);
-	  }, delay);
+	 }, delay);
 
 	  (function() {
 		  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
