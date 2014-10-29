@@ -154,9 +154,11 @@ function trksit_load_scripts() {
 	}
 }
 
-// Saves options from settings then redirects to refresh the admin menu
-// If the plugin is active, all pages show in admin menu
-// If not, only settings.  See trksit_add_pages() function.
+/*
+ * Saves options from settings then redirects to refresh the admin menu
+ * If the plugin is active, all pages show in admin menu
+ * If not, only settings.  See trksit_add_pages() function.
+ */
 add_action('plugins_loaded', 'trksit_update_settings_redirect');
 function trksit_update_settings_redirect(){
 	if((isset($_POST['trksit_page']) && $_POST['trksit_page'] == 'settings')
@@ -194,6 +196,10 @@ function trksit_update_settings_redirect(){
 	}
 }
 
+/*
+ * Admin notices - show wordpress info box if plugin can not activate
+ * Or if the api is offline
+ */
 add_action('admin_notices', 'trksit_admin_notices');
 function trksit_admin_notices(){
 	global $pagenow;
@@ -215,7 +221,10 @@ function trksit_admin_notices(){
 	}
 }
 
-//add pages to WordPress sidebar
+/*
+ * Add pages to wordpress sidebar
+ * Only settings shows if no API keys match
+ */
 add_action('admin_menu', 'trksit_add_pages');
 function trksit_add_pages() {
 	$active = false;
@@ -274,7 +283,7 @@ function trksit_add_pages() {
 	}
 }
 
-// Dashboard Page Content
+/** Dashboard Page Content */
 function trksit_dashboard() {
 
 	if (!current_user_can('manage_options'))  {
@@ -286,7 +295,7 @@ function trksit_dashboard() {
 
 }
 
-// Generate URL Page Content
+/** Generate URL Page Content */
 function trksit_generate() {
 
 	if (!current_user_can('manage_options'))  {
@@ -298,7 +307,7 @@ function trksit_generate() {
 
 }
 
-// Settings Page Content
+/** Settings Page Content */
 function trksit_settings() {
 
 	if (!current_user_can('manage_options'))  {
@@ -310,6 +319,7 @@ function trksit_settings() {
 
 }
 
+/** force https when appropriate */
 function trksit_current_page() {
 	$pageURL = 'http';
 	if (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
@@ -348,7 +358,7 @@ function trksit_github_plugin_updater_init() {
 		new WP_GitHub_Updater($config);
 	}
 }
-//Increase http request timeout
+/** Increase http request timeout */
 define('WP_TRKSIT_CURL_TIMEOUT', 15);
 add_filter('http_request_args', 'trksit_http_request_args', 100, 1);
 function trksit_http_request_args($r){
@@ -356,12 +366,14 @@ function trksit_http_request_args($r){
 	return $r;
 }
 
+/** Set some cURL parameters */
 add_action('http_api_curl', 'trksit_http_api_curl', 100, 1);
 function trksit_http_api_curl($handle){
 	curl_setopt( $handle, CURLOPT_CONNECTTIMEOUT, WP_TRKSIT_CURL_TIMEOUT );
 	curl_setopt( $handle, CURLOPT_TIMEOUT, WP_TRKSIT_CURL_TIMEOUT );
 }
 
+/** Output buffer flush */
 function trksit_flush_buffers() {
 	ob_end_flush();
 	@ob_flush();
@@ -370,20 +382,20 @@ function trksit_flush_buffers() {
 }
 
 
-// Sets the URL and sets an arbitrary query variable
+/** Sets the URL and sets an arbitrary query variable */
 add_action( 'init', 'trksit_init_internal' );
 function trksit_init_internal(){
 	add_rewrite_rule( 'trksitgo$', 'index.php?trksitgo=1', 'top' );
 }
 
-// Registers the query variable
+/** Registers the query variable */
 add_filter( 'query_vars', 'trksit_query_vars' );
 function trksit_query_vars( $query_vars ){
 	$query_vars[] = 'trksitgo';
 	return $query_vars;
 }
 
-// Include the template when loaded
+/** Include the template when loaded */
 add_action( 'parse_request', 'trksit_parse_request' );
 function trksit_parse_request( &$wp ){
 	if ( array_key_exists( 'trksitgo', $wp->query_vars ) ) {
@@ -393,7 +405,7 @@ function trksit_parse_request( &$wp ){
 	return;
 }
 
-// flush_rules() if our rules are not yet included
+/** flush_rules() if our rules are not yet included */
 add_action( 'wp_loaded','trksit_flush_rules' );
 function trksit_flush_rules(){
 	$rules = get_option( 'rewrite_rules' );
@@ -403,7 +415,7 @@ function trksit_flush_rules(){
 	}
 }
 
-//Add header encoding for output buffering
+/** Add header encoding for output buffering */
 add_action( 'wp_loaded','trksit_set_header_encoding' );
 function trksit_set_header_encoding(){
 	if(isset($_GET['page']) && ($_GET['page'] == 'trksit-generate' || $_GET['page'] == 'trksit-settings' || $_GET['page'] == 'trksit-dashboard') && !empty($_POST)){
@@ -411,7 +423,7 @@ function trksit_set_header_encoding(){
 	}
 }
 
-//Start session for generate URL section
+/** Start session for generate URL section */
 add_action( 'init', 'trksit_session_start');
 function trksit_session_start(){
 	if(isset($_GET['page']) && $_GET['page'] == 'trksit-generate' && session_id() == ''){
@@ -419,6 +431,10 @@ function trksit_session_start(){
 	}
 }
 
+/*
+ * Delete source or domain through CRUD interface
+ * After deletion strip query variables and redirect.
+ */
 add_action('init', 'trksit_delete_source_redirect');
 function trksit_delete_source_redirect(){
 	if(isset($_GET['deletesource']) && wp_verify_nonce($_GET['ds_nonce'], 'delete_source')){
@@ -437,7 +453,7 @@ function trksit_delete_source_redirect(){
 	}
 }
 
-//Check that the default sources are set, if not, set them
+/** Check that the default sources are set, if not, set them */
 add_action( 'init', 'trksit_default_sources' );
 function trksit_default_sources(){
 	if(!get_option('trksit_sources')){
@@ -446,7 +462,7 @@ function trksit_default_sources(){
 	}
 }
 
-//cleaner way to force 404
+/** cleaner way to force 404 */
 function trksit_parse_query_404() {
 	global $wp_query;
 	if ( isset($_GET['error404']) && $_GET['error404'] == 'true' ){
@@ -456,7 +472,7 @@ function trksit_parse_query_404() {
 }
 add_action( 'wp', 'trksit_parse_query_404' );
 
-//set original source, medium, campaign cookie
+/** set original source, medium, campaign cookie */
 function original_cookies($party = false, $notgo = false){
 	if( isset($_POST['utmz']) ){
 		list($source,$campaign,$medium) = explode('|',$_POST['utmz']);
@@ -484,7 +500,8 @@ function original_cookies($party = false, $notgo = false){
 	//set converting source, medium and campaign
 	converting_cookies($party, $notgo);
 }
-//set converting source, medium, campaign cookie
+
+/** set converting source, medium, campaign cookie */
 function converting_cookies($party = false, $notgo = false){
 	if( isset($_COOKIE['__utmz']) ){
 		list($source,$campaign,$medium) = explode('|',$_COOKIE['__utmz']);
