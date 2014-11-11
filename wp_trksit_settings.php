@@ -368,14 +368,18 @@ if($_GET['page'] == 'trksit-settings'){
 		   <tbody>
 <?php
 	$sources = maybe_unserialize(get_option('trksit_sources'));
-	for($i = 0; $i < count($sources); $i++){
+	$count_of_sources = count($sources);
+	for($i = 0; $i < $count_of_sources; $i++){
 		$source_url = wp_nonce_url(str_replace( '%7E', '~', $_SERVER['REQUEST_URI']) . '&deletesource=' . $i, 'delete_source', 'ds_nonce');
 ?>
 			<tr>
 			<td><?php echo $sources[$i]; ?></td>
 			<td>
-				<?php if($i > 0): ?>
+				<?php if($count_of_sources !== 1): ?>
 				<a href="<?php echo $source_url; ?>">Delete</a>
+				<?php else: ?>
+				<p>You must have at least one (1) source active.</p>
+				<p>Please add another source before attempting to delete this one.</p>
 				<?php endif; ?>
 			</td>
 			</tr>

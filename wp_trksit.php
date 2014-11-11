@@ -87,8 +87,11 @@ dbDelta( $table_2_sql );
 dbDelta( $table_3_sql );
 dbDelta( $table_4_sql );
 
-$sources = serialize(array('Auto Detect (recommended)'));
-update_option('trksit_sources', $sources);
+//if they deactivate and then reactivate, don't reset their sources
+if(!get_option('trksit_sources')){
+		$sources = serialize(array('SLC Facebook','SLC Twitter','SLC Youtube','SLC LinkedIn','SLC Pinterest','SLC Online Community','SLC Blogger Outreach','CMLC Blog','CMLC Resources','CMLC Article Library','CMLC Landing Page','CMLC Website Page','CMLC Slideshare','CMLC Prezi','ELC Email','PALC Facebook Advertising','PALC Twitter Advertising','PALC Youtube Advertising','PALC LinkedIn Advertising','PALC Online Advertising','PALC Online Remarketing Advertising','PALC Online to Offline Advertising','PALC Sponsorship Advertising','PALC Out of Home Advertising','PALC TV Advertising','PALC Radio Advertising'));
+		update_option('trksit_sources', $sources);
+	}
 
 $domains = serialize(array(get_option('siteurl')));
 update_option('trksit_domains', $domains);
@@ -457,7 +460,7 @@ function trksit_delete_source_redirect(){
 add_action( 'init', 'trksit_default_sources' );
 function trksit_default_sources(){
 	if(!get_option('trksit_sources')){
-		$sources = serialize(array('Auto Detect (recommended)'));
+		$sources = serialize(array('SLC Facebook','SLC Twitter','SLC Youtube','SLC LinkedIn','SLC Pinterest','SLC Online Community','SLC Blogger Outreach','CMLC Blog','CMLC Resources','CMLC Article Library','CMLC Landing Page','CMLC Website Page','CMLC Slideshare','CMLC Prezi','ELC Email','PALC Facebook Advertising','PALC Twitter Advertising','PALC Youtube Advertising','PALC LinkedIn Advertising','PALC Online Advertising','PALC Online Remarketing Advertising','PALC Online to Offline Advertising','PALC Sponsorship Advertising','PALC Out of Home Advertising','PALC TV Advertising','PALC Radio Advertising'));
 		update_option('trksit_sources', $sources);
 	}
 }

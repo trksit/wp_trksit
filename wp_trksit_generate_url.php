@@ -174,13 +174,30 @@
 
 			   <div id="advanced-tracking-panel-lll">
 				  <h3><?php _e('Advanced Tracking Options'); ?></h3>
+
+				<!-- content -->
+				<div class="control-group">
+				  <label class="control-label" for="content"><?php _e('Content:'); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e('Use this field to define a unique conetnt value to be sent into your Google Analytics dashboard.'); ?>" data-original-title="<?php _e('Content'); ?>"><i class="icon-question-sign"></i></a></label>
+				  <div class="controls">
+					 <input name="content" id="content" type="text" placeholder="ig: Something Unique...">
+				  </div>
+			   </div>
+
+				<!-- term -->
+				<div class="control-group">
+				  <label class="control-label" for="term"><?php _e('Term (keyword):'); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e('Use this field to define a unique term (keyword) value to be sent into your Google Analytics dashboard.'); ?>" data-original-title="<?php _e('Term (keyword)'); ?>"><i class="icon-question-sign"></i></a></label>
+				  <div class="controls">
+					 <input name="term" id="term" type="text" placeholder="ig: Something Unique...">
+				  </div>
+			   </div>
+
 				  
 			   </div>
 
 			</div>
 
 			<div class="trksit-section">
-			   <h2 class="trskit-header"><?php _e('Add Scripts'); ?></h2>
+			   <h2 class="trskit-header"><?php _e('Attach Remarketing & Custom Scripts'); ?></h2>
 			   <?php
 				  $scripts = $wpdb->get_results( "SELECT * FROM " . $wpdb->prefix . "trksit_scripts WHERE script_error != 1 ORDER BY date_created DESC, label DESC" );
 
@@ -197,7 +214,7 @@
 					 endforeach;
 
 				  }else{
-					 _e('You haven\'t setup any scripts yet! <a href="#">Click here to create one now!</a>');
+					 _e('You haven\'t setup any remarketing lists or custom scripts yet! <a href="./admin.php?page=trksit-settings&tab=scripts">Click here to create one now!</a>');
 				  }
 
 			   ?>
