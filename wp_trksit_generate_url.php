@@ -107,8 +107,11 @@
 	  ?>
 
 	  <form class="trksit-form"  method="post">
+	  <input type="hidden" name="destination_url" value="<?php echo $_POST['destination_url'];?>">
+	  <input type="hidden" name="meta_title" id="title" maxlength="100" value="<?php echo $trksit_title; ?>">
+	  <input type="hidden" name="meta_description" id="description" rows="5" maxlength="255" value="<?php echo $trksit_description; ?>">
 		 <div class="trksit_col left">
-			<div class="trksit-section">
+			<!--div class="trksit-section">
 			   <h2 class="trksit-header"><?php _e('Sharing Options'); ?></h2>
 			   <div class="control-group">
 				  <label class="control-label"><?php _e('Destination URL:'); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e('The user will end up at this url.'); ?>" data-original-title="<?php _e('Destination URL'); ?>"><i class="icon-question-sign"></i></a></label>
@@ -129,10 +132,40 @@
 					 <textarea name="meta_description" id="description" rows="5" maxlength="255"><?php echo $trksit_description; ?></textarea>
 				  </div>
 			   </div>
-			</div>
+			</div-->
 			<div class="trksit-section">
 			   <h2 class="trksit-header"><?php _e('Analytics Tracking Data'); ?> <!-- <button class="btn btn-small" id="advanced-toggle" data-toggle="button"><?php _e('Show Advanced Options'); ?></button> --></h2>
-			   <div class="control-group">
+			   
+			   	<! -- source -->
+				<div class="control-group">
+					<label class="control-label" for="source"><?php _e('Source:'); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e('Use this field to define a unique source value to be sent into your Google Analytics dashboard.'); ?>" data-original-title="<?php _e('Campaign Source'); ?>"><i class="icon-question-sign"></i></a></label>
+					<div class="controls">
+						<select name="source" id="source_select">
+							<?php
+							$sources = maybe_unserialize(get_option("trksit_sources"));
+							for($i = 0; $i < count($sources); $i++){
+								if($i == 0){
+									$val = "";
+								} else {
+									$val = strtolower($sources[$i]);
+								}
+								echo '<option value="'.$val.'">'.$sources[$i].'</option>';
+							}
+							?>
+						</select>
+					</div>
+				</div>
+
+			   	<! -- medium -->
+				<div class="control-group">
+					<label class="control-label" for="medium"><?php _e('Medium:'); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e('Use this field to define a unique medium value to be sent into your Google Analytics dashboard.'); ?>" data-original-title="<?php _e('Campaign Medium'); ?>"><i class="icon-question-sign"></i></a></label>
+					<div class="controls">
+						<input name="medium" id="medium" type="text" placeholder="ig: Social Media">
+					</div>
+				</div>
+			   
+				<!-- campaign -->
+				<div class="control-group">
 				  <label class="control-label" for="campaign"><?php _e('Campaign Name:'); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e('Use this field to define a unique campaign value to be sent into your Google Analytics dashboard.'); ?>" data-original-title="<?php _e('Campaign Name'); ?>"><i class="icon-question-sign"></i></a></label>
 				  <div class="controls">
 					 <input name="campaign" id="campaign" type="text" placeholder="ig: Something Unique...">
@@ -141,30 +174,7 @@
 
 			   <div id="advanced-tracking-panel-lll">
 				  <h3><?php _e('Advanced Tracking Options'); ?></h3>
-				  <div class="control-group">
-					 <label class="control-label" for="source"><?php _e('Source:'); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e('Use this field to define a unique source value to be sent into your Google Analytics dashboard.'); ?>" data-original-title="<?php _e('Campaign Source'); ?>"><i class="icon-question-sign"></i></a></label>
-					 <div class="controls">
-						<select name="source" id="source_select">
-<?php
-			 $sources = maybe_unserialize(get_option("trksit_sources"));
-			 for($i = 0; $i < count($sources); $i++){
-				 if($i == 0){
-					 $val = "";
-				 } else {
-					 $val = strtolower($sources[$i]);
-				 }
-				 echo '<option value="'.$val.'">'.$sources[$i].'</option>';
-			 }
-?>
-						</select>
-					 </div>
-				  </div>
-				  <div class="control-group">
-					 <label class="control-label" for="medium"><?php _e('Medium:'); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e('Use this field to define a unique medium value to be sent into your Google Analytics dashboard.'); ?>" data-original-title="<?php _e('Campaign Medium'); ?>"><i class="icon-question-sign"></i></a></label>
-					 <div class="controls">
-						<input name="medium" id="medium" type="text" placeholder="ig: Social Media">
-					 </div>
-				  </div>
+				  
 			   </div>
 
 			</div>
@@ -210,7 +220,7 @@
 		 <div class="trksit_col right">
 
 			<h2><?php _e('Sharing Preview'); ?></h2>
-			<p><?php _e('Below is an example of how your link will appear when shared on a social media channel such as Facebook or Twitter. Use the fields to the left to customize to your liking!'); ?></p>
+			<p><?php _e('Below is an example of how your link will appear when shared on a social media channel such as Facebook or Linkedin.'); ?></p>
 
 			<div id="preview">
 			   <div class="image"><img src=""></div>

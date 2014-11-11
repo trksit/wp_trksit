@@ -35,10 +35,10 @@ jQuery(document).ready(function($){
    $('#preview .content .title').text($('input#title').val());
 
    //DESCRIPTION
-   $('textarea#description').keyup(function(){
+   $('input#description').keyup(function(){
 	  $('#preview .content .description').text($(this).val());
    });
-   $('#preview .content .description').text($('textarea#description').val());
+   $('#preview .content .description').text($('input#description').val());
 
    // COPY BUTTONS
 
