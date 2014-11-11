@@ -61,7 +61,7 @@ if($_GET['page'] == 'trksit-settings'){
    <div class="trksit_tab_nav">
 	  <ul>
 		 <li <?php if((isset($_GET['tab']) && $_GET['tab'] == 'general') || empty($_GET['tab'])): ?>class="active"<?php endif; ?>><a href="/wp-admin/admin.php?page=trksit-settings&tab=general"><?php _e('General Settings'); ?></a></li>
-		 <li <?php if(isset($_GET['tab']) && $_GET['tab'] == 'scripts'): ?>class="active"<?php endif; ?>><a href="/wp-admin/admin.php?page=trksit-settings&tab=scripts"><?php _e('Custom Scripts'); ?></a></li>
+		 <li <?php if(isset($_GET['tab']) && $_GET['tab'] == 'scripts'): ?>class="active"<?php endif; ?>><a href="/wp-admin/admin.php?page=trksit-settings&tab=scripts"><?php _e('Remarketing & Custom Scripts'); ?></a></li>
 		 <li <?php if(isset($_GET['tab']) && $_GET['tab'] == 'sources'): ?>class="active"<?php endif; ?>><a href="/wp-admin/admin.php?page=trksit-settings&tab=sources"><?php _e('Sources'); ?></a></li>
 		 <li <?php if(isset($_GET['tab']) && $_GET['tab'] == 'domains'): ?>class="active"<?php endif; ?>><a href="/wp-admin/admin.php?page=trksit-settings&tab=domains"><?php _e('Domains'); ?></a></li>
 	  </ul>
@@ -204,8 +204,8 @@ if($_GET['page'] == 'trksit-settings'){
 
    <div class="trksit_col_full">
 
-	  <h2 class="trksit-header"><?php _e("Custom Scripts"); ?></h2>
-	  <p><?php _e("Here you can define custom scripts to be run when a Trks.it link is clicked. You can then assign your links with one or more scripts defined below."); ?></p>
+	  <h2 class="trksit-header"><?php _e("Remarketing & Custom Scripts"); ?></h2>
+	  <p><?php _e("Here you can define remarketing lists & custom scripts to be run when a trks.it link is clicked. You can then assign your links with one or more scripts defined below."); ?></p>
 
 	  <table class="wp-list-table widefat fixed">
 		 <thead>
