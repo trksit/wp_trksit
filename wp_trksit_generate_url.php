@@ -157,7 +157,7 @@
 					<label class="control-label" for="medium"><?php _e('Medium:'); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e('Use this field to define a unique medium value to be sent into your Google Analytics dashboard.'); ?>" data-original-title="<?php _e('Campaign Medium'); ?>"><i class="icon-question-sign"></i></a></label>
 					<div class="controls">
 						<!-- <input name="medium" id="medium" type="text" placeholder="ig: Social Media"> -->
-						<select name="source" id="source_select">
+						<select name="medium" id="source_select">
 							<?php
 							$medium = maybe_unserialize(get_option("trksit_medium"));
 							for($i = 0; $i < count($medium); $i++){
