@@ -135,7 +135,7 @@
 			</div-->
 			<div class="trksit-section">
 			   <h2 class="trksit-header"><?php _e('Analytics Tracking Data'); ?> <!-- <button class="btn btn-small" id="advanced-toggle" data-toggle="button"><?php _e('Show Advanced Options'); ?></button> --></h2>
-			   
+
 			   	<! -- source -->
 				<div class="control-group">
 					<label class="control-label" for="source"><?php _e('Source:'); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e('Use this field to define a unique source value to be sent into your Google Analytics dashboard.'); ?>" data-original-title="<?php _e('Campaign Source'); ?>"><i class="icon-question-sign"></i></a></label>
@@ -144,11 +144,7 @@
 							<?php
 							$sources = maybe_unserialize(get_option("trksit_sources"));
 							for($i = 0; $i < count($sources); $i++){
-								if($i == 0){
-									$val = "";
-								} else {
-									$val = strtolower($sources[$i]);
-								}
+								$val = strtolower($sources[$i]);
 								echo '<option value="'.$val.'">'.$sources[$i].'</option>';
 							}
 							?>
@@ -160,10 +156,20 @@
 				<div class="control-group">
 					<label class="control-label" for="medium"><?php _e('Medium:'); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e('Use this field to define a unique medium value to be sent into your Google Analytics dashboard.'); ?>" data-original-title="<?php _e('Campaign Medium'); ?>"><i class="icon-question-sign"></i></a></label>
 					<div class="controls">
-						<input name="medium" id="medium" type="text" placeholder="ig: Social Media">
+						<!-- <input name="medium" id="medium" type="text" placeholder="ig: Social Media"> -->
+						<select name="source" id="source_select">
+							<?php
+							$medium = maybe_unserialize(get_option("trksit_medium"));
+							for($i = 0; $i < count($medium); $i++){
+								$val = strtolower($medium[$i]);
+								echo '<option value="'.$val.'">'.$medium[$i].'</option>';
+							}
+							?>
+						</select>
+
 					</div>
 				</div>
-			   
+
 				<!-- campaign -->
 				<div class="control-group">
 				  <label class="control-label" for="campaign"><?php _e('Campaign Name:'); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e('Use this field to define a unique campaign value to be sent into your Google Analytics dashboard.'); ?>" data-original-title="<?php _e('Campaign Name'); ?>"><i class="icon-question-sign"></i></a></label>
@@ -191,7 +197,7 @@
 				  </div>
 			   </div>
 
-				  
+
 			   </div>
 
 			</div>
