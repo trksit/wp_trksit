@@ -35,7 +35,7 @@ if($_GET['page'] == 'trksit-settings'){
 		$trksit_jquery = get_option('trksit_jquery');
 		$trksit_redirect_delay = get_option('trksit_redirect_delay');
 	} else {
-		if(isset($_GET['tab']) && ($_GET['tab'] != 'scripts' && $_GET['tab'] != 'sources' && $_GET['tab'] != 'domains')){
+		if(isset($_GET['tab']) && ($_GET['tab'] != 'scripts' && $_GET['tab'] != 'sources' && $_GET['tab'] != 'domains') && $_GET['tab'] != 'medium'){
 			$trksit_analytics_id = $_POST['trksit_analytics_id'];
 			$trksit_public_api_key = $_POST['trksit_public_api_key'];
 			$trksit_private_api_key = $_POST['trksit_private_api_key'];
@@ -63,6 +63,7 @@ if($_GET['page'] == 'trksit-settings'){
 		 <li <?php if((isset($_GET['tab']) && $_GET['tab'] == 'general') || empty($_GET['tab'])): ?>class="active"<?php endif; ?>><a href="/wp-admin/admin.php?page=trksit-settings&tab=general"><?php _e('General Settings'); ?></a></li>
 		 <li <?php if(isset($_GET['tab']) && $_GET['tab'] == 'scripts'): ?>class="active"<?php endif; ?>><a href="/wp-admin/admin.php?page=trksit-settings&tab=scripts"><?php _e('Remarketing & Custom Scripts'); ?></a></li>
 		 <li <?php if(isset($_GET['tab']) && $_GET['tab'] == 'sources'): ?>class="active"<?php endif; ?>><a href="/wp-admin/admin.php?page=trksit-settings&tab=sources"><?php _e('Sources'); ?></a></li>
+		 <li <?php if(isset($_GET['tab']) && $_GET['tab'] == 'medium'): ?>class="active"<?php endif; ?>><a href="/wp-admin/admin.php?page=trksit-settings&tab=medium"><?php _e('Medium'); ?></a></li>
 		 <li <?php if(isset($_GET['tab']) && $_GET['tab'] == 'domains'): ?>class="active"<?php endif; ?>><a href="/wp-admin/admin.php?page=trksit-settings&tab=domains"><?php _e('Domains'); ?></a></li>
 		 <li style="float:right;"><a href="<?php echo WP_TRKSIT_MANAGE_URL; ?>" target="_blank">Manage Account</a></li>
 	  </ul>
@@ -388,16 +389,67 @@ if($_GET['page'] == 'trksit-settings'){
 </div>
    <!-- </div> -->
 	<?php } ?>
+<?php
+		if(isset($_GET['tab']) && $_GET['tab'] == 'medium'){
 
+			if(isset($_POST['medium_submit'])){
+				$t_medium = maybe_unserialize(get_option('trksit_medium'));
+				array_push($t_medium, $_POST['medium']);
+				update_option('trksit_medium', serialize($t_medium));
+			}
+?>
+
+ <div class="trksit_col_full">
+	   <h2 class="trksit-header">Sources</h2>
+	   <p>Here you can add sources to the drop down available when creating a new link</p>
+	   <table class="wp-list-table widefat fixed">
+		   <thead>
+			   <tr>
+				   <th><?php _e("Source"); ?></th>
+				   <th width="100"><?php _e("Delete"); ?></th>
+			   </tr>
+		   </thead>
+
+		   <tbody>
+
+<?php
+			$medium = maybe_unserialize(get_option('trksit_medium'));
+			$count_of_medium = count($medium);
+			for($i = 0; $i < $count_of_medium; $i++){
+				$medium_url = wp_nonce_url(str_replace( '%7E', '~', $_SERVER['REQUEST_URI']) . '&deletemedium=' . $i, 'delete_medium', 'dm_nonce');
+?>
+			<tr>
+			<td><?php echo $medium[$i]; ?></td>
+			<td>
+				<?php if($count_of_medium !== 1): ?>
+				<a href="<?php echo $medium_url; ?>">Delete</a>
+				<?php else: ?>
+				<p>You must have at least one (1) source active.</p>
+				<p>Please add another source before attempting to delete this one.</p>
+				<?php endif; ?>
+			</td>
+			</tr>
+
+		<?php } ?>
+			</tbody>
+				</table>
+					<div style="padding-top: 20px;">
+					<form action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI']); ?>" class="trksit-form" method="post">
+						<input type="text" name="medium" id="medium" class="medium-text" value="" autofocus="autofocus" />
+						<input type="submit" name="medium_submit" id="medium_submit" class="btn btn-success" value="Add Source" />
+					</form>
+			</div>
+
+   <?php } ?>
 
    <?php if(isset($_GET['tab']) && $_GET['tab'] == 'domains'){ ?>
 
 <?php
-		if(isset($_POST['domain_submit'])){
-			$t_domains = maybe_unserialize(get_option('trksit_domains'));
-			array_push($t_domains, $_POST['domain']);
-			update_option('trksit_domains', serialize($t_domains));
-		}
+				if(isset($_POST['domain_submit'])){
+					$t_domains = maybe_unserialize(get_option('trksit_domains'));
+					array_push($t_domains, $_POST['domain']);
+					update_option('trksit_domains', serialize($t_domains));
+				}
 ?>
 
    <div class="trksit_col_full">
@@ -412,9 +464,9 @@ if($_GET['page'] == 'trksit-settings'){
 		   </thead>
 		   <tbody>
 <?php
-		$domains = maybe_unserialize(get_option('trksit_domains'));
-		for($i = 0; $i < count($domains); $i++){
-			$domain_url = wp_nonce_url(str_replace( '%7E', '~', $_SERVER['REQUEST_URI']) . '&deletedomain=' . $i, 'delete_domain', 'dd_nonce');
+				$domains = maybe_unserialize(get_option('trksit_domains'));
+				for($i = 0; $i < count($domains); $i++){
+					$domain_url = wp_nonce_url(str_replace( '%7E', '~', $_SERVER['REQUEST_URI']) . '&deletedomain=' . $i, 'delete_domain', 'dd_nonce');
 ?>
 		<tr>
 		<td><?php echo $domains[$i]; ?></td>
@@ -425,7 +477,7 @@ if($_GET['page'] == 'trksit-settings'){
 			</td>
 		</tr>
 <?php
-		}
+				}
 ?>
 		   </tbody>
 	   </table>

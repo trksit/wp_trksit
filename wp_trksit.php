@@ -89,12 +89,18 @@ dbDelta( $table_4_sql );
 
 //if they deactivate and then reactivate, don't reset their sources
 if(!get_option('trksit_sources')){
-		$sources = serialize(array('SLC Facebook','SLC Twitter','SLC Youtube','SLC LinkedIn','SLC Pinterest','SLC Online Community','SLC Blogger Outreach','CMLC Blog','CMLC Resources','CMLC Article Library','CMLC Landing Page','CMLC Website Page','CMLC Slideshare','CMLC Prezi','ELC Email','PALC Facebook Advertising','PALC Twitter Advertising','PALC Youtube Advertising','PALC LinkedIn Advertising','PALC Online Advertising','PALC Online Remarketing Advertising','PALC Online to Offline Advertising','PALC Sponsorship Advertising','PALC Out of Home Advertising','PALC TV Advertising','PALC Radio Advertising'));
-		update_option('trksit_sources', $sources);
-	}
+	$sources = serialize(array('SLC Facebook','SLC Twitter','SLC Youtube','SLC LinkedIn','SLC Pinterest','SLC Online Community','SLC Blogger Outreach','CMLC Blog','CMLC Resources','CMLC Article Library','CMLC Landing Page','CMLC Website Page','CMLC Slideshare','CMLC Prezi','ELC Email','PALC Facebook Advertising','PALC Twitter Advertising','PALC Youtube Advertising','PALC LinkedIn Advertising','PALC Online Advertising','PALC Online Remarketing Advertising','PALC Online to Offline Advertising','PALC Sponsorship Advertising','PALC Out of Home Advertising','PALC TV Advertising','PALC Radio Advertising'));
+	update_option('trksit_sources', $sources);
+}
+if(!get_option('trksit_domains')){
+	$domains = serialize(array(get_option('siteurl')));
+	update_option('trksit_domains', $domains);
+}
 
-$domains = serialize(array(get_option('siteurl')));
-update_option('trksit_domains', $domains);
+if(!get_option('trksit_medium')){
+	$medium = serialize(array('Blog Post','Infographic','Video','Guide','Ebook','Webinar','White Paper','Presentation','Research Study','Paid Search','Display','Banner'));
+	update_option('trksit_medium', $medium);
+}
 
 }
 
@@ -468,6 +474,13 @@ function trksit_delete_source_redirect(){
 		array_splice($d_domains, (int) $_GET['deletedomain'], 1);
 		update_option('trksit_domains', serialize($d_domains));
 		$url = remove_query_arg(array('dd_nonce', 'deletedomain'), str_replace( '%7E', '~', $_SERVER['REQUEST_URI']));
+		wp_redirect($url);
+	}
+	if(isset($_GET['deletemedium']) && wp_verify_nonce($_GET['dm_nonce'], 'delete_medium')){
+		$d_medium = maybe_unserialize(get_option('trksit_medium'));
+		array_splice($d_medium, (int) $_GET['deletemedium'], 1);
+		update_option('trksit_medium', serialize($d_medium));
+		$url = remove_query_arg(array('dm_nonce', 'deletemedium'), str_replace( '%7E', '~', $_SERVER['REQUEST_URI']));
 		wp_redirect($url);
 	}
 }
