@@ -1,10 +1,10 @@
 <?php
 /*
-Plugin Name: Trks.it for WordPress
+Plugin Name: trks.it for WordPress
 Plugin URI: https://get.trks.it?utm_source=WordPress%20Admin%20Link
 Description: Ever wonder how many people click links that lead to 3rd party sites from your social media platforms? Trks.it is a WordPress plugin for tracking social media engagement.
-Author: Arsham Mirshah, De'Yonte Wilkinson, Derek Cavaliero
-Version: 1.3.1
+Author: trks.it
+Version: 1.4.1
 Author URI: http://get.trks.it?utm_source=WordPress%20Admin%20Link
  */
 
@@ -115,7 +115,23 @@ update_option('trksit_domains', $domains);
 //Determine production or development
 $wp_host = explode('.', $_SERVER['HTTP_HOST']);
 $wp_host = array_pop($wp_host);
-define('TRKSIT_PROD', ($wp_host == 'local' || $wp_host == 'dev') ? false : true);
+define('WP_TKSIT_PRODUCTION', ($wp_host == 'local' || $wp_host == 'dev') ? false : true);
+// Extra layer of URLs for beta testing
+if ( WP_TKSIT_PRODUCTION ) {
+	if ( $_SERVER['HTTP_HOST'] == 'beta.trks.it' ) {
+		define('WP_TRKSIT_MANAGE_URL', 'http://manage-beta.trks.it');
+		define('WP_TRKSIT_API_URL', 'http://api-beta.trks.it');
+		define('WP_TRKSIT_SHORT_URL', 'http://shortener-beta.trks.it/');
+	} else {
+		define('WP_TRKSIT_MANAGE_URL', 'http://manage.trks.it');
+		define('WP_TRKSIT_API_URL', 'https://api.trks.it');
+		define('WP_TRKSIT_SHORT_URL', 'http://trks.it/');
+	}
+} else {
+	define('WP_TRKSIT_MANAGE_URL', 'http://manage.trksit.local');
+	define('WP_TRKSIT_API_URL', 'http://api.trksit.local');
+	define('WP_TRKSIT_SHORT_URL', 'http://trksit.local/');
+}
 
 include( plugin_dir_path( __FILE__ ) . 'inc/trksit.class.php');
 include( plugin_dir_path( __FILE__ ) . 'inc/trksit.ga_parse.php');

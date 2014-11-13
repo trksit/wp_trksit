@@ -5,10 +5,6 @@
 @ini_set('output_buffering', 'Off');
 @ini_set('output_handler', '');
 
-$wp_host = explode('.', $_SERVER['HTTP_HOST']);
-$wp_host = array_pop($wp_host);
-define('WP_TKSIT_PRODUCTION', ($wp_host == 'local' || $wp_host == 'dev') ? false : true);
-
 class trksit {
 	public $imgArray = array();		//Images array
 	public $metaArray = array();	//Meta Tags Array
@@ -24,16 +20,11 @@ class trksit {
 	private $short_url_base;		//trks.it redirector url, always end with /
 
 	function __construct(){
-		if ( WP_TKSIT_PRODUCTION ) {
-			$this->api = "https://api.trks.it";
-			$this->short_url_base = "https://trks.it/";
-		} else {
-			$this->api = "http://api.trksit.local";
-			$this->short_url_base = 'http://trksit.local/';
-		}
+		$this->api = WP_TRKSIT_API_URL;
+		$this->short_url_base = WP_TRKSIT_SHORT_URL;
+
 		//exposing public functions to wp_ajax
 		add_action( 'wp_ajax_nopriv_handle_script', array( $this, 'wp_trksit_handle_script' ) );
-
 	}
 
 	/*

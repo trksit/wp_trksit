@@ -64,6 +64,7 @@ if($_GET['page'] == 'trksit-settings'){
 		 <li <?php if(isset($_GET['tab']) && $_GET['tab'] == 'scripts'): ?>class="active"<?php endif; ?>><a href="/wp-admin/admin.php?page=trksit-settings&tab=scripts"><?php _e('Remarketing & Custom Scripts'); ?></a></li>
 		 <li <?php if(isset($_GET['tab']) && $_GET['tab'] == 'sources'): ?>class="active"<?php endif; ?>><a href="/wp-admin/admin.php?page=trksit-settings&tab=sources"><?php _e('Sources'); ?></a></li>
 		 <li <?php if(isset($_GET['tab']) && $_GET['tab'] == 'domains'): ?>class="active"<?php endif; ?>><a href="/wp-admin/admin.php?page=trksit-settings&tab=domains"><?php _e('Domains'); ?></a></li>
+		 <li style="float:right;"><a href="<?php echo WP_TRKSIT_MANAGE_URL; ?>" target="_blank">Manage Account</a></li>
 	  </ul>
    </div>
 
@@ -77,15 +78,8 @@ if($_GET['page'] == 'trksit-settings'){
 
 			<h2 class="trksit-header"><?php _e("API Settings"); ?></h2>
 			<?php if(get_transient('trksit_active_user') && get_transient('trksit_active_user') == 'inactive'): ?>
-<?php
-	if(!TRKSIT_PROD){
-		$regurl = 'http://manage.trksit.local/subscribe';
-	} else {
-		$regurl = 'http://manage.trks.it/subscribe';
-	}
-?>
 			<div class="alert alert-danger">
-			<p>Plugin not activated.  Please <a href="<?php echo $regurl; ?>" target="_blank">register here</a> then enter valid API keys</p>
+			<p>Plugin not activated.  Please <a href="<?php echo WP_TRKSIT_MANAGE_URL; ?>" target="_blank">register here</a> then enter valid API keys</p>
 <?php
 	if($status = get_transient('trksit_status_messages')){
 		echo '<h3>Recent Status Messages</h3>';
