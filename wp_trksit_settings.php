@@ -298,7 +298,7 @@ if($_GET['page'] == 'trksit-settings'){
 			   <div class="control-group">
 				  <label for="trksit_script_platform" class="control-label"><?php _e("Platform"); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e("What is this script for? Google? Bing? Facebook? etc..."); ?>" data-original-title="<?php _e("Platform"); ?>"><i class="icon-question-sign"></i></a></label>
 				  <div class="controls">
-					 <select name="trksit_script_platform" id="trksit_script_platform">
+					 <select name="trksit_script_platform" id="trksit_script_platform" required="required">
 						<option value="">--Please choose a platform--</option>
 						<option value="google" <?php if ($s_platform == 'google') { echo 'selected="selected"'; } ?>>Google Remarketing</option>
 						<option value="bing" <?php if ($s_platform == 'bing') { echo 'selected="selected"'; } ?>>Bing</option>
