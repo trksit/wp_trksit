@@ -255,9 +255,16 @@ class trksit {
 		//Save the data to the database and get back the ID
 		$shareURL_ID = $this->wp_trksit_saveURL($wpdb, $postArray);
 
+		//Set 1st or 3rd party link, preppend to source parameter.
+		$domain_party = "3rd";
+		$domains = maybe_unserialize(get_option('trksit_domains'));
+		if(in_array($postArray['destination_url'], $domains)){
+			$domain_party = "1st";
+		}
+
 		//Build the longURL with query string params
 
-		$longURL = get_site_url() . '/index.php?trksitgo=1&url_id=' . $shareURL_ID . '&su=&utm_source='.$postArray['source'].'&utm_medium='.$postArray['medium'].'&utm_campaign='.$postArray['campaign'].'&utm_content='.$postArray['content'].'&utm_term='.$postArray['term'];
+		$longURL = get_site_url() . '/index.php?trksitgo=1&url_id=' . $shareURL_ID . '&su=&utm_source='.$domain_party.' '.$postArray['source'].'&utm_medium='.$postArray['medium'].'&utm_campaign='.$postArray['campaign'].'&utm_content='.$postArray['content'].'&utm_term='.$postArray['term'];
 		//shorten the URL
 		$shortURL = $this->wp_trksit_generateURL($longURL,$postArray);
 		if($shortURL){
