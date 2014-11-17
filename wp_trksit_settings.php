@@ -157,7 +157,7 @@ if($_GET['page'] == 'trksit-settings'){
 
 		<input type="submit" name="Submit" class="btn btn-success" value="<?php _e('Update Options', 'trksit_menu' ) ?>" id="trksit_settings_update" />
 		<div style='margin-top: 40px;'>
-			<div class='alert alert-danger' role='alert'>This can not be undone, proceed with caution</div>
+			<div class='alert alert-danger' role='alert'>This process will purge all shortened links from your local database and the trks.it short link library.</div>
 			<a
 				href='<?php echo wp_nonce_url(admin_url('admin.php?page=trksit-settings&purge-data=true'), 'purge_my_data', 'trksit_purge_nonce'); ?>'
 				onclick="return confirm('This will delete all URLs from WordPress and the trks.it API. Continue?');"
