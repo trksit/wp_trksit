@@ -192,7 +192,7 @@ class trksit {
 			$opengraph_data = array();
 			// set the opengraph data
 			foreach( $opengraph['open_graph'] as $key=>$new_opengraph){
-				if( $key !=  'og:image'){
+				if( $key !=  'og:image' && $key != 'vr:canonical'){
 					$opengraph_data[$key] = $opengraph['open_graph'][$key];
 				}
 			}
