@@ -350,6 +350,9 @@ class trksit {
 
 		}
 		$mainArray["og_data"] = serialize($ogArray);
+		if(!isset($mainArray['meta_image'])){
+			$mainArray['meta_image'] = "";
+		}
 
 		$fields = array(
 			'destination_url' => $mainArray['destination_url'],
@@ -509,6 +512,10 @@ class trksit {
 	function wp_trksit_generateURL($long_url,$data){
 
 		$url = $this->api.'/urls';
+
+		if(!isset($data['meta_image'])){
+			$data['meta_image'] = "";
+		}
 
 		$body = array(
 			'client_id' => get_option('trksit_public_api_key'),
