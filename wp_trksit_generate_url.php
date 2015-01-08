@@ -1,20 +1,16 @@
 <?php
-   //if(!empty($_POST)){
-   	  //Header setting moved to action hook
-	  //header('Content-Encoding: none;'); // Use with ob_start() and flushing of buffers!!!
 	  ob_start();
 	  echo '<div id="loading-indicator" style="margin: 0px auto; width: 200px; text-align: center; padding-top: 200px;">';
 	  echo '<h2>Loading...</h2><br />';
 	  echo '<img src="' . plugins_url( '/wp_trksit/img/loading.gif' , dirname(__FILE__) ) . '" alt="Loading" /></div>';
 	  trksit_flush_buffers();
-   //}
 ?>
 
 <?php if($_GET['page'] == 'trksit-generate'): ?>
 
 
 <div class="wrap" id="trksit-wrap"><!--wrap-->
-   <h2 class="trksit-header top"><img src="<?php echo plugins_url( '/wp_trksit/img/trksit-icon-36x36.png' , dirname(__FILE__) ); ?>" class="trksit-header-icon" /><?php echo __( 'Generate a New Trks.it URL', 'trksit_menu' ); ?></h2>
+   <h2 class="trksit-header top"><img src="<?php echo plugins_url( '/wp_trksit/img/trksit-icon-36x36.png' , dirname(__FILE__) ); ?>" class="trksit-header-icon" /><?php echo __( 'Generate a New trks.it URL', 'trksit_menu' ); ?></h2>
    <?php
 	  /* ---- Step 3 ---- */
 	  if(isset($_POST['meta_title']) && ( !empty($_POST) && check_admin_referer('trksit_generate_url','trksit_generate_step2') )){

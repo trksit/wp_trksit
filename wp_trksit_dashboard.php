@@ -37,7 +37,7 @@ if((isset($_GET['view']) && $_GET['view'] == 'link-detail') && is_numeric($_GET[
 				$end_date = date('Y-m-d', time());
 			}
 ?>
-			<h2 class="trksit-header top"><img src="<?php echo plugins_url( '/wp_trksit/img/trksit-icon-36x36.png' , dirname(__FILE__) ); ?>" class="trksit-header-icon" /><?php echo __( 'Trks.it - Details for Link ID #' . $url_details[0]->url_id, 'trksit_menu' ); ?></h2>
+			<h2 class="trksit-header top"><img src="<?php echo plugins_url( '/wp_trksit/img/trksit-icon-36x36.png' , dirname(__FILE__) ); ?>" class="trksit-header-icon" /><?php echo __( 'trks.it - Details for Link ID #' . $url_details[0]->url_id, 'trksit_menu' ); ?></h2>
 
 			<div id="trks_hits"></div>
 <?php
@@ -53,7 +53,7 @@ if((isset($_GET['view']) && $_GET['view'] == 'link-detail') && is_numeric($_GET[
 					 <h2 class="trksit-header"><?php _e('Sharing Settings'); ?></h2>
 
 					 <div class="control-group">
-						<label class="control-label"><?php _e('Trks.it URL:'); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e('This is the shortened Trks.it URL you will use on various social and marketing platforms.'); ?>" data-original-title="<?php _e('Trks.it URL'); ?>"><i class="icon-question-sign"></i></a></label>
+						<label class="control-label"><?php _e('trks.it URL:'); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e('This is the shortened trks.it URL you will use on various social and marketing platforms.'); ?>" data-original-title="<?php _e('trks.it URL'); ?>"><i class="icon-question-sign"></i></a></label>
 						<div class="controls">
 						   <a href="<?php echo $url_details[0]->trksit_url; ?>" target="_blank"><span class="uneditable-input input-span6" id="final-url"><?php echo $url_details[0]->trksit_url; ?></span></a>
 						   <input type="hidden" name="trksit_url" value="<?php echo $url_details[0]->trksit_url;?>">
@@ -177,7 +177,7 @@ endforeach;
 echo (isset($og_data['og:image'])) ? '<strong>og:image</strong><br />' : '';
 echo (isset($og_data['og:title'])) ? '<strong>og:title</strong><br />' : '';
 echo (isset($og_data['og:description'])) ? '<strong>og:description</strong><br />' : '';
-echo '<br />Trks.it will use the specified open graph tags above instead of the custom values defined on the left.</div>';
+echo '<br />trks.it will use the specified open graph tags above instead of the custom values defined on the left.</div>';
 			}
 			if(!isset($og_data['og:image'])){
 ?>
@@ -212,7 +212,7 @@ echo '<br />Trks.it will use the specified open graph tags above instead of the 
 }
 else if($_GET['page'] == 'trksit-dashboard'){
 ?>
-	  <h2 class="trksit-header top"><img src="<?php echo plugins_url( '/wp_trksit/img/trksit-icon-36x36.png' , dirname(__FILE__) ); ?>" class="trksit-header-icon" /><?php echo __( 'Trks.it Dashboard', 'trksit_menu' ); ?></h2>
+	  <h2 class="trksit-header top"><img src="<?php echo plugins_url( '/wp_trksit/img/trksit-icon-36x36.png' , dirname(__FILE__) ); ?>" class="trksit-header-icon" /><?php echo __( 'trks.it Dashboard', 'trksit_menu' ); ?></h2>
 <?php
 	if( isset($_GET['trksit_start_date']) AND !empty($_GET['trksit_start_date']) AND isset($_GET['trksit_end_date']) AND !empty($_GET['trksit_end_date']) ){
 		$start_date = date('Y-m-d',strtotime($_GET['trksit_start_date']));
@@ -274,7 +274,7 @@ else if($_GET['page'] == 'trksit-dashboard'){
 			   <tr>
 				  <th class="sortable desc" width="100"><a href="#"><span><?php _e('Created'); ?></span><span class="sorting-indicator"></span></a></th>
 				  <th class="sortable desc" width="75"><a href="#"><span><?php _e('Hits'); ?></span><span class="sorting-indicator"></span></a></th>
-				  <th width="140"><?php _e('Trks.it URL'); ?></th>
+				  <th width="140"><?php _e('trks.it URL'); ?></th>
 				  <th width="50"></th>
 				  <th id="trks_it_destination" width="180"><?php _e('Destination URL'); ?></th>
 				  <th><?php _e('Campaign'); ?></th>
@@ -319,7 +319,7 @@ else if($_GET['page'] == 'trksit-dashboard'){
 		 </table>
 <?php
 	else:
-	_e('<p>You haven\'t created a Trks.it URL yet...</p>'); ?> 
+	_e('<p>You haven\'t created a trks.it URL yet...</p>'); ?>
 			<p><a href="/wp-admin/admin.php?page=trksit-generate" class="btn btn-success" style="text-decoration: none;"><?php _e('Create one now!'); ?></a></p>
 			<?php endif;?>
 		 </div>

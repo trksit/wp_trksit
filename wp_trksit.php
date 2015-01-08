@@ -2,7 +2,7 @@
 /*
 Plugin Name: trks.it for WordPress
 Plugin URI: https://get.trks.it?utm_source=WordPress%20Admin%20Link
-Description: Ever wonder how many people click links that lead to 3rd party sites from your social media platforms? Trks.it is a WordPress plugin for tracking social media engagement.
+Description: Ever wonder how many people click links that lead to 3rd party sites from your social media platforms? trks.it is a WordPress plugin for tracking social media engagement.
 Author: trks.it
 Version: 1.4.1
 Author URI: http://get.trks.it?utm_source=WordPress%20Admin%20Link
@@ -24,7 +24,7 @@ function trksit_Install(){
 	$trksit = new trksit();
 	$active = $trksit->wp_trksit_user_is_active();
 	if(is_wp_error($active)){
-		echo "<code>Trks.it API unavailable.  Plugin can not be activated.</code>";
+		echo "<code>trks.it API unavailable.  Plugin can not be activated.</code>";
 		exit;
 	}
 
@@ -241,7 +241,7 @@ function trksit_admin_notices(){
 		$trksit = new trksit();
 		$active = $trksit->wp_trksit_user_is_active();
 		if(is_wp_error($active)){
-			echo "<div id='message' class='error'><p>Trks.it API offline.</p></div>";
+			echo "<div id='message' class='error'><p>trks.it API offline.</p></div>";
 		}
 	}
 }
@@ -273,8 +273,8 @@ function trksit_add_pages() {
 	}
 	if(!$active){
 		add_menu_page(
-			__('Plugin Settings &lsaquo; Trks.it','trksit_menu'),
-			__('Trks.it Settings','trksit_menu'),
+			__('Plugin Settings &lsaquo; trks.it','trksit_menu'),
+			__('trks.it Settings','trksit_menu'),
 			'manage_options',
 			'trksit-settings',
 			'trksit_settings',
@@ -282,8 +282,8 @@ function trksit_add_pages() {
 		);
 	} else {
 		add_menu_page(
-			__('Dashboard &lsaquo; Trks.it','trksit_menu'),
-			__('Trks.it','trksit_menu'),
+			__('Dashboard &lsaquo; trks.it','trksit_menu'),
+			__('trks.it','trksit_menu'),
 			'manage_options',
 			'trksit-dashboard',
 			'trksit_dashboard',
@@ -291,7 +291,7 @@ function trksit_add_pages() {
 		);
 		add_submenu_page(
 			'trksit-dashboard',
-			__('Generate URL &lsaquo; Trks.it','trksit_menu'),
+			__('Generate URL &lsaquo; trks.it','trksit_menu'),
 			__('Generate URL','trksit_menu'),
 			'manage_options',
 			'trksit-generate',
@@ -299,7 +299,7 @@ function trksit_add_pages() {
 		);
 		add_submenu_page(
 			'trksit-dashboard',
-			__('Plugin Settings &lsaquo; Trks.it','trksit_menu'),
+			__('Plugin Settings &lsaquo; trks.it','trksit_menu'),
 			__('Settings','trksit_menu'),
 			'manage_options',
 			'trksit-settings',

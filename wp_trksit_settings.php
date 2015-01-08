@@ -57,7 +57,7 @@ if($_GET['page'] == 'trksit-settings'){
 
 <div class="wrap" id="trksit-wrap">
 
-   <h2 class="trksit-header top"><img src="<?php echo plugins_url( '/wp_trksit/img/trksit-icon-36x36.png' , dirname(__FILE__) ); ?>" class="trksit-header-icon" /><?php echo __( 'Trks.it Settings', 'trksit_menu' ); ?></h2>
+   <h2 class="trksit-header top"><img src="<?php echo plugins_url( '/wp_trksit/img/trksit-icon-36x36.png' , dirname(__FILE__) ); ?>" class="trksit-header-icon" /><?php echo __( 'trks.it Settings', 'trksit_menu' ); ?></h2>
    <div class="trksit_tab_nav">
 	  <ul>
 		 <li <?php if((isset($_GET['tab']) && $_GET['tab'] == 'general') || empty($_GET['tab'])): ?>class="active"<?php endif; ?>><a href="/wp-admin/admin.php?page=trksit-settings&tab=general"><?php _e('General Settings'); ?></a></li>
@@ -99,13 +99,13 @@ if($_GET['page'] == 'trksit-settings'){
 			<?php wp_nonce_field('trksit_save_settings','trksit_general_settings'); ?>
 
 			<div class="control-group">
-			   <label for="trksit_public_api_key" class="control-label"><?php _e("Trks.it Public API Key:"); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e("Enter your public API key, this was emailed to you."); ?>" data-original-title="<?php _e("Public API Key"); ?>"><i class="icon-question-sign"></i></a></label>
+			   <label for="trksit_public_api_key" class="control-label"><?php _e("trks.it Public API Key:"); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e("Enter your public API key, this was emailed to you."); ?>" data-original-title="<?php _e("Public API Key"); ?>"><i class="icon-question-sign"></i></a></label>
 			   <div class="controls">
 				  <input name="trksit_public_api_key" type="text" id="trksit_public_api_key" value="<?php echo $trksit_public_api_key; ?>" required />
 			   </div>
 			</div>
 			<div class="control-group">
-			   <label for="trksit_private_api_key" class="control-label"><?php _e("Trks.it Private API Key:"); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e("Enter your private API key, this was emailed to you."); ?>" data-original-title="<?php _e("Private API Key"); ?>"><i class="icon-question-sign"></i></a></label>
+			   <label for="trksit_private_api_key" class="control-label"><?php _e("trks.it Private API Key:"); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e("Enter your private API key, this was emailed to you."); ?>" data-original-title="<?php _e("Private API Key"); ?>"><i class="icon-question-sign"></i></a></label>
 			   <div class="controls">
 				  <input name="trksit_private_api_key" type="text" id="trksit_private_api_key" value="<?php echo $trksit_private_api_key; ?>" required />
 			   </div>
@@ -120,7 +120,7 @@ if($_GET['page'] == 'trksit-settings'){
 
 			<div class="control-group">
 
-			   <label for="trksit_analytics_id" class="control-label"><?php _e("Google Analytics Profile ID:"); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e("Enter your Google Analytics UA-XXXXXXX-X ID. This will be where the data is recorded by Trks.it."); ?>" data-original-title="<?php _e("Google Analytics Profile ID"); ?>"><i class="icon-question-sign"></i></a></label>
+			   <label for="trksit_analytics_id" class="control-label"><?php _e("Google Analytics Profile ID:"); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e("Enter your Google Analytics UA-XXXXXXX-X ID. This will be where the data is recorded by trks.it."); ?>" data-original-title="<?php _e("Google Analytics Profile ID"); ?>"><i class="icon-question-sign"></i></a></label>
 			   <div class="controls">
 				  <input name="trksit_analytics_id" type="text" class="medium-text" placeholder="UA-XXXXXXX-X" id="trksit_analytics_id" value="<?php echo $trksit_analytics_id; ?>" />
 			   </div>
