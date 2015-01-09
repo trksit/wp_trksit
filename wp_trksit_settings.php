@@ -291,7 +291,7 @@ if($_GET['page'] == 'trksit-settings'){
 			   <div class="control-group">
 				  <label for="trksit_script_label" class="control-label"><?php _e("Script Label:"); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e("Enter a label that will allow you to easily identify this script."); ?>" data-original-title="<?php _e("Script Label"); ?>"><i class="icon-question-sign"></i></a></label>
 				  <div class="controls">
-					 <input name="trksit_script_label" type="text" id="trksit_script_label" value="<?php echo $s_label; ?>" />
+					 <input name="trksit_script_label" type="text" id="trksit_script_label" value="<?php echo $s_label; ?>" required="required" />
 				  </div>
 			   </div>
 
@@ -323,7 +323,7 @@ if($_GET['page'] == 'trksit-settings'){
 			   <div class="control-group">
 				  <label for="trksit_script" class="control-label"><?php _e("Custom Script"); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e("Use this field to write your custom script. Make sure everything works!"); ?>" data-original-title="<?php _e("Custom Script"); ?>"><i class="icon-question-sign"></i></a></label>
 				  <div class="controls">
-					 <textarea name="trksit_script" id="trksit_script"><?php echo $s_script; ?></textarea>
+					 <textarea name="trksit_script" id="trksit_script" required="required"><?php echo $s_script; ?></textarea>
 				  </div>
 			   </div>
 			   <input type="hidden" name="trksit_page" value="add_script" />

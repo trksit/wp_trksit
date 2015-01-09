@@ -114,7 +114,7 @@ jQuery(document).ready(function($){
    });
 
 	$("#trksit_settings_form").validate();
-	$("#trksit_script_platform").validate();
+	$("#trksit_add_script_form").validate();
 
 	//Makes IE honor autofocus attribute on inputs
 	$('[autofocus]:not(:focus)').eq(0).focus();
