@@ -37,7 +37,7 @@
 			}
 		 } else {
 	  ?>
-	  <div class="trksit_col left">
+	  <!-- <div class="trksit_col left"> -->
 		 <h2>
 			<!-- trksit-admin-button btn btn-success -->
 			<?php _e('Here\'s Your Tracking URL:'); ?> <?php echo $shortURL; ?>
@@ -48,8 +48,8 @@
 			<a class='trksit-copy-btn' href='./admin.php?page=trksit-generate'>Create another link</a>
 		 </p>
 		 <p><small>* Test will not trigger analytics or count hit</small></p>
-	  </div>
-	  <div class="trksit_col right"></div>
+	  <!-- </div>
+	  <div class="trksit_col right"></div> -->
 	  <?php } ?>
 
 	  <?php
