@@ -67,7 +67,7 @@ if((isset($_GET['view']) && $_GET['view'] == 'link-detail') && is_numeric($_GET[
 						   <input type="hidden" name="destination_url" value="<?php echo $url_details[0]->destination_url;?>">
 						</div>
 					 </div>
-					 <div class="control-group">
+					<!-- <div class="control-group">
 						<label class="control-label" for="title"><?php _e('Title:'); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e('The title to be used when sharing the content. This is pulled from the pages Open Graph data if it already exists. If not, it defaults to the title of the page.'); ?>" data-original-title="<?php _e('Title'); ?>"><i class="icon-question-sign"></i></a></label>
 						<div class="controls">
 						   <input name="meta_title" id="title" <?php echo ($og_data['og:title']) ? '' : 'class="listen"'; ?> type="text" maxlength="100" value="<?php echo $url_details[0]->meta_title; ?>">
@@ -78,7 +78,7 @@ if((isset($_GET['view']) && $_GET['view'] == 'link-detail') && is_numeric($_GET[
 						<div class="controls">
 						   <textarea name="meta_description" id="description" <?php if(isset($og_data['og:description'])) echo ($og_data['og:description']) ? '' : 'class="listen"'; ?> rows="5" maxlength="255"><?php echo $url_details[0]->meta_description; ?></textarea>
 						</div>
-					 </div>
+					 </div> -->
 				  </div>
 
 				  <div class="trksit-section">
@@ -162,23 +162,19 @@ endforeach;
 				  <h2><?php _e('Sharing Preview'); ?></h2>
 
 				  <div id="preview">
+<?php if(isset($og_data['og:image'])): ?>
 					 <div class="image"><img src="<?php echo ($og_data['og:image']) ? $og_data['og:image'] : $url_details[0]->meta_image; ?>"></div>
+<?php endif; ?>
 					 <div class="content">
 						<label for="title"><div class="title"><?php echo ($og_data['og:title']) ? $og_data['og:title'] : $url_details[0]->meta_title; ?></div></label>
 						<div class="url"><?php echo substr($url_details[0]->destination_url, 0, 38); if(strlen($url_details[0]->destination_url) > 40){echo "...";}?></div>
-						<label for="description"><div class="description"><?php echo ($og_data['og:description']) ? $og_data['og:description'] : $url_details[0]->meta_description; ?></div></label>
+<?php if(isset($og_data['og:description'])): ?>
+<label for="description"><div class="description"><?php echo ($og_data['og:description']) ? $og_data['og:description'] : $url_details[0]->meta_description; ?></div></label>
+<?php endif; ?>
 					 </div><div class="clear"></div>
 				  </div><!-- #preview -->
 
 <?php
-			if(isset($og_data['og:image']) || isset($og_data['og:title']) || isset($og_data['og:description'])){
-				echo '<div class="alert alert-warning">
-					We have detected the following open graph tags on this URL:<br /><br />';
-echo (isset($og_data['og:image'])) ? '<strong>og:image</strong><br />' : '';
-echo (isset($og_data['og:title'])) ? '<strong>og:title</strong><br />' : '';
-echo (isset($og_data['og:description'])) ? '<strong>og:description</strong><br />' : '';
-echo '<br />trks.it will use the specified open graph tags above instead of the custom values defined on the left.</div>';
-			}
 			if(!isset($og_data['og:image'])){
 ?>
 
