@@ -291,6 +291,14 @@ function trksit_add_pages() {
 		);
 		add_submenu_page(
 			'trksit-dashboard',
+			__('Dashboard','trksit_menu'),
+			__('Dashboard','trksit_menu'),
+			'manage_options',
+			'trksit-dashboard',
+			'trksit_dashboard'
+		);
+		add_submenu_page(
+			'trksit-dashboard',
 			__('Generate URL &lsaquo; trks.it','trksit_menu'),
 			__('Generate URL','trksit_menu'),
 			'manage_options',
