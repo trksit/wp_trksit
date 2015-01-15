@@ -90,7 +90,7 @@ if($_GET['page'] == 'trksit-settings'){
 				echo '<p>'.$s->status_msg . ' on '. date('M d, Y - g:ia', strtotime($s->date_created)) . '</p>';
 			}
 		}
-		if(get_transient('trksit_url_status_msg')){
+		if(get_transient('trksit_url_status_msg') && get_option('trksit_public_api_key')){
 			echo '<p>'.get_transient('trksit_url_status_msg') . '</p>';
 		}
 	}
