@@ -122,9 +122,13 @@ if(!get_option('trksit_medium')){
 $wp_host = explode('.', $_SERVER['HTTP_HOST']);
 $wp_host = array_pop($wp_host);
 define('WP_TKSIT_PRODUCTION', ($wp_host == 'local' || $wp_host == 'dev') ? false : true);
+
+$parsed = array_shift((explode(".", $_SERVER['HTTP_HOST'])));
+$beta = substr($parsed, 0, 4);
+
 // Extra layer of URLs for beta testing
 if ( WP_TKSIT_PRODUCTION ) {
-	if ( $_SERVER['HTTP_HOST'] == 'beta.trks.it' ) {
+	if ( $_SERVER['HTTP_HOST'] == 'beta.trks.it' || $beta == 'beta' ) {
 		define('WP_TRKSIT_MANAGE_URL', 'http://manage-beta.trks.it');
 		define('WP_TRKSIT_API_URL', 'http://api-beta.trks.it');
 		define('WP_TRKSIT_SHORT_URL', 'http://shortener-beta.trks.it/');
