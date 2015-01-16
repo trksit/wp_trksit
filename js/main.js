@@ -23,9 +23,13 @@ jQuery(document).ready(function($){
    //IMAGE
    //when the image select changes, change the image preview
    $('select#preview-image-picker').change(function(){
-	  $('#preview .image img').attr('src', $('select#preview-image-picker option:selected').val());
+	   $('#preview .image img').attr('src', $('select#preview-image-picker option:selected').val());
    });
-   $('#preview .image img').attr('src', $('select#preview-image-picker option:selected').val());
+   if($('select#preview-image-picker option').length){
+	   $('#preview .image img').attr('src', $('select#preview-image-picker option:selected').val());
+   } else {
+	   $("#preview .image").remove();
+   }
 
    //TITLE
    //change preview on keyup
