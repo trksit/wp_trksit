@@ -537,9 +537,9 @@ function original_cookies($party = false, $notgo = false){
 	}
 
 	//set original source, medium and campaign
-	setcookie('original_source',$source,time()+400000);
-	setcookie('original_medium',$medium,time()+400000);
-	setcookie('original_campaign',$campaign,time()+400000);
+	setcookie('trksit_original_source',$source,time()+400000);
+	setcookie('trksit_original_medium',$medium,time()+400000);
+	setcookie('trksit_original_campaign',$campaign,time()+400000);
 
 	//set converting source, medium and campaign
 	converting_cookies($party, $notgo);
@@ -566,9 +566,9 @@ function converting_cookies($party = false, $notgo = false){
 	}
 
 	//set converting source, medium and campaign
-	setcookie('converting_source',$source,time()+400000);
-	setcookie('converting_medium',$medium,time()+400000);
-	setcookie('converting_campaign',$campaign,time()+400000);
+	setcookie('trksit_converting_source',$source,time()+400000);
+	setcookie('trksit_converting_medium',$medium,time()+400000);
+	setcookie('trksit_converting_campaign',$campaign,time()+400000);
 
 }
 
