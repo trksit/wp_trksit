@@ -62,6 +62,7 @@
 			$trksit->wp_trksit_resetToken();
 		 }
 
+
 	  ?>
 	  <div class="trksit_tab_nav">
 		 <ul>
@@ -100,6 +101,9 @@
 			echo '<h2 class="trksit-header">' . $trks_error->get_error_message() . '</h2>';
 			echo '<p><a href="/wp-admin/admin.php?page=trksit-settings">Please visit settings to correct</a></p>';
 		 } else {
+
+			 $clean_title = preg_replace("/[^A-Za-z0-9 ]/", "", $trksit_title);
+			 $clean_title = preg_replace("/\s+/", " ", $clean_title);
 	  ?>
 
 	  <form class="trksit-form"  method="post">
@@ -172,7 +176,7 @@
 				<div class="control-group">
 				  <label class="control-label" for="campaign"><?php _e('Campaign Name:'); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e('Use this field to define a unique campaign value to be sent into your Google Analytics dashboard.'); ?>" data-original-title="<?php _e('Campaign Name'); ?>"><i class="icon-question-sign"></i></a></label>
 				  <div class="controls">
-					 <input name="campaign" id="campaign" type="text" placeholder="ig: Something Unique...">
+				  <input name="campaign" id="campaign" type="text" placeholder="ig: Something Unique..." value="<?php echo $clean_title; ?>">
 				  </div>
 			   </div>
 
