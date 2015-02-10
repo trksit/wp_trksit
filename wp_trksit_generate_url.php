@@ -139,6 +139,7 @@
 						<select name="source" id="source_select">
 							<?php
 							$sources = maybe_unserialize(get_option("trksit_sources"));
+							sort($sources);
 							for($i = 0; $i < count($sources); $i++){
 								$val = strtolower($sources[$i]);
 								echo '<option value="'.$val.'">'.$sources[$i].'</option>';
@@ -156,6 +157,7 @@
 						<select name="medium" id="source_select">
 							<?php
 							$medium = maybe_unserialize(get_option("trksit_medium"));
+							sort($medium);
 							for($i = 0; $i < count($medium); $i++){
 								$val = strtolower($medium[$i]);
 								echo '<option value="'.$val.'">'.$medium[$i].'</option>';

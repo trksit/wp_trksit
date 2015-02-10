@@ -366,6 +366,7 @@ if($_GET['page'] == 'trksit-settings'){
 		   <tbody>
 <?php
 	$sources = maybe_unserialize(get_option('trksit_sources'));
+	sort($sources);
 	$count_of_sources = count($sources);
 	for($i = 0; $i < $count_of_sources; $i++){
 		$source_url = wp_nonce_url(str_replace( '%7E', '~', $_SERVER['REQUEST_URI']) . '&deletesource=' . $i, 'delete_source', 'ds_nonce');
@@ -418,6 +419,7 @@ if($_GET['page'] == 'trksit-settings'){
 <?php
 			$medium = maybe_unserialize(get_option('trksit_medium'));
 			$count_of_medium = count($medium);
+			sort($medium);
 			for($i = 0; $i < $count_of_medium; $i++){
 				$medium_url = wp_nonce_url(str_replace( '%7E', '~', $_SERVER['REQUEST_URI']) . '&deletemedium=' . $i, 'delete_medium', 'dm_nonce');
 ?>
