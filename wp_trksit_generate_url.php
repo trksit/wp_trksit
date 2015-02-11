@@ -104,6 +104,7 @@
 
 			 $clean_title = preg_replace("/[^A-Za-z0-9 ]/", "", $trksit_title);
 			 $clean_title = preg_replace("/\s+/", " ", $clean_title);
+
 	  ?>
 
 	  <form class="trksit-form"  method="post">
@@ -111,28 +112,6 @@
 	  <input type="hidden" name="meta_title" id="title" maxlength="100" value="<?php echo $trksit_title; ?>">
 	  <input type="hidden" name="meta_description" id="description" rows="5" maxlength="255" value="<?php echo $trksit_description; ?>">
 		 <div class="trksit_col left">
-			<!--div class="trksit-section">
-			   <h2 class="trksit-header"><?php _e('Sharing Options'); ?></h2>
-			   <div class="control-group">
-				  <label class="control-label"><?php _e('Destination URL:'); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e('The user will end up at this url.'); ?>" data-original-title="<?php _e('Destination URL'); ?>"><i class="icon-question-sign"></i></a></label>
-				  <div class="controls">
-					 <a href="<?php echo $_POST['destination_url'];?>" target="_blank"><span class="uneditable-input input-span6" id="final-url"><?php echo $_POST['destination_url'];?></span></a>
-					 <input type="hidden" name="destination_url" value="<?php echo $_POST['destination_url'];?>">
-				  </div>
-			   </div>
-			   <div class="control-group">
-				  <label class="control-label" for="title"><?php _e('Title:'); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e('The title to be used when sharing the content. This is pulled from the pages Open Graph data if it already exists. If not, it defaults to the title of the page.'); ?>" data-original-title="<?php _e('Title'); ?>"><i class="icon-question-sign"></i></a></label>
-				  <div class="controls">
-					 <input name="meta_title" id="title" type="text" maxlength="100" value="<?php echo $trksit_title; ?>">
-				  </div>
-			   </div>
-			   <div class="control-group">
-				  <label class="control-label" for="description"><?php _e('Description:'); ?> <a class="trksit-help" data-toggle="popover" data-content="<?php _e('The description to be used when sharing the content. This is pulled from the pages Open Graph data if it already exists. If not, it defaults to the meta description of the page.'); ?>" data-original-title="<?php _e('Description'); ?>"><i class="icon-question-sign"></i></a></label>
-				  <div class="controls">
-					 <textarea name="meta_description" id="description" rows="5" maxlength="255"><?php echo $trksit_description; ?></textarea>
-				  </div>
-			   </div>
-			</div-->
 			<div class="trksit-section">
 			   <h2 class="trksit-header"><?php _e('Analytics Tracking Data'); ?> <!-- <button class="btn btn-small" id="advanced-toggle" data-toggle="button"><?php _e('Show Advanced Options'); ?></button> --></h2>
 
@@ -232,9 +211,9 @@
 			<div class="clearfix"></div>
 
 			<?php
-			   foreach($trksit->wp_trksit_getOGMetaArray() as $property => $content){
-				  echo sprintf('<input type="hidden" name="%s" value="%s">', $property, $content);
-			   }
+			   //foreach($trksit->wp_trksit_getOGMetaArray() as $property => $content){
+				   //echo sprintf('<input type="hidden" name="%s" value="%s">', $property, $content);
+			   //}
 			?>
 
 			<?php wp_nonce_field('trksit_generate_url','trksit_generate_step2'); ?>

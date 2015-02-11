@@ -526,9 +526,13 @@ class trksit {
 			'description' => $data['meta_description']
 		);
 		//pass the og data to trks.it
-		foreach($data as $key => $value){
-			if( strpos($key,':') )
-				$ogArray[$key] = $value;
+		//foreach($data as $key => $value){
+			//if( strpos($key,':') )
+				//$ogArray[$key] = $value;
+		//}
+
+		foreach($_SESSION['opengraph'] as $key => $value){
+			$ogArray[$key] = $value;
 		}
 		$body["og_data"] = $ogArray;
 
