@@ -25,10 +25,11 @@ jQuery(document).ready(function($){
    $('select#preview-image-picker').change(function(){
 	   $('#preview .image img').attr('src', $('select#preview-image-picker option:selected').val());
    });
+
    if($('select#preview-image-picker option').length){
-	   $('#preview .image img').attr('src', $('select#preview-image-picker option:selected').val());
-   } else {
-	   $("#preview .image").remove();
+   	   var imgsrc = $('select#preview-image-picker option:selected').val();
+   	   var imagetag = '<img src="' + imgsrc + '" alt="" />';
+   	   $("#preview .image").prepend(imagetag);
    }
 
    //TITLE

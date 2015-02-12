@@ -227,7 +227,7 @@
 			<p><?php _e('Below is an example of how your link will appear when shared on a social media channel such as Facebook or Linkedin.'); ?></p>
 
 			<div id="preview">
-			   <div class="image"><img src=""></div>
+			   <div class="image"></div>
 			   <div class="content">
 				  <label for="title"><div class="title"></div></label>
 				  <div class="url"><?php echo substr($_POST['destination_url'], 0, 38); if(strlen($_POST['destination_url']) > 40){echo "...";}?></div>
@@ -237,8 +237,8 @@
 
 			<div class="control-group controls">
 			   <select name="meta_image" id="preview-image-picker">
-				  <?php
-					 foreach($trksit_images as $image){
+				<?php
+				  foreach($trksit_images as $image){
 						echo sprintf('<option data-img-src="%s" value="%s">%s</option>', $image, $image, $image);
 					 }
 				  ?>
