@@ -571,15 +571,19 @@ function converting_cookies($party = false, $notgo = false){
 	setcookie('trksit_converting_campaign',$campaign,time()+400000);
 
 }
+
 /*
- * Ajax exposed webhook to let API/Redirector know if the plugin is active
+ * Pulse webhook, returns {"alive":true} when GET parameter pulse is set to check
+ * Used by trks.it redirector to make sure plugin is alive
+ * Added to fire very early to bypass any force login type plugins
  *
- * http://website.com/wp-admin/admin-ajax.php?action=wp_trksit_pulse
+ * http://yoursite.com/?trksitgo=1&pulse=check
  */
-add_action( 'wp_ajax_nopriv_wp_trksit_pulse', 'wp_trksit_pulse' );
-function wp_trksit_pulse() {
-	echo json_encode(array('alive' => true));
-	exit;
+add_action('plugins_loaded', 'wp_trksit_pulse', -9999);
+function wp_trksit_pulse(){
+	if(isset($_GET['pulse']) && $_GET['pulse'] == 'check'){
+		die(json_encode(array('alive' => true)));
+	}
 }
 
 //Debug log function
