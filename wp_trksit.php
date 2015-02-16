@@ -420,20 +420,20 @@ function trksit_flush_buffers() {
 
 
 /** Sets the URL and sets an arbitrary query variable */
-add_action( 'init', 'trksit_init_internal' );
+//add_action( 'init', 'trksit_init_internal' );
 function trksit_init_internal(){
 	add_rewrite_rule( 'trksitgo$', 'index.php?trksitgo=1', 'top' );
 }
 
 /** Registers the query variable */
-add_filter( 'query_vars', 'trksit_query_vars' );
+//add_filter( 'query_vars', 'trksit_query_vars' );
 function trksit_query_vars( $query_vars ){
 	$query_vars[] = 'trksitgo';
 	return $query_vars;
 }
 
 /** Include the template when loaded */
-add_action( 'parse_request', 'trksit_parse_request' );
+//add_action( 'parse_request', 'trksit_parse_request' );
 function trksit_parse_request( &$wp ){
 	if ( array_key_exists( 'trksitgo', $wp->query_vars ) ) {
 		include 'wp_trksit_redirector.php';
@@ -443,7 +443,7 @@ function trksit_parse_request( &$wp ){
 }
 
 /** flush_rules() if our rules are not yet included */
-add_action( 'wp_loaded','trksit_flush_rules' );
+//add_action( 'wp_loaded','trksit_flush_rules' );
 function trksit_flush_rules(){
 	$rules = get_option( 'rewrite_rules' );
 	if ( ! isset( $rules['trksitgo$'] ) ) {
@@ -583,6 +583,14 @@ add_action('plugins_loaded', 'wp_trksit_pulse', -9999);
 function wp_trksit_pulse(){
 	if(isset($_GET['pulse']) && $_GET['pulse'] == 'check'){
 		die(json_encode(array('alive' => true)));
+	}
+}
+
+add_action('plugins_loaded', 'wp_trksit_redirect_page', -9999);
+function wp_trksit_redirect_page(){
+	if(isset($_GET['trksitgo']) && $_GET['trksitgo'] == 1){
+		include 'wp_trksit_redirector.php';
+		exit();
 	}
 }
 
