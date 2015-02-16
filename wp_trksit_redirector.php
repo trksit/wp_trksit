@@ -1,7 +1,4 @@
 <?php
-if(isset($_GET['ping']) && $_GET['ping'] == 'true'){
-	echo json_encode(array('alive' => true));
-} else {
 	if(!isset($_COOKIE['trksit_new'])){
 		setcookie("trks_new", "new_user", time()+400000);
 	}
@@ -424,5 +421,5 @@ if($update_results){
 			<?php if(!$scripterror){ echo $redirect; } ?>
 		 </body>
 	  </html>
-   <?php } }?>
+   <?php } ?>
 

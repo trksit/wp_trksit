@@ -571,6 +571,16 @@ function converting_cookies($party = false, $notgo = false){
 	setcookie('trksit_converting_campaign',$campaign,time()+400000);
 
 }
+/*
+ * Ajax exposed webhook to let API/Redirector know if the plugin is active
+ *
+ * http://website.com/wp-admin/admin-ajax.php?action=wp_trksit_check_trks_alive
+ */
+add_action( 'wp_ajax_nopriv_wp_trksit_check_trks_alive', 'wp_trksit_check_trks_alive' );
+function wp_trksit_check_trks_alive() {
+	echo json_encode(array('alive' => true));
+	exit;
+}
 
 //Debug log function
 if(!function_exists('_log')){
