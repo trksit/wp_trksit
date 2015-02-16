@@ -601,6 +601,11 @@ function wp_trksit_pulse(){
 	}
 }
 
+/*
+ * Parameter to load the redirection page
+ * Fires very early to bypass any force login type plugins
+ * Used in the long_url
+ */
 add_action('plugins_loaded', 'wp_trksit_redirect_page', -9999);
 function wp_trksit_redirect_page(){
 	if(isset($_GET['trksitgo']) && $_GET['trksitgo'] == 1){
