@@ -596,7 +596,7 @@ function converting_cookies($party = false, $notgo = false){
  */
 add_action('plugins_loaded', 'wp_trksit_pulse', -9999);
 function wp_trksit_pulse(){
-	if(isset($_GET['pulse']) && $_GET['pulse'] == 'check'){
+	if(isset($_GET['trksitpulse']) && $_GET['trksitpulse'] == 'check'){
 		die(json_encode(array('alive' => true)));
 	}
 }
