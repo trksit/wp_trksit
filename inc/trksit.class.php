@@ -354,6 +354,10 @@ class trksit {
 			$mainArray['meta_image'] = "";
 		}
 
+		$dest = parse_url($mainArray['destination_url']);
+
+		$final_dest = "//" . $dest['path'];
+
 		$fields = array(
 			'destination_url' => $mainArray['destination_url'],
 			'meta_title' => $mainArray['meta_title'],
