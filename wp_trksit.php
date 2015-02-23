@@ -31,6 +31,7 @@ function trksit_Install(){
 	$table_1_name = $wpdb->prefix . "trksit_urls";
 	$table_1_sql = "CREATE TABLE IF NOT EXISTS $table_1_name (
 		url_id INT(10) unsigned NOT NULL AUTO_INCREMENT,
+		user_id INT(4) UNSIGNED NOT NULL,
 		date_created DATE DEFAULT '0000-00-00' NOT NULL,
 		destination_url VARCHAR(255) DEFAULT '' NOT NULL,
 		trksit_url VARCHAR(255) DEFAULT '' NOT NULL,
