@@ -49,7 +49,7 @@ jQuery(document).ready(function($){
 		rules: {
 			destination_url: {
 			  required: true,
-			  url: true
+			  url: false
 			}
 		},
 		messages: {

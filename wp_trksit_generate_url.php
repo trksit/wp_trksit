@@ -75,7 +75,12 @@
 
 	  <?php
 		 if(!isset($_SESSION['opengraph'])){
-			$trksit->wp_trksit_parseURL($_POST['destination_url']);
+			 $url_segments = parse_url($_POST['destination_url']);
+			 $dest_url = $_POST['destination_url'];
+			if(!isset($url_segments['scheme'])){
+				$dest_url = "http://" . $url_segments['path'];
+			}
+			$trksit->wp_trksit_parseURL($dest_url);
 			$trksit_title = substr($trksit->wp_trksit_getTitle(), 0, 100);
 			$trksit_description = substr($trksit->wp_trksit_getDescription(), 0, 157);
 			$trksit_images = $trksit->imgArray;
@@ -290,7 +295,7 @@
 			   <div class="controls">
 				  <div class="input-append">
 					 <?php wp_nonce_field('trksit_generate_url','trksit_generate_step1'); ?>
-		 <input name="destination_url" id="url" type="text" class="url" value="<?php if(isset($_GET['url'])){ echo $_GET['url']; } ?>" <?php if(!isset($_GET['url'])){ echo "placeholder='http://'"; } ?> focus />
+		 <input name="destination_url" id="url" type="url" class="url" value="<?php if(isset($_GET['url'])){ echo $_GET['url']; } ?>" <?php if(!isset($_GET['url'])){ echo "placeholder='http://'"; } ?> focus />
 					 <input type="submit" class="btn btn-success" id="trksit-generate-submit-step-1" value="<?php _e('Go!'); ?>" />
 				  </div>
 			   </div>
