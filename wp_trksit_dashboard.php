@@ -36,8 +36,11 @@ if((isset($_GET['view']) && $_GET['view'] == 'link-detail') && is_numeric($_GET[
 				$start_date = date('Y-m-d',strtotime("last week"));
 				$end_date = date('Y-m-d', time());
 			}
+
+			$user_info = get_userdata($url_details[0]->user_id);
 ?>
 			<h2 class="trksit-header top"><img src="<?php echo plugins_url( '/wp_trksit/img/trksit-icon-36x36.png' , dirname(__FILE__) ); ?>" class="trksit-header-icon" /><?php echo __( 'trks.it - Details for Link ID #' . $url_details[0]->url_id, 'trksit_menu' ); ?></h2>
+			<h3><?php echo __('Created by: ' . $user_info->display_name . ' [' . $user_info->user_login . ']', 'trksit_menu'); ?></h3>
 
 			<div id="trks_hits"></div>
 <?php
@@ -162,14 +165,14 @@ endforeach;
 				  <h2><?php _e('Sharing Preview'); ?></h2>
 
 				  <div id="preview">
-<?php if(isset($og_data['og:image'])): ?>
-					 <div class="image"><img src="<?php echo ($og_data['og:image']) ? $og_data['og:image'] : $url_details[0]->meta_image; ?>"></div>
-<?php endif; ?>
+<?php //if(isset($og_data['og:image'])): ?>
+					<div class="image"><!-- <img src="<?php echo (isset($og_data['og:image'])) ? $og_data['og:image'] : $url_details[0]->meta_image; ?>"> --></div>
+<?php //endif; ?>
 					 <div class="content">
-						<label for="title"><div class="title"><?php echo ($og_data['og:title']) ? $og_data['og:title'] : $url_details[0]->meta_title; ?></div></label>
+						<label for="title"><div class="title"><?php echo (isset($og_data['og:title'])) ? $og_data['og:title'] : $url_details[0]->meta_title; ?></div></label>
 						<div class="url"><?php echo substr($url_details[0]->destination_url, 0, 38); if(strlen($url_details[0]->destination_url) > 40){echo "...";}?></div>
 <?php if(isset($og_data['og:description'])): ?>
-<label for="description"><div class="description"><?php echo ($og_data['og:description']) ? $og_data['og:description'] : $url_details[0]->meta_description; ?></div></label>
+<label for="description"><div class="description"><?php echo (isset($og_data['og:description'])) ? $og_data['og:description'] : $url_details[0]->meta_description; ?></div></label>
 <?php endif; ?>
 					 </div><div class="clear"></div>
 				  </div><!-- #preview -->
