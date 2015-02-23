@@ -271,7 +271,8 @@ class trksit {
 			$shortURL = $this->short_url_base . $shortURL;
 
 			//set the updateArray & whereArray for the shortened URL
-			$updateArray = array('trksit_url' => $shortURL);
+			$userid = wp_get_current_user();
+			$updateArray = array('trksit_url' => $shortURL, 'user_id' => $userid->ID);
 			$whereArray = array('url_id' => $shareURL_ID);
 
 			//Including database class
