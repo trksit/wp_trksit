@@ -38,9 +38,13 @@ if((isset($_GET['view']) && $_GET['view'] == 'link-detail') && is_numeric($_GET[
 			}
 
 			$user_info = get_userdata($url_details[0]->user_id);
+			$user_display_details = "";
+			if(is_object($user_info)){
+				$user_display_details = '<h3>Created by: ' . $user_info->display_name . ' [' . $user_info->user_login . ']</h3>';
+			}
 ?>
 			<h2 class="trksit-header top"><img src="<?php echo plugins_url( '/wp_trksit/img/trksit-icon-36x36.png' , dirname(__FILE__) ); ?>" class="trksit-header-icon" /><?php echo __( 'trks.it - Details for Link ID #' . $url_details[0]->url_id, 'trksit_menu' ); ?></h2>
-			<h3><?php echo __('Created by: ' . $user_info->display_name . ' [' . $user_info->user_login . ']', 'trksit_menu'); ?></h3>
+			<?php if($user_display_details != ""){ echo __($user_display_details, 'trksit_menu'); } ?>
 
 			<div id="trks_hits"></div>
 <?php
