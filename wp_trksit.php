@@ -615,6 +615,21 @@ function wp_trksit_redirect_page(){
 	}
 }
 
+add_action('init', 'wp_trksit_validate_generate_url');
+function wp_trksit_validate_generate_url(){
+	if( isset($_GET['page']) && $_GET['page'] == 'trksit-generate' && isset($_POST['trksit_generate_step1']) ){
+		if (!isset( $_POST['destination_url'] ) || ( isset($_POST['destination_url']) && $_POST['destination_url'] == "")){
+			$_SESSION['trksit_error'] = 'We can\'t shorten a link if you don\'t give us one!';
+			wp_redirect('/wp-admin/admin.php?page=trksit-generate');
+		} else {
+			if (filter_var($_POST['destination_url'], FILTER_VALIDATE_URL) === FALSE) {
+				$_SESSION['trksit_error'] = 'Invalid URL. Example: http://example.com';
+				wp_redirect('/wp-admin/admin.php?page=trksit-generate');
+			}
+		}
+	}
+}
+
 //Debug log function
 if(!function_exists('_log')){
 	function _log( $message ) {

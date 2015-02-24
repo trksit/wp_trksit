@@ -44,24 +44,26 @@ jQuery(document).ready(function($){
 
 	// STEP 1
 
-	$('#trksit-generate.step-1').validate({
-		onfocusout: false,
-		rules: {
-			destination_url: {
-			  required: true,
-			  url: false
-			}
-		},
-		messages: {
-      errorClass: "alert-danger",
-			destination_url: {
-			  required: "We can't shorten a link if you don't give us one!",
-			  url: "Invalid URL, please check and try again."
-			}
-		},
-		errorPlacement: function(error, element) {
-			error.insertAfter("#trksit-generate-submit-step-1");
-		}
-	});
+	/*
+	 *$('#trksit-generate.step-1').validate({
+	 *    onfocusout: false,
+	 *    rules: {
+	 *        destination_url: {
+	 *          required: true,
+	 *          url: false
+	 *        }
+	 *    },
+	 *    messages: {
+     *  errorClass: "alert-danger",
+	 *        destination_url: {
+	 *          required: "We can't shorten a link if you don't give us one!",
+	 *          url: "Invalid URL, please check and try again."
+	 *        }
+	 *    },
+	 *    errorPlacement: function(error, element) {
+	 *        error.insertAfter("#trksit-generate-submit-step-1");
+	 *    }
+	 *});
+	 */
 
 });

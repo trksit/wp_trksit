@@ -295,7 +295,10 @@
 			   <div class="controls">
 				  <div class="input-append">
 					 <?php wp_nonce_field('trksit_generate_url','trksit_generate_step1'); ?>
-		 <input name="destination_url" id="url" type="url" class="url" value="<?php if(isset($_GET['url'])){ echo $_GET['url']; } ?>" <?php if(!isset($_GET['url'])){ echo "placeholder='http://'"; } ?> focus />
+		 <input name="destination_url" id="url" type="text" class="url" value="<?php if(isset($_GET['url'])){ echo $_GET['url']; } ?>" <?php if(!isset($_GET['url'])){ echo "placeholder='http://'"; } ?> focus />
+					<?php if(isset($_SESSION['trksit_error'])): ?>
+					<div class="alert alert-danger"><p><?php echo $_SESSION['trksit_error']; ?></p></div>
+					<?php unset($_SESSION['trksit_error']); endif; ?>
 					 <input type="submit" class="btn btn-success" id="trksit-generate-submit-step-1" value="<?php _e('Go!'); ?>" />
 				  </div>
 			   </div>
