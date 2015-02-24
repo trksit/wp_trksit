@@ -622,9 +622,22 @@ function wp_trksit_validate_generate_url(){
 			$_SESSION['trksit_error'] = 'We can\'t shorten a link if you don\'t give us one!';
 			wp_redirect('/wp-admin/admin.php?page=trksit-generate');
 		} else {
+			$url_segments = parse_url($_POST['destination_url']);
+			$url = $_POST['destination_url'];
+			$valid_schemes = array("https", "http");
 			if (filter_var($_POST['destination_url'], FILTER_VALIDATE_URL) === FALSE) {
-				$_SESSION['trksit_error'] = 'Invalid URL. Example: http://example.com';
-				wp_redirect('/wp-admin/admin.php?page=trksit-generate');
+				if(!isset($url['scheme'])){
+					if(isset($url_segments['path']) && strpos($url_segments['path'], '.') === false){
+						$_SESSION['trksit_error'] = 'Invalid URL. Example: http://example.com';
+						wp_redirect('/wp-admin/admin.php?page=trksit-generate');
+					}
+					$_POST['destination_url'] = "http://" . $url;
+				}
+			} else {
+				if(!in_array($url_segments['scheme'], $valid_schemes)){
+					$_SESSION['trksit_error'] = 'Invalid URL. Example: http://example.com';
+					wp_redirect('/wp-admin/admin.php?page=trksit-generate');
+				}
 			}
 		}
 	}
