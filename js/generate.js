@@ -1,4 +1,4 @@
-jQuery(document).ready(function($){	
+jQuery(document).ready(function($){
 
 	// STEP 1
 
@@ -7,13 +7,13 @@ jQuery(document).ready(function($){
 	// STEP 2
 
 	$('#advanced-toggle').click(function(e){
-	
+
 		e.preventDefault();
-		
+
 		$(this).toggleClass('advanced-on');
-		
+
 		$('#advanced-tracking-panel').toggle();
-		
+
 		if($(this).text() == 'Show Advanced Options'){
 			$(this).text('Hide Advanced Options');
 			//$(this).addClass('btn-danger');
@@ -21,7 +21,7 @@ jQuery(document).ready(function($){
 			$(this).text('Show Advanced Options');
 			//$(this).removeClass('btn-danger');
 		}
-		
+
 	});
 
   $('select#source').change(function(){
@@ -30,7 +30,7 @@ jQuery(document).ready(function($){
               'name' : $(this).attr('name'),
               'type' : 'text',
               'placeholder' : 'ig: Facebook'
-          }).insertAfter($(this)); 
+          }).insertAfter($(this));
           $(this).attr('name', '');
       } else {
           $('input[name=source]').remove();
@@ -39,11 +39,11 @@ jQuery(document).ready(function($){
   });
 
 
-	
+
 	// VALIDATION
-	
+
 	// STEP 1
-	
+
 	$('#trksit-generate.step-1').validate({
 		onfocusout: false,
 		rules: {
@@ -63,5 +63,5 @@ jQuery(document).ready(function($){
 			error.insertAfter("#trksit-generate-submit-step-1");
 		}
 	});
-	
+
 });
