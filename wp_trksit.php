@@ -29,7 +29,7 @@ function trksit_Install(){
 	}
 
 	$table_1_name = $wpdb->prefix . "trksit_urls";
-	$table_1_sql = "CREATE TABLE IF NOT EXISTS $table_1_name (
+	$table_1_sql = "CREATE TABLE $table_1_name (
 		url_id INT(10) unsigned NOT NULL AUTO_INCREMENT,
 		user_id INT(4) UNSIGNED NOT NULL,
 		date_created DATE DEFAULT '0000-00-00' NOT NULL,
@@ -47,7 +47,7 @@ function trksit_Install(){
 		$charset_collate;";
 
 $table_2_name = $wpdb->prefix . "trksit_hits";
-$table_2_sql = "CREATE TABLE IF NOT EXISTS $table_2_name (
+$table_2_sql = "CREATE TABLE $table_2_name (
 	hit_count INT(10) unsigned NOT NULL,
 	url_id INT(10) unsigned NOT NULL,
 	hit_date DATE DEFAULT '0000-00-00' NOT NULL,
@@ -56,7 +56,7 @@ $table_2_sql = "CREATE TABLE IF NOT EXISTS $table_2_name (
 	$charset_collate;";
 
 $table_3_name = $wpdb->prefix . "trksit_scripts";
-$table_3_sql = "CREATE TABLE IF NOT EXISTS $table_3_name (
+$table_3_sql = "CREATE TABLE $table_3_name (
 	script_id INT(10) unsigned NOT NULL AUTO_INCREMENT,
 	date_created DATE DEFAULT '0000-00-00' NOT NULL,
 	label VARCHAR(255) DEFAULT '' NOT NULL,
@@ -68,7 +68,7 @@ $table_3_sql = "CREATE TABLE IF NOT EXISTS $table_3_name (
 	$charset_collate;";
 
 $table_4_name = $wpdb->prefix . "trksit_scripts_to_urls";
-$table_4_sql = "CREATE TABLE IF NOT EXISTS $table_4_name (
+$table_4_sql = "CREATE TABLE $table_4_name (
 	assignment_id INT(10) unsigned NOT NULL AUTO_INCREMENT,
 	script_id INT(10) unsigned NOT NULL,
 	url_id INT NOT NULL,
@@ -90,24 +90,37 @@ dbDelta( $table_4_sql );
 
 trksit_enforce_defaults();
 }
-
 add_action('admin_init', 'trksit_enforce_defaults');
 function trksit_enforce_defaults(){
+	$sources = serialize(array('SLC Facebook','SLC Twitter','SLC Youtube','SLC LinkedIn','SLC Pinterest','SLC Online Community','SLC Blogger Outreach','CMLC Blog','CMLC Resources','CMLC Article Library','CMLC Landing Page','CMLC Website Page','CMLC Slideshare','CMLC Prezi','ELC Email','PALC Facebook Advertising','PALC Twitter Advertising','PALC Youtube Advertising','PALC LinkedIn Advertising','PALC Online Advertising','PALC Online Remarketing Advertising','PALC Online to Offline Advertising','PALC Sponsorship Advertising','PALC Out of Home Advertising','PALC TV Advertising','PALC Radio Advertising'));
+	$domains = serialize(array(get_option('siteurl')));
+	$medium = serialize(array('Blog Post','Infographic','Video','Guide','Ebook','Webinar','White Paper','Presentation','Research Study','Paid Search','Display','Banner'));
 	if(!get_option('trksit_sources')){
-		$sources = serialize(array('SLC Facebook','SLC Twitter','SLC Youtube','SLC LinkedIn','SLC Pinterest','SLC Online Community','SLC Blogger Outreach','CMLC Blog','CMLC Resources','CMLC Article Library','CMLC Landing Page','CMLC Website Page','CMLC Slideshare','CMLC Prezi','ELC Email','PALC Facebook Advertising','PALC Twitter Advertising','PALC Youtube Advertising','PALC LinkedIn Advertising','PALC Online Advertising','PALC Online Remarketing Advertising','PALC Online to Offline Advertising','PALC Sponsorship Advertising','PALC Out of Home Advertising','PALC TV Advertising','PALC Radio Advertising'));
 		update_option('trksit_sources', $sources);
+	} else {
+		$sources_blank = maybe_unserialize(get_option('trksit_sources'));
+		if($sources_blank[0] == "" || !is_array($sources_blank)){
+			update_option('trksit_sources', $domains);
+		}
 	}
 	if(!get_option('trksit_domains')){
-		$domains = serialize(array(get_option('siteurl')));
 		update_option('trksit_domains', $domains);
+	} else {
+		$domains_blank = maybe_unserialize(get_option('trksit_domains'));
+		if($domains_blank[0] == "" || !is_array($domains_blank)){
+			update_option('trksit_domains', $domains);
+		}
 	}
 
 	if(!get_option('trksit_medium')){
-		$medium = serialize(array('Blog Post','Infographic','Video','Guide','Ebook','Webinar','White Paper','Presentation','Research Study','Paid Search','Display','Banner'));
 		update_option('trksit_medium', $medium);
+	} else {
+		$mediums_blank = maybe_unserialize(get_option('trksit_medium'));
+		if($mediums_blank[0] == "" || !is_array($mediums_blank)){
+			update_option('trksit_medium', $domains);
+		}
+
 	}
-
-
 }
 
 /*
@@ -484,7 +497,7 @@ function trksit_set_header_encoding(){
 /** Start session for generate URL section */
 add_action( 'init', 'trksit_session_start');
 function trksit_session_start(){
-	if(isset($_GET['page']) && $_GET['page'] == 'trksit-generate' && session_id() == ''){
+	if(isset($_GET['page']) && ($_GET['page'] == 'trksit-generate' || $_GET['page'] == 'trksit-settings') && session_id() == ''){
 		session_start();
 	}
 }
@@ -515,15 +528,6 @@ function trksit_delete_source_redirect(){
 		update_option('trksit_medium', serialize($d_medium));
 		$url = remove_query_arg(array('dm_nonce', 'deletemedium'), str_replace( '%7E', '~', $_SERVER['REQUEST_URI']));
 		wp_redirect($url);
-	}
-}
-
-/** Check that the default sources are set, if not, set them */
-add_action( 'init', 'trksit_default_sources' );
-function trksit_default_sources(){
-	if(!get_option('trksit_sources')){
-		$sources = serialize(array('SLC Facebook','SLC Twitter','SLC Youtube','SLC LinkedIn','SLC Pinterest','SLC Online Community','SLC Blogger Outreach','CMLC Blog','CMLC Resources','CMLC Article Library','CMLC Landing Page','CMLC Website Page','CMLC Slideshare','CMLC Prezi','ELC Email','PALC Facebook Advertising','PALC Twitter Advertising','PALC Youtube Advertising','PALC LinkedIn Advertising','PALC Online Advertising','PALC Online Remarketing Advertising','PALC Online to Offline Advertising','PALC Sponsorship Advertising','PALC Out of Home Advertising','PALC TV Advertising','PALC Radio Advertising'));
-		update_option('trksit_sources', $sources);
 	}
 }
 
@@ -644,6 +648,45 @@ function wp_trksit_validate_generate_url(){
 					wp_redirect('/wp-admin/admin.php?page=trksit-generate');
 				}
 			}
+		}
+	}
+}
+
+add_action('init', 'wp_trksit_validate_domains');
+function wp_trksit_validate_domains(){
+	if(isset($_GET['tab']) && $_GET['tab'] == 'domains' && isset($_POST['domain_submit'])){
+		if($_POST['domain'] != ""){
+			$t_domains = maybe_unserialize(get_option('trksit_domains'));
+			array_push($t_domains, $_POST['domain']);
+			update_option('trksit_domains', serialize($t_domains));
+		} else {
+			$_SESSION['trksit_error'] = 'Invalid URL. Example: http://example.com';
+		}
+	}
+}
+
+add_action('init', 'wp_trksit_validate_medium');
+function wp_trksit_validate_medium(){
+	if(isset($_GET['tab']) && $_GET['tab'] == 'medium' && isset($_POST['medium_submit'])){
+		if($_POST['medium'] != ""){
+			$t_medium = maybe_unserialize(get_option('trksit_medium'));
+			array_push($t_medium, $_POST['medium']);
+			update_option('trksit_medium', serialize($t_medium));
+		} else {
+			$_SESSION['trksit_error'] = 'Medium field required';
+		}
+	}
+}
+
+add_action('init', 'wp_trksit_validate_source');
+function wp_trksit_validate_source(){
+	if(isset($_GET['tab']) && $_GET['tab'] == 'sources' && isset($_POST['source_submit'])){
+		if($_POST['source'] != ""){
+			$t_source = maybe_unserialize(get_option('trksit_sources'));
+			array_push($t_source, $_POST['source']);
+			update_option('trksit_sources', serialize($t_source));
+		} else {
+			$_SESSION['trksit_error'] = 'Source field required';
 		}
 	}
 }

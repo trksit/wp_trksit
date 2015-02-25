@@ -345,13 +345,6 @@ if($_GET['page'] == 'trksit-settings'){
    </div>
    <?php } ?>
    <?php if(isset($_GET['tab']) && $_GET['tab'] == 'sources'){ ?>
-<?php
-	if(isset($_POST['source_submit'])){
-		$t_sources = maybe_unserialize(get_option('trksit_sources'));
-		array_push($t_sources, $_POST['source']);
-		update_option('trksit_sources', serialize($t_sources));
-	}
-?>
    <div class="trksit_col_full">
 	   <h2 class="trksit-header">Sources</h2>
 	   <p>Here you can add sources to the drop down available when creating a new link</p>
@@ -389,6 +382,9 @@ if($_GET['page'] == 'trksit-settings'){
 		<form action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI']); ?>" class="trksit-form" method="post">
 			<input type="text" name="source" id="source" class="medium-text" value="" autofocus="autofocus" />
 			<input type="submit" name="source_submit" id="source_submit" class="btn btn-success" value="Add Source" />
+			<?php if(isset($_SESSION['trksit_error'])): ?>
+				<div class="alert alert-danger"><p><?php echo $_SESSION['trksit_error']; ?></p></div>
+			<?php unset($_SESSION['trksit_error']); endif; ?>
 		</form>
 </div>
    <!-- </div> -->
@@ -396,20 +392,15 @@ if($_GET['page'] == 'trksit-settings'){
 <?php
 		if(isset($_GET['tab']) && $_GET['tab'] == 'medium'){
 
-			if(isset($_POST['medium_submit'])){
-				$t_medium = maybe_unserialize(get_option('trksit_medium'));
-				array_push($t_medium, $_POST['medium']);
-				update_option('trksit_medium', serialize($t_medium));
-			}
 ?>
 
  <div class="trksit_col_full">
-	   <h2 class="trksit-header">Sources</h2>
+	   <h2 class="trksit-header">Mediums</h2>
 	   <p>Here you can add sources to the drop down available when creating a new link</p>
 	   <table class="wp-list-table widefat fixed">
 		   <thead>
 			   <tr>
-				   <th><?php _e("Source"); ?></th>
+				   <th><?php _e("Medium"); ?></th>
 				   <th width="100"><?php _e("Delete"); ?></th>
 			   </tr>
 		   </thead>
@@ -441,7 +432,10 @@ if($_GET['page'] == 'trksit-settings'){
 					<div style="padding-top: 20px;">
 					<form action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI']); ?>" class="trksit-form" method="post">
 						<input type="text" name="medium" id="medium" class="medium-text" value="" autofocus="autofocus" />
-						<input type="submit" name="medium_submit" id="medium_submit" class="btn btn-success" value="Add Source" />
+						<input type="submit" name="medium_submit" id="medium_submit" class="btn btn-success" value="Add Medium" />
+						<?php if(isset($_SESSION['trksit_error'])): ?>
+							<div class="alert alert-danger"><p><?php echo $_SESSION['trksit_error']; ?></p></div>
+						<?php unset($_SESSION['trksit_error']); endif; ?>
 					</form>
 			</div>
 
@@ -449,13 +443,6 @@ if($_GET['page'] == 'trksit-settings'){
 
    <?php if(isset($_GET['tab']) && $_GET['tab'] == 'domains'){ ?>
 
-<?php
-				if(isset($_POST['domain_submit'])){
-					$t_domains = maybe_unserialize(get_option('trksit_domains'));
-					array_push($t_domains, $_POST['domain']);
-					update_option('trksit_domains', serialize($t_domains));
-				}
-?>
 
    <div class="trksit_col_full">
 	   <h2 class="trksit-header">Domains</h2>
@@ -490,6 +477,9 @@ if($_GET['page'] == 'trksit-settings'){
 	   <form action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI']); ?>" class="trksit-form" method="post">
 		   <input type="text" name="domain" id="domain" class="medium-text" value="" autofocus="autofocus" placeholder="http://example.com" />
 		   <input type="submit" name="domain_submit" id="domain_submit" class="btn btn-success" value="Add Domain" />
+			<?php if(isset($_SESSION['trksit_error'])): ?>
+				<div class="alert alert-danger"><p><?php echo $_SESSION['trksit_error']; ?></p></div>
+			<?php unset($_SESSION['trksit_error']); endif; ?>
 	   </form>
 	   </div>
    </div>
