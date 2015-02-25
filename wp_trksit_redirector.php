@@ -67,8 +67,10 @@
 					$domain_party = "third";
 					$dest = $redirect_lookup[0]->destination_url;
 					$domains = maybe_unserialize(get_option('trksit_domains'));
-					if(in_array($dest, $domains)){
+					if(is_array($domains) && in_array($dest, $domains)){
 						$domain_party = "first";
+					} else {
+						trksit_enforce_defaults();
 					}
 
 					if(isset($_COOKIE['trks_party'])){
