@@ -70,6 +70,9 @@
 					if(is_array($domains) && in_array($dest, $domains)){
 						$domain_party = "first";
 					} else {
+						if(get_option('siteurl') == $dest){
+							$domain_party = "first";
+						}
 						trksit_enforce_defaults();
 					}
 
