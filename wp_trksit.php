@@ -298,7 +298,7 @@ function trksit_add_pages() {
 		add_menu_page(
 			__('Plugin Settings &lsaquo; trks.it','trksit_menu'),
 			__('trks.it Settings','trksit_menu'),
-			'manage_options',
+			'manage_categories',
 			'trksit-settings',
 			'trksit_settings',
 			plugins_url( '/wp_trksit/img/trksit-icon-16x16.png' , dirname(__FILE__) )
@@ -307,7 +307,7 @@ function trksit_add_pages() {
 		add_menu_page(
 			__('Dashboard &lsaquo; trks.it','trksit_menu'),
 			__('trks.it','trksit_menu'),
-			'manage_options',
+			'manage_categories',
 			'trksit-dashboard',
 			'trksit_dashboard',
 			plugins_url( '/wp_trksit/img/trksit-icon-16x16.png' , dirname(__FILE__) )
@@ -316,7 +316,7 @@ function trksit_add_pages() {
 			'trksit-dashboard',
 			__('Dashboard','trksit_menu'),
 			__('Dashboard','trksit_menu'),
-			'manage_options',
+			'manage_categories',
 			'trksit-dashboard',
 			'trksit_dashboard'
 		);
@@ -324,7 +324,7 @@ function trksit_add_pages() {
 			'trksit-dashboard',
 			__('Generate URL &lsaquo; trks.it','trksit_menu'),
 			__('Generate URL','trksit_menu'),
-			'manage_options',
+			'manage_categories',
 			'trksit-generate',
 			'trksit_generate'
 		);
@@ -332,7 +332,7 @@ function trksit_add_pages() {
 			'trksit-dashboard',
 			__('Plugin Settings &lsaquo; trks.it','trksit_menu'),
 			__('Settings','trksit_menu'),
-			'manage_options',
+			'manage_categories',
 			'trksit-settings',
 			'trksit_settings'
 		);
@@ -342,7 +342,7 @@ function trksit_add_pages() {
 /** Dashboard Page Content */
 function trksit_dashboard() {
 
-	if (!current_user_can('manage_options'))  {
+	if (!current_user_can('manage_categories'))  {
 		wp_die( __('You do not have sufficient permissions to access this page.') );
 	}else{
 		global $wpdb;
@@ -354,7 +354,7 @@ function trksit_dashboard() {
 /** Generate URL Page Content */
 function trksit_generate() {
 
-	if (!current_user_can('manage_options'))  {
+	if (!current_user_can('manage_categories'))  {
 		wp_die( __('You do not have sufficient permissions to access this page.') );
 	}else{
 		global $wpdb;
@@ -366,7 +366,7 @@ function trksit_generate() {
 /** Settings Page Content */
 function trksit_settings() {
 
-	if (!current_user_can('manage_options'))  {
+	if (!current_user_can('manage_categories'))  {
 		wp_die( __('You do not have sufficient permissions to access this page.') );
 	}else{
 		global $wpdb;
