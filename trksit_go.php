@@ -145,21 +145,17 @@
 			   }
 
 			} else {
-			   $trksit = new trksit();
-			   $surl = $_GET['su'];
+			   //$trksit = new trksit();
+			   //$surl = $_GET['su'];
 
 			   //set transient to let us know that a 404 has ocurred with this short URL
-			   set_transient('trksit_404_'.$surl, '404', 60*60*24*30);
+			   //set_transient('trksit_404_'.$surl, '404', 60*60*24*30);
 
 			   //flag the URL in the API
-			   $flags_set = $trksit->wp_trksit_setMissingFlags($surl);
+			   //$flags_set = $trksit->wp_trksit_setMissingFlags($surl);
 
 			   //If we have a redirect URL returned use it, otherwise 404
-			   if($redir_url = json_decode($flags_set['body'])->url){
-				  $four04 = $redir_url;
-			   } else {
-				  $four04 = '/index.php?error404=true';
-			   }
+			   $four04 = '/index.php?error404=true';
 			   echo '<script type="text/javascript">setTimeout(function(){window.location.href = "'.$four04.'"},0);</script>';
 			   echo '<meta http-equiv="refresh" content="2; url='.$four04.'">';
 			}

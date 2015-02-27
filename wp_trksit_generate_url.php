@@ -10,7 +10,7 @@
 
 
 <div class="wrap" id="trksit-wrap"><!--wrap-->
-   <h2 class="trksit-header top"><img src="<?php echo plugins_url( '/wp_trksit/img/trksit-icon-36x36.png' , dirname(__FILE__) ); ?>" class="trksit-header-icon" /><?php echo __( 'Generate a New trks.it URL', 'trksit_menu' ); ?></h2>
+   <h2 class="trksit-header top"><img src="<?php echo plugins_url( '/wp_trksit/img/trksit-icon-36x36.png' , dirname(__FILE__) ); ?>" class="trksit-header-icon" /><?php echo __( 'Generate a new trks.it URL', 'trksit_menu' ); ?></h2>
    <?php
 	  /* ---- Step 3 ---- */
 	  if(isset($_POST['meta_title']) && ( !empty($_POST) && check_admin_referer('trksit_generate_url','trksit_generate_step2') )){
