@@ -751,3 +751,9 @@ div#trks_dashboard_info{
 	background-color:#51a351;
 	*background-color:#499249;
 }
+
+#trksit-generate-submit-step-1 {
+	height: 37px;
+	padding-left: 25px;
+	padding-right: 25px;
+}
