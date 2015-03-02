@@ -25,6 +25,43 @@ class trksit {
 
 		//exposing public functions to wp_ajax
 		add_action( 'wp_ajax_nopriv_handle_script', array( $this, 'wp_trksit_handle_script' ) );
+		add_action( 'wp_ajax_nopriv_generate_datatable', array( $this, 'wp_trksit_generate_dashboard_table' ) );
+	}
+
+	public function wp_trksit_generate_dashboard_table(){
+		$data = array(
+			"data" => array(
+				array(
+					"<a href='http://google.com'>Google</a>",
+					"cstef2",
+					"cstef3",
+					"cstef4",
+					"cstef5",
+					"cstef6",
+					"cstef7"
+				),
+				array(
+					"cstef1",
+					"cstef2",
+					"cstef3",
+					"cstef4",
+					"cstef5",
+					"cstef6",
+					"cstef7"
+				),
+				array(
+					"cstef1",
+					"cstef2",
+					"cstef3",
+					"cstef4",
+					"cstef5",
+					"cstef6",
+					"cstef7"
+				)
+			)
+		);
+		echo json_encode($data);
+		exit;
 	}
 
 	/*

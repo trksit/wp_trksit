@@ -75,10 +75,16 @@ jQuery(document).ready(function($){
    //$('#trks_dashboard').css('display','none');
    $('#trks_dashboard_par').css('display','block');
    if( jQuery().dataTable ){
+	  /*
+	   *$('#trks_dashboard').dataTable({
+	   *   "fnInitComplete": function(oSettings, json) {
+	   *   },
+	   *   "aaSorting": [[ 0, "desc" ]],
+	   *});
+	   */
+	  var ajaxurl = "/wp-admin/admin-ajax.php";
 	  $('#trks_dashboard').dataTable({
-		 "fnInitComplete": function(oSettings, json) {
-		 },
-		 "aaSorting": [[ 0, "desc" ]],
+	  	  "ajax": ajaxurl + "?action=nopriv_generate_datatable"
 	  });
    }
 
