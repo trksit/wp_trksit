@@ -250,25 +250,6 @@ else if($_GET['page'] == 'trksit-dashboard'){
 <?php
 		$trksit->wp_trksit_getAnalytics($start_date,$end_date);
 	}
-	$trks_query = "SELECT *, "
-		."(SELECT COALESCE(SUM(tkhits.hit_count),0) as hit_total "
-		."FROM ".$wpdb->prefix."trksit_hits tkhits "
-		."WHERE tku.url_id = tkhits.url_id "
-		."AND tkhits.hit_date "
-		."BETWEEN '$start_date' AND '$end_date') "
-		."AS hit_total "
-		."FROM ".$wpdb->prefix."trksit_urls tku "
-		//."WHERE tku.url_id IN("
-		//."SELECT DISTINCT tkhits.url_id "
-		//."FROM ".$wpdb->prefix."trksit_hits tkhits "
-		//."WHERE tku.url_id = tkhits.url_id "
-		//."AND tkhits.hit_date "
-		//."BETWEEN '$start_date' AND '$end_date') "
-		."ORDER BY date_created DESC";
-
-	$table_data = $wpdb->get_results($trks_query);
-
-	if( count($table_data) >= 1 ):
 ?>
 
 	  <div id="trks_dashboard_par" style="display: none;">
@@ -278,56 +259,18 @@ else if($_GET['page'] == 'trksit-dashboard'){
 				  <th class="sortable desc" width="100"><a href="#"><span><?php _e('Created'); ?></span><span class="sorting-indicator"></span></a></th>
 				  <th class="sortable desc" width="75"><a href="#"><span><?php _e('Hits'); ?></span><span class="sorting-indicator"></span></a></th>
 				  <th width="140"><?php _e('trks.it URL'); ?></th>
+				  <th width="50"></th>
 				  <th id="trks_it_destination" width="180"><?php _e('Destination URL'); ?></th>
 				  <th><?php _e('Campaign'); ?></th>
 				  <th><?php _e('Source'); ?></th>
 				  <th><?php _e('Medium'); ?></th>
+				  <th width="80"></th>
 			   </tr>
 			</thead>
 			<tbody>
-<?php
-		/*
-		 *foreach($table_data as $table_row):
-		 *    $datetime = strtotime($table_row->date_created);
-		 *    $date_created = date('M j, Y', $datetime);
-		 *    $details_nonce = wp_create_nonce('trksit-view-details');
-		 *    $details_link = 'admin.php?page=trksit-dashboard&view=link-detail&linkid=' . $table_row->url_id . '&_wpnonce=' . $details_nonce;
-		 */
-?>
-			   <!-- <tr>
-				  <td class="trks_it_date"><?php _e($date_created); ?></td>
-				  <td class="trks_it_hits"><?php _e($table_row->hit_total); ?></td>
-				  <td class="trks_it_url"> -->
-					 <!-- <a href="<?php echo $table_row->trksit_url; ?>?preview=true" target="_blank" class="trksit-link" id="trksit-link-<?php echo $table_row->url_id; ?>"><?php echo str_replace("https://", "", $table_row->trksit_url); ?></a> -->
-					<?php //echo str_replace("https://", "", $table_row->trksit_url); ?>
-				  <!-- </td>
-				  <td class="trks_it_copy">
-					 <span class="copy-btn-wrap"><a class="trksit-copy-btn" id="trks-copy-btn-<?php echo $table_row->url_id; ?>" data-trksit-link="<?php echo $table_row->trksit_url; ?>"><?php _e('Copy');?></a></span>
-				  </td>
-				  <td class="truncate trks_it_destination">
-					 <a href="<?php echo $table_row->destination_url; ?>"
-						target="_blank"
-						title="<?php echo $table_row->destination_url; ?>"
-					 >
-						<?php echo $table_row->destination_url; ?>
-					 </a>
-				  </td>
-				  <td class="trks_it_campaign"><?php _e(stripslashes($table_row->campaign)); ?></td>
-				  <td class="trks_it_source"><?php _e(stripslashes($table_row->source)); ?></td>
-				  <td class="trks_it_medium"><?php _e(stripslashes($table_row->medium)); ?></td>
-				  <td class="trks_it_details"><a href="<?php echo $details_link; ?>"><?php _e('View Details');?></a></td>
-			   </tr> -->
-			   <?php //endforeach;?>
 			</tbody>
 		 </table>
-<?php
-	else:
-	_e('<p>You haven\'t created a trks.it URL yet...</p>'); ?>
-			<p><a href="/wp-admin/admin.php?page=trksit-generate" class="btn btn-success" style="text-decoration: none;"><?php _e('Create one now!'); ?></a></p>
-			<?php endif;?>
-		 </div>
-<?php
-}
+<?php }
 ?>
 	  <style>
 		 #loading-indicator {

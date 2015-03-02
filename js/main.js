@@ -84,7 +84,8 @@ jQuery(document).ready(function($){
 	   */
 	  var ajaxurl = "/wp-admin/admin-ajax.php";
 	  $('#trks_dashboard').dataTable({
-	  	  "ajax": ajaxurl + "?action=nopriv_generate_datatable"
+	  	  "ajax": ajaxurl + "?action=nopriv_generate_datatable",
+	  	  "order": [[ 0, "desc" ]]
 	  });
    }
 

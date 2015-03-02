@@ -28,38 +28,44 @@ class trksit {
 		add_action( 'wp_ajax_nopriv_generate_datatable', array( $this, 'wp_trksit_generate_dashboard_table' ) );
 	}
 
-	public function wp_trksit_generate_dashboard_table(){
-		$data = array(
-			"data" => array(
-				array(
-					"<a href='http://google.com'>Google</a>",
-					"cstef2",
-					"cstef3",
-					"cstef4",
-					"cstef5",
-					"cstef6",
-					"cstef7"
-				),
-				array(
-					"cstef1",
-					"cstef2",
-					"cstef3",
-					"cstef4",
-					"cstef5",
-					"cstef6",
-					"cstef7"
-				),
-				array(
-					"cstef1",
-					"cstef2",
-					"cstef3",
-					"cstef4",
-					"cstef5",
-					"cstef6",
-					"cstef7"
-				)
-			)
-		);
+	public function wp_trksit_generate_dashboard_table($start_date =  null, $end_date = null){
+		$data = array("data" => array());
+		global $wpdb;
+		if($start_date === null){
+			$start_date = date('Y-m-d',strtotime("last week"));
+		}
+		if($end_date === null){
+			$end_date = date('Y-m-d', time());
+		}
+		$trks_query = "SELECT *, "
+		."(SELECT COALESCE(SUM(tkhits.hit_count),0) as hit_total "
+		."FROM ".$wpdb->prefix."trksit_hits tkhits "
+		."WHERE tku.url_id = tkhits.url_id "
+		."AND tkhits.hit_date "
+		."BETWEEN '$start_date' AND '$end_date') "
+		."AS hit_total "
+		."FROM ".$wpdb->prefix."trksit_urls tku "
+		."ORDER BY date_created DESC";
+		$table_data = $wpdb->get_results($trks_query);
+		foreach($table_data as $table_row){
+			$datetime = strtotime($table_row->date_created);
+			$date_created = date('M j, Y', $datetime);
+			$details_nonce = wp_create_nonce('trksit-view-details');
+			$details_link = 'admin.php?page=trksit-dashboard&view=link-detail&linkid=' . $table_row->url_id . '&_wpnonce=' . $details_nonce;
+			$cstef = array(
+				$date_created,
+				$table_row->hit_total,
+				str_replace("https://", "", $table_row->trksit_url),
+				'<span class="copy-btn-wrap"><a class="trksit-copy-btn" id="trks-copy-btn-'.$table_row->url_id.'" data-trksit-link="'.$table_row->trksit_url . '">Copy</a></span>',
+				'<a href="'.$table_row->destination_url.'" title="'.$table_row->destination_url.'">'.$table_row->destination_url.'</a>',
+				stripslashes($table_row->campaign),
+				stripslashes($table_row->source),
+				stripslashes($table_row->medium),
+				'<a href="'.$details_link.'">View Details</a>'
+			);
+			array_push($data['data'], $cstef);
+			$cstef = array();
+		}
 		echo json_encode($data);
 		exit;
 	}
