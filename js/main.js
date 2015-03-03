@@ -115,7 +115,13 @@ jQuery(document).ready(function($){
 	if( jQuery().dataTable ){
 		var ajaxurl = "/wp-admin/admin-ajax.php";
 		$('#trks_dashboard').dataTable({
-			"ajax": ajaxurl + "?action=nopriv_generate_datatable",
+			"processing": true,
+			"serverSide": true,
+			"paging": true,
+			"ajax": {
+				"url": ajaxurl + "?action=nopriv_generate_datatable",
+				"type": "GET"
+			},
 			"order": [[ 0, "desc" ]]
 		});
 	}

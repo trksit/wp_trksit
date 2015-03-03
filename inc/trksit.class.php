@@ -28,15 +28,22 @@ class trksit {
 		add_action( 'wp_ajax_nopriv_generate_datatable', array( $this, 'wp_trksit_generate_dashboard_table' ) );
 	}
 
-	public function wp_trksit_generate_dashboard_table($start_date =  null, $end_date = null){
+	public function wp_trksit_generate_dashboard_table(){
 		$data = array("data" => array());
 		global $wpdb;
-		if($start_date === null){
-			$start_date = date('Y-m-d',strtotime("last week"));
+		$start_date = date('Y-m-d',strtotime("last week"));
+		$end_date = date('Y-m-d', time());
+
+		/*
+		 * Paging
+		 */
+		$sLimit = "";
+		if ( isset( $_GET['start'] ) && $_GET['length'] != '-1' ){
+			$sLimit = " LIMIT ".intval( $_GET['start'] ).", ". intval( $_GET['length'] );
 		}
-		if($end_date === null){
-			$end_date = date('Y-m-d', time());
-		}
+
+		_log($sLimit);
+
 		$trks_query = "SELECT *, "
 		."(SELECT COALESCE(SUM(tkhits.hit_count),0) as hit_total "
 		."FROM ".$wpdb->prefix."trksit_hits tkhits "
@@ -46,6 +53,9 @@ class trksit {
 		."AS hit_total "
 		."FROM ".$wpdb->prefix."trksit_urls tku "
 		."ORDER BY date_created DESC";
+
+		$table_data_count = $wpdb->get_results($trks_query);
+		$trks_query .= $sLimit;
 		$table_data = $wpdb->get_results($trks_query);
 		foreach($table_data as $table_row){
 			$datetime = strtotime($table_row->date_created);
@@ -66,6 +76,9 @@ class trksit {
 			array_push($data['data'], $cstef);
 			$cstef = array();
 		}
+		$data['draw'] = intval($_GET['draw']);
+		$data['recordsTotal'] = count($table_data_count);
+		$data['recordsFiltered'] = count($table_data_count);
 		echo json_encode($data);
 		exit;
 	}
