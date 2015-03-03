@@ -1,129 +1,142 @@
 jQuery(document).ready(function($){
 
-   // HELP POPOVERS
-   var $help_pops = $('.trksit-help');
+	// HELP POPOVERS
+	var $help_pops = $('.trksit-help');
 
-   $help_pops.popover({
-	  'placement':'right',
-	  'trigger':'click'
-   });
+	$help_pops.popover({
+		'placement':'right',
+		'trigger':'click'
+	});
 
-   $help_pops.click(function(){
-	  return false;
-   });
+	$help_pops.click(function(){
+		return false;
+	});
 
-   $(document).on('click', function(){
-	  $help_pops.popover('hide');
-   });
+	$(document).on('click', function(){
+		$help_pops.popover('hide');
+	});
 
-   //PREVIEW FUNCTIONS
+	//PREVIEW FUNCTIONS
 
-   $('#preview-image-picker').imagepicker();
+	$('#preview-image-picker').imagepicker();
 
-   //IMAGE
-   //when the image select changes, change the image preview
-   $('select#preview-image-picker').change(function(){
-	   $('#preview .image img').attr('src', $('select#preview-image-picker option:selected').val());
-   });
+	//IMAGE
+	//when the image select changes, change the image preview
+	$('select#preview-image-picker').change(function(){
+		$('#preview .image img').attr('src', $('select#preview-image-picker option:selected').val());
+	});
 
-   if($('select#preview-image-picker option').length){
-   	   var imgsrc = $('select#preview-image-picker option:selected').val();
-   	   var imagetag = '<img src="' + imgsrc + '" alt="" />';
-   	   $("#preview .image").prepend(imagetag);
-   }
+	if($('select#preview-image-picker option').length){
+		var imgsrc = $('select#preview-image-picker option:selected').val();
+		var imagetag = '<img src="' + imgsrc + '" alt="" />';
+		$("#preview .image").prepend(imagetag);
+	}
 
-   //TITLE
-   //change preview on keyup
-   $('input#title').keyup(function(){
-	  $('#preview .content .title').text($(this).val());
-   });
-   $('#preview .content .title').text($('input#title').val());
+	//TITLE
+	//change preview on keyup
+	$('input#title').keyup(function(){
+		$('#preview .content .title').text($(this).val());
+	});
+	$('#preview .content .title').text($('input#title').val());
 
-   //DESCRIPTION
-   $('input#description').keyup(function(){
-	  $('#preview .content .description').text($(this).val());
-   });
-   $('#preview .content .description').text($('input#description').val());
+	//DESCRIPTION
+	$('input#description').keyup(function(){
+		$('#preview .content .description').text($(this).val());
+	});
+	$('#preview .content .description').text($('input#description').val());
 
-   // COPY BUTTONS
+	// COPY BUTTONS
 
-   // Set location of SWF File
-   ZeroClipboard.config( { swfPath: "/wp-content/plugins/wp_trksit/js/swf/ZeroClipboard.swf" } );
+	// Set location of SWF File
+	ZeroClipboard.config( { swfPath: "/wp-content/plugins/wp_trksit/js/swf/ZeroClipboard.swf" } );
 
-   var client = new ZeroClipboard($(".trksit-copy-btn"));
-   client.on("ready", function(event){
+	// ZeroClipboard functions for non-generated items
+	var client = new ZeroClipboard($(".trksit-copy-btn"));
+	client.on("ready", function(event){
 
-	  // Use the data attribute associated with the link
-	  client.on("copy", function(event){
-		 event.clipboardData.setData('text/plain', event.target.getAttribute('data-trksit-link'));
-	  });
+		// Use the data attribute associated with the link
+		client.on("copy", function(event){
+			event.clipboardData.setData('text/plain', event.target.getAttribute('data-trksit-link'));
+		});
 
-   });
-   client.on( 'error', function(event) {
-	  console.log( 'ZeroClipboard error of type "' + event.name + '": ' + event.message );
-	  ZeroClipboard.destroy();
-   } );
+	});
+	client.on( 'error', function(event) {
+		console.log( 'ZeroClipboard error of type "' + event.name + '": ' + event.message );
+		ZeroClipboard.destroy();
+	} );
 
+	// ZeroClipboard functions to work with jQuery DataTable plugin generated links
+	$("#trks_dashboard").on('hover', '.trksit-copy-btn', function(){
+		var zc = new ZeroClipboard($(".trksit-copy-btn"));
+		zc.on('copy', function(event){
+			event.clipboardData.setData('text/plain', event.target.getAttribute('data-trksit-link'));
+		});
 
-   // SETTINGS
-   var $jquery_options_field = $("#trksit_jquery");
-   $("#trksit_jquery_radio button").on('click', function(e){
-	  $jquery_options_field.val($(this).val());
-   });
+		zc.on('error', function(event){
+			console.log('ZeroClipboard error of type "' + event.name + '": ' + event.message );
+			ZeroClipboard.destroy();
+		});
+	});
 
-   //DASHBOARD
-   //$('#trks_dashboard').css('display','none');
-   $('#trks_dashboard_par').css('display','block');
-   if( jQuery().dataTable ){
-	  /*
-	   *$('#trks_dashboard').dataTable({
-	   *   "fnInitComplete": function(oSettings, json) {
-	   *   },
-	   *   "aaSorting": [[ 0, "desc" ]],
-	   *});
-	   */
-	  var ajaxurl = "/wp-admin/admin-ajax.php";
-	  $('#trks_dashboard').dataTable({
-	  	  "ajax": ajaxurl + "?action=nopriv_generate_datatable",
-	  	  "order": [[ 0, "desc" ]]
-	  });
-   }
+	// SETTINGS
+	var $jquery_options_field = $("#trksit_jquery");
+	$("#trksit_jquery_radio button").on('click', function(e){
+		$jquery_options_field.val($(this).val());
+	});
 
-   if( jQuery().datepicker ){
-	  $("#trksit_start_date" ).datepicker({
-		 defaultDate: "+1w",
-		 changeMonth: true,
-		 numberOfMonths: 1,
-		 onClose: function( selectedDate ) {
-			$( "#trksit_end_date" ).datepicker( "option", "minDate", selectedDate );
-		 }
-	  });
+	//DASHBOARD
+	//$('#trks_dashboard').css('display','none');
+	$('#trks_dashboard_par').css('display','block');
+	if( jQuery().dataTable ){
+		/*
+		 *$('#trks_dashboard').dataTable({
+		 *   "fnInitComplete": function(oSettings, json) {
+		 *   },
+		 *   "aaSorting": [[ 0, "desc" ]],
+		 *});
+		 */
+		var ajaxurl = "/wp-admin/admin-ajax.php";
+		$('#trks_dashboard').dataTable({
+			"ajax": ajaxurl + "?action=nopriv_generate_datatable",
+			"order": [[ 0, "desc" ]]
+		});
+	}
 
-	  $("#trksit_end_date" ).datepicker({
-		 defaultDate: "+1w",
-		 changeMonth: true,
-		 numberOfMonths: 1,
-		 onClose: function( selectedDate ) {
-			$( "#trksit_start_date" ).datepicker( "option", "maxDate", selectedDate );
-		 }
-	  });
-   }
+	if( jQuery().datepicker ){
+		$("#trksit_start_date" ).datepicker({
+			defaultDate: "+1w",
+			changeMonth: true,
+			numberOfMonths: 1,
+			onClose: function( selectedDate ) {
+				$( "#trksit_end_date" ).datepicker( "option", "minDate", selectedDate );
+			}
+		});
 
-   //change the name of trks.it menu (change the name of the first link to Dashboard)
-   $('li#toplevel_page_trksit-dashboard ul.wp-submenu a.wp-first-item').text('Dashboard');
+		$("#trksit_end_date" ).datepicker({
+			defaultDate: "+1w",
+			changeMonth: true,
+			numberOfMonths: 1,
+			onClose: function( selectedDate ) {
+				$( "#trksit_start_date" ).datepicker( "option", "maxDate", selectedDate );
+			}
+		});
+	}
 
-   $("#add-script").click(function(){
-   	  // clean the form out
-   	  $("#trksit_script_label").val("");
-   	  $("#trksit_script_platform option:selected").removeAttr("selected");
-   	  $("#trksit_script").val("");
-   	  $("#script-id").val("");
-   });
+	//change the name of trks.it menu (change the name of the first link to Dashboard)
+	$('li#toplevel_page_trksit-dashboard ul.wp-submenu a.wp-first-item').text('Dashboard');
 
-   $("#script_cancel").click(function(){
-   	  var url = $(this).attr('data-url');
-   	  window.location = url;
-   });
+	$("#add-script").click(function(){
+		// clean the form out
+		$("#trksit_script_label").val("");
+		$("#trksit_script_platform option:selected").removeAttr("selected");
+		$("#trksit_script").val("");
+		$("#script-id").val("");
+	});
+
+	$("#script_cancel").click(function(){
+		var url = $(this).attr('data-url');
+		window.location = url;
+	});
 
 	$("#trksit_settings_form").validate();
 	$("#trksit_add_script_form").validate();
