@@ -757,3 +757,19 @@ div#trks_dashboard_info{
 	padding-left: 25px;
 	padding-right: 25px;
 }
+#trks_dashboard_paginate span {
+	display: inline-block;
+	padding: 8px 10px 0px 0px;
+}
+#trks_dashboard_paginate span .paginate_button {
+	display: inline-block;
+	color: #555;
+	padding: 6px 2px;
+	font-size: 1.2em;
+	cursor: pointer;
+}
+
+#trks_dashboard_paginate span .paginate_button.current, #trks_dashboard_paginate span .paginate_button:hover {
+	color: #000;
+	text-decoration: underline;
+}

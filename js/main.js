@@ -47,35 +47,60 @@ jQuery(document).ready(function($){
 
 	// COPY BUTTONS
 
+	//Check to see if Flash is present
+	var hasFlash = false;
+	try {
+		var fo = new ActiveXObject('ShockwaveFlash.ShockwaveFlash');
+		if (fo) {
+			hasFlash = true;
+		}
+	} catch (e) {
+		if (navigator.mimeTypes
+			&& navigator.mimeTypes['application/x-shockwave-flash'] != undefined
+		&& navigator.mimeTypes['application/x-shockwave-flash'].enabledPlugin) {
+			hasFlash = true;
+		}
+	}
 	// Set location of SWF File
 	ZeroClipboard.config( { swfPath: "/wp-content/plugins/wp_trksit/js/swf/ZeroClipboard.swf" } );
 
 	// ZeroClipboard functions for non-generated items
-	var client = new ZeroClipboard($(".trksit-copy-btn"));
-	client.on("ready", function(event){
+	if(hasFlash){
+		var client = new ZeroClipboard($(".trksit-copy-btn"));
+		client.on("ready", function(event){
 
-		// Use the data attribute associated with the link
-		client.on("copy", function(event){
-			event.clipboardData.setData('text/plain', event.target.getAttribute('data-trksit-link'));
+			// Use the data attribute associated with the link
+			client.on("copy", function(event){
+				event.clipboardData.setData('text/plain', event.target.getAttribute('data-trksit-link'));
+			});
+
 		});
-
-	});
-	client.on( 'error', function(event) {
-		console.log( 'ZeroClipboard error of type "' + event.name + '": ' + event.message );
-		ZeroClipboard.destroy();
-	} );
-
-	// ZeroClipboard functions to work with jQuery DataTable plugin generated links
-	$("#trks_dashboard").on('hover', '.trksit-copy-btn', function(){
-		var zc = new ZeroClipboard($(".trksit-copy-btn"));
-		zc.on('copy', function(event){
-			event.clipboardData.setData('text/plain', event.target.getAttribute('data-trksit-link'));
-		});
-
-		zc.on('error', function(event){
-			console.log('ZeroClipboard error of type "' + event.name + '": ' + event.message );
+		client.on( 'error', function(event) {
+			console.log( 'ZeroClipboard error of type "' + event.name + '": ' + event.message );
 			ZeroClipboard.destroy();
-		});
+		} );
+	}
+	// ZeroClipboard functions to work with jQuery DataTable plugin generated links
+	$("#trks_dashboard").on('hover', '.trksit-copy-btn', function(e){
+		if(hasFlash){
+			e.preventDefault();
+			var zc = new ZeroClipboard($(".trksit-copy-btn"));
+
+			zc.on('copy', function(event){
+				event.clipboardData.setData('text/plain', event.target.getAttribute('href'));
+			});
+
+			zc.on('error', function(event){
+				console.log('ZeroClipboard error of type "' + event.name + '": ' + event.message );
+				ZeroClipboard.destroy();
+			});
+		}
+	});
+
+	$("#trks_dashboard").on('click', '.trksit-copy-btn', function(e){
+		if(hasFlash){
+			e.preventDefault();
+		}
 	});
 
 	// SETTINGS
@@ -88,13 +113,6 @@ jQuery(document).ready(function($){
 	//$('#trks_dashboard').css('display','none');
 	$('#trks_dashboard_par').css('display','block');
 	if( jQuery().dataTable ){
-		/*
-		 *$('#trks_dashboard').dataTable({
-		 *   "fnInitComplete": function(oSettings, json) {
-		 *   },
-		 *   "aaSorting": [[ 0, "desc" ]],
-		 *});
-		 */
 		var ajaxurl = "/wp-admin/admin-ajax.php";
 		$('#trks_dashboard').dataTable({
 			"ajax": ajaxurl + "?action=nopriv_generate_datatable",

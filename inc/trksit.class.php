@@ -56,7 +56,7 @@ class trksit {
 				$date_created,
 				$table_row->hit_total,
 				str_replace("https://", "", $table_row->trksit_url),
-				'<span class="copy-btn-wrap"><a class="trksit-copy-btn" id="trks-copy-btn-'.$table_row->url_id.'" data-trksit-link="'.$table_row->trksit_url . '">Copy</a></span>',
+				'<span class="copy-btn-wrap"><a class="trksit-copy-btn" id="trks-copy-btn-'.$table_row->url_id.'" href="'.$table_row->trksit_url . '" target="_blank">Copy</a></span>',
 				'<a href="'.$table_row->destination_url.'" title="'.$table_row->destination_url.'">'.$table_row->destination_url.'</a>',
 				stripslashes($table_row->campaign),
 				stripslashes($table_row->source),
