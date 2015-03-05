@@ -691,6 +691,25 @@ function wp_trksit_validate_source(){
 	}
 }
 
+add_action('admin_init', 'wp_trksit_daterange_transient');
+function wp_trksit_daterange_transient(){
+	if(isset($_GET['page']) && $_GET['page'] == 'trksit-dashboard'){
+		$uid = wp_get_current_user();
+		$sd = date('Y-m-d', strtotime('last week'));
+		$ed = date('Y-m-d', time());
+		if(!get_transient('wp_trksit_daterange_user' . $uid->ID)){
+			if(isset($_GET['trksit_start_date']) && $_GET['trksit_start_date'] != ""){
+				$sd = date('Y-m-d', strtotime(urldecode($_GET['trksit_start_date'])));
+			}
+			if(isset($_GET['trksit_end_date']) && $_GET['trksit_end_date'] != ""){
+				$ed = date('Y-m-d', strtotime(urldecode($_GET['trksit_end_date'])));
+			}
+			$dr = array('start' => $sd, 'end' => $ed);
+			set_transient('wp_trksit_daterange_user' . $uid->ID, serialize($dr), 60);
+		}
+	}
+}
+
 //Debug log function
 if(!function_exists('_log')){
 	function _log( $message ) {

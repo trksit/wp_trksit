@@ -34,6 +34,16 @@ class trksit {
 		$start_date = date('Y-m-d',strtotime("last week"));
 		$end_date = date('Y-m-d', time());
 
+		$uid = wp_get_current_user();
+
+		if($daterange = get_transient('wp_trksit_daterange_user' . $uid->ID)){
+			$dr = maybe_unserialize($daterange);
+			$start_date = $dr['start'];
+			$end_date = $dr['end'];
+			file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/log1.txt', print_r($start_date . " - " . $end_date, true), FILE_APPEND);
+			delete_transient('wp_trksit_daterange_user' . $uid->ID);
+		}
+
 		/*
 		 * Paging
 		 */
@@ -41,8 +51,6 @@ class trksit {
 		if ( isset( $_GET['start'] ) && $_GET['length'] != '-1' ){
 			$sLimit = " LIMIT ".intval( $_GET['start'] ).", ". intval( $_GET['length'] );
 		}
-
-		_log($sLimit);
 
 		$trks_query = "SELECT *, "
 		."(SELECT COALESCE(SUM(tkhits.hit_count),0) as hit_total "
