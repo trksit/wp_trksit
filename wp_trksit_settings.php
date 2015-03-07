@@ -4,9 +4,10 @@ if( !empty( $_POST ) || ( isset( $_GET['purge-data'] ) && $_GET['purge-data'] ==
 
 	ob_start();
 
-	echo '<div id="loading-indicator" style="margin: 0px auto; width: 200px; text-align: center; padding-top: 200px;">';
-	echo '<h2>Saving Settings...</h2><br />';
-	echo '<img src="' . plugins_url( '/wp_trksit/img/loading.gif' , dirname(__FILE__) ) . '" alt="Loading" /></div>';
+	echo '<div id="loading-indicator" style="margin: 0px auto; width: 200px; text-align: center; padding-top: 200px;">
+		      <h2>Loading...</h2><br />
+		      <img src="' . plugins_url( '/wp_trksit/img/loading.gif' , dirname(__FILE__) ) . '" alt="Loading" />
+		  </div>';
 
 	trksit_flush_buffers();
 
@@ -99,7 +100,7 @@ if( $_GET['page'] == 'trksit-settings' ){
 	<h2 class="nav-tab-wrapper">
 
 		<a href="/wp-admin/admin.php?page=trksit-settings&tab=general" class="nav-tab <?php if( ( isset( $_GET['tab'] ) && $_GET['tab'] == 'general' ) || empty( $_GET['tab'] ) ): ?>nav-tab-active<?php endif; ?>">
-			<?php _e( 'General Settings' ); ?>
+			<?php _e( 'General' ); ?>
 		</a>
 		<a href="/wp-admin/admin.php?page=trksit-settings&tab=scripts" class="nav-tab <?php if( isset( $_GET['tab'] ) && $_GET['tab'] == 'scripts' ): ?>nav-tab-active<?php endif; ?>">
 			<?php _e( 'Remarketing & Custom Scripts' ); ?>
@@ -114,7 +115,7 @@ if( $_GET['page'] == 'trksit-settings' ){
 			<?php _e( 'Domains' ); ?>
 		</a>
 
-		<a href="<?php echo WP_TRKSIT_MANAGE_URL; ?>" target="_blank" class="nav-tab manage-account"><i class="dashicons dashicons-admin-generic"></i> Manage Account</a>
+		<a href="<?php echo WP_TRKSIT_MANAGE_URL; ?>" target="_blank" class="nav-tab manage-account"><i class="dashicons dashicons-external"></i> Account</a>
 
 	</h2>
 
@@ -123,7 +124,7 @@ if( $_GET['page'] == 'trksit-settings' ){
 		if( ( isset( $_GET['tab'] ) && $_GET['tab'] == 'general' ) || empty( $_GET['tab'] ) ):
 	?>
 
-	<form name="trksit_settings_form" id="trksit_settings_form" class="trksit-form" method="post" action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI'] ); ?>" style="float:left; display:block;">
+	<form name="trksit_settings_form" id="trksit_settings_form" class="trksit-form" method="post" action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI'] ); ?>">
 
 
 		<?php if( get_transient( 'trksit_active_user' ) && get_transient( 'trksit_active_user' ) == 'inactive' ): ?>
@@ -312,7 +313,7 @@ if( $_GET['page'] == 'trksit-settings' ){
 
 	?>
 
-	<div class="trksit_col_full">
+	<div class="trksit_col full">
 
 		<h2><?php _e( 'Remarketing &amp; Custom Scripts' ); ?></h2>
 		<p><?php _e( 'Here you can define remarketing lists & custom scripts to be run when a trks.it link is clicked. You can then assign your links with one or more scripts defined below.' ); ?></p>
@@ -519,7 +520,7 @@ if( $_GET['page'] == 'trksit-settings' ){
 
 	?>
 
-	<div class="trksit_col_full">
+	<div class="trksit_col full">
 
 		<h2>Sources</h2>
 
@@ -605,7 +606,7 @@ if( $_GET['page'] == 'trksit-settings' ){
 
 	?>
 
-	<div class="trksit_col_full">
+	<div class="trksit_col full">
 
 		<h2>Mediums</h2>
 		<p>Here you can add medium values to the drop down available when creating a new link.</p>
@@ -694,7 +695,7 @@ if( $_GET['page'] == 'trksit-settings' ){
 ?>
 
 
-	<div class="trksit_col_full">
+	<div class="trksit_col full">
 
 		<h2>Domains</h2>
 		<p>Here you can add first-party domain names.</p>
