@@ -169,9 +169,12 @@ add_action( 'init', array( new trksit, '__construct' ) );
 add_action('admin_enqueue_scripts', 'trksit_load_scripts');
 function trksit_load_scripts() {
 	if(isset($_GET['page']) && ($_GET['page'] == 'trksit-dashboard' || $_GET['page'] == 'trksit-settings' || $_GET['page'] == 'trksit-generate')){
-		wp_register_style('trksit-bootstrap', plugins_url( '/wp_trksit/css/bootstrap.min.css' , dirname(__FILE__)));
+		//wp_register_style('trksit-bootstrap', plugins_url( '/wp_trksit/css/bootstrap.min.css' , dirname(__FILE__)));
+		wp_register_style('trksit-bootstrap', plugins_url( '/wp_trksit/css/bootstrap-custom.min.css' , dirname(__FILE__)));
 		wp_register_style('trksit-styles', plugins_url( '/wp_trksit/css/wp_trksit_style.css' , dirname(__FILE__)));
-		wp_register_script('trksit-bootstrap-js', plugins_url( '/wp_trksit/js/bootstrap.min.js' , dirname(__FILE__)),array('jquery'));
+		wp_register_style('trksit-styles-new', plugins_url( '/wp_trksit/css/wp_trksit_style-new.css' , dirname(__FILE__)));
+		//wp_register_script('trksit-bootstrap-js', plugins_url( '/wp_trksit/js/bootstrap.min.js' , dirname(__FILE__)),array('jquery'));
+		wp_register_script('trksit-bootstrap-js', plugins_url( '/wp_trksit/js/bootstrap-custom.min.js' , dirname(__FILE__)),array('jquery'));
 		wp_register_script('trksit-zclip-js', plugins_url( '/wp_trksit/js/jquery.zclip.js' , dirname(__FILE__)),array('jquery'),'1.1.1',true);
 		wp_register_script('trksit-validation-js', plugins_url( '/wp_trksit/js/jquery.validate.min.js' , dirname(__FILE__)),array('jquery'),'1.11.1');
 		wp_register_script('trksit-main-js', plugins_url( '/wp_trksit/js/main.js', dirname(__FILE__)),array('jquery'),'1.2.1');
@@ -179,6 +182,7 @@ function trksit_load_scripts() {
 
 		wp_enqueue_style('trksit-bootstrap');
 		wp_enqueue_style('trksit-styles' );
+		wp_enqueue_style('trksit-styles-new' );
 		wp_enqueue_script('trksit-bootstrap-js');
 		wp_enqueue_script('trksit-zclip-js');
 		wp_enqueue_script('trksit-validation-js');
@@ -275,6 +279,9 @@ function trksit_admin_notices(){
  */
 add_action('admin_menu', 'trksit_add_pages');
 function trksit_add_pages() {
+
+	$svg_icon = 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMjU2IDI1NiIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMjU2IDI1NiIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PGc+PHBhdGggZmlsbD0iIzk5OTk5OSIgZD0iTTE5NC43LDI3LjNjMTMsMCwyMy42LDEwLjYsMjMuNiwyMy42cy0xMC42LDIzLjYtMjMuNiwyMy42Yy0xMywwLTIzLjctMTAuNi0yMy43LTIzLjZTMTgxLjcsMjcuMywxOTQuNywyNy4zIE0xOTQuNywxNy44Yy0xOC40LDAtMzMuMiwxNC44LTMzLjIsMzMuMWMwLDE4LjQsMTQuOCwzMy4xLDMzLjIsMzMuMWMxOC4zLDAsMzMuMS0xNC44LDMzLjEtMzMuMUMyMjcuOSwzMi42LDIxMy4xLDE3LjgsMTk0LjcsMTcuOEwxOTQuNywxNy44eiIvPjxnPjxwYXRoIGZpbGw9IiM5OTk5OTkiIGQ9Ik0xMDAuMSwyNDIuMWMtMSwyLjMtMy4xLDMuOC01LjYsMy45Yy0wLjUsMC0xLDAtMS41LTAuMWMtMy0wLjUtNS4yLTIuOS01LjQtNmwtMy41LTU4LjVsLTU4LjUsMy41Yy0zLjEsMC4yLTUuNy0xLjctNi42LTQuNmMtMC45LTIuOSwwLjMtNiwyLjktNy41TDE0OCw5OS45YzAuOS0wLjYsMS45LTAuOCwyLjktMC45YzEuNy0wLjEsMy40LDAuNCw0LjcsMS43YzIuMiwxLjgsMi44LDQuOCwxLjcsNy40TDEwMC4xLDI0Mi4xeiIvPjwvZz48Zz48cGF0aCBmaWxsPSIjOTk5OTk5IiBkPSJNMTk0LjcsOTUuMmMtMi42LDAtNC43LTIuMS00LjctNC43VjcwLjdjMC0yLjYsMi4xLTQuNyw0LjctNC43YzIuNiwwLDQuNywyLjEsNC43LDQuN3YxOS44QzE5OS41LDkzLjEsMTk3LjMsOTUuMiwxOTQuNyw5NS4yeiIvPjwvZz48Zz48cGF0aCBmaWxsPSIjOTk5OTk5IiBkPSJNMTk0LjcsMzkuM2MtMi42LDAtNC43LTIuMS00LjctNC43VjE0LjdjMC0yLjYsMi4xLTQuNyw0LjctNC43YzIuNiwwLDQuNywyLjEsNC43LDQuN3YxOS44QzE5OS41LDM3LjIsMTk3LjMsMzkuMywxOTQuNywzOS4zeiIvPjwvZz48Zz48cGF0aCBmaWxsPSIjOTk5OTk5IiBkPSJNMjMyLjYsNTcuNGgtMTkuOGMtMi42LDAtNC43LTIuMS00LjctNC43YzAtMi42LDIuMS00LjcsNC43LTQuN2gxOS44YzIuNiwwLDQuNywyLjEsNC43LDQuN0MyMzcuMyw1NS4yLDIzNS4yLDU3LjQsMjMyLjYsNTcuNHoiLz48L2c+PGc+PHBhdGggZmlsbD0iIzk5OTk5OSIgZD0iTTE3Ni42LDU3LjRoLTE5LjhjLTIuNiwwLTQuNy0yLjEtNC43LTQuN2MwLTIuNiwyLjEtNC43LDQuNy00LjdoMTkuOGMyLjYsMCw0LjcsMi4xLDQuNyw0LjdDMTgxLjQsNTUuMiwxNzkuMyw1Ny40LDE3Ni42LDU3LjR6Ii8+PC9nPjwvZz48L3N2Zz4=';
+
 	$active = false;
 	if(!get_option('trksit_token') || time() > get_option('trksit_token_expires')){
 		$trksit = new trksit();
@@ -301,7 +308,7 @@ function trksit_add_pages() {
 			'edit_private_pages',
 			'trksit-settings',
 			'trksit_settings',
-			plugins_url( '/wp_trksit/img/trksit-icon-16x16.png' , dirname(__FILE__) )
+			$svg_icon
 		);
 	} else {
 		add_menu_page(
@@ -310,7 +317,7 @@ function trksit_add_pages() {
 			'edit_private_pages',
 			'trksit-dashboard',
 			'trksit_dashboard',
-			plugins_url( '/wp_trksit/img/trksit-icon-16x16.png' , dirname(__FILE__) )
+			$svg_icon
 		);
 		add_submenu_page(
 			'trksit-dashboard',
