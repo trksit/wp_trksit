@@ -34,6 +34,8 @@ class trksit {
 		$start_date = date('Y-m-d',strtotime("last week"));
 		$end_date = date('Y-m-d', time());
 
+		file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/log1.txt', print_r($_GET, true), FILE_APPEND);
+
 		$uid = wp_get_current_user();
 
 		if($daterange = get_transient('wp_trksit_daterange_user' . $uid->ID)){
@@ -52,6 +54,17 @@ class trksit {
 			$sLimit = " LIMIT ".intval( $_GET['start'] ).", ". intval( $_GET['length'] );
 		}
 
+		$orderby = "ORDER BY date_created DESC";
+		if(isset($_GET['order'])){
+			$orderby = $_GET['order'][0]['column'];
+			$dir = $_GET['order'][0]['dir'];
+			if($orderby == 0){
+				$orderby = "ORDER BY date_created " . $dir;
+			} else {
+				$orderby = "ORDER BY hit_total " . $dir;
+			}
+		}
+
 		$trks_query = "SELECT *, "
 		."(SELECT COALESCE(SUM(tkhits.hit_count),0) as hit_total "
 		."FROM ".$wpdb->prefix."trksit_hits tkhits "
@@ -60,7 +73,7 @@ class trksit {
 		."BETWEEN '$start_date' AND '$end_date') "
 		."AS hit_total "
 		."FROM ".$wpdb->prefix."trksit_urls tku "
-		."ORDER BY date_created DESC";
+		.$orderby;
 
 		$table_data_count = $wpdb->get_results($trks_query);
 		$trks_query .= $sLimit;
