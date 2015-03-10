@@ -107,11 +107,6 @@
 #trksit-wrap .trksit_col.right {
   padding-left: 20px;
 }
-#trksit-wrap .trksit-section {
-  padding: 0px 0px 20px 0px;
-  margin: 0px 0px 20px 0px;
-  border-bottom: 1px solid #ccc;
-}
 #trksit-wrap .postbox {
   margin-top: 20px;
   clear: both;
@@ -123,9 +118,19 @@
   line-height: 1.4;
   cursor: text;
 }
+#trksit-wrap .postbox .hndle {
+  padding: 8px 12px;
+  border-bottom: 1px solid #eee;
+}
+#trksit-wrap .postbox .hndle:after {
+  content: ' ';
+  display: block;
+  clear: both;
+}
 #trksit-wrap .postbox .inside {
   padding: 0 15px;
   margin: 15px 0;
+  overflow: hidden;
 }
 #trksit-wrap .postbox .inside .trksit-alert {
   -webkit-box-shadow: none;
@@ -262,7 +267,8 @@
   text-decoration: none;
 }
 #trksit-wrap .button.button-large {
-  height: 34px;
+  height: 32px;
+  padding: 0 12px;
 }
 #trksit-wrap .copy-btn-wrap {
   display: inline-block;
@@ -292,7 +298,7 @@
   padding: 0px 5px;
 }
 #trksit-wrap .trksit-copy-btn.zeroclipboard-is-hover, #trksit-wrap .trksit-copy-btn:hover, #trksit-wrap .trksit-copy-btn:focus {
-  background: #0074a2;
+  background: #2ea2cc;
   color: #fff;
 }
 #trksit-wrap .trksit-copy-btn.zeroclipboard-is-active, #trksit-wrap .trksit-copy-btn:active {
@@ -491,7 +497,7 @@
 }
 #trksit-wrap #trksit_date_selector {
   float: right;
-  padding: 9px 0 4px 0;
+  padding: 5px 0;
 }
 #trksit-wrap #trksit_date_selector .trksit_date {
   display: inline-block;
@@ -499,14 +505,52 @@
 #trksit-wrap #trksit_date_selector .trksit_date label {
   line-height: 28px;
   font-weight: 600;
-  display: inline-block;
+  display: inline;
 }
 #trksit-wrap #trksit_date_selector .trksit_date input[type="text"] {
   margin: 0 10px 0 5px;
+  line-height: 28px;
+  height: 28px;
 }
 #trksit-wrap #trks_hits {
   height: 275px !important;
   clear: both;
+  z-index: 2;
+}
+#trksit-wrap #graph-lines {
+  height: 210px;
+  width: 99999em;
+  position: absolute;
+  border: 1px dotted #eee;
+  border-left: 0;
+  border-right: 0;
+  left: 65px;
+  bottom: 38px;
+  z-index: 0;
+}
+#trksit-wrap #graph-lines .line {
+  height: 0;
+  width: 100%;
+  border-top: 1px dotted #eee;
+  position: absolute;
+}
+#trksit-wrap #graph-lines .line-1 {
+  top: 52px;
+}
+#trksit-wrap #graph-lines .line-2 {
+  top: 104px;
+}
+#trksit-wrap #graph-lines .line-3 {
+  top: 156px;
+}
+#trksit-wrap #graph-lines-end {
+  height: 212px;
+  width: 35px;
+  background: #fff;
+  right: 0;
+  bottom: 38px;
+  z-index: 1;
+  position: absolute;
 }
 #trksit-wrap .morris-hover {
   position: absolute;

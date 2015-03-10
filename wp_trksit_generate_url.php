@@ -42,11 +42,15 @@
 
 			if ( is_wp_error( $trks_error ) ) {
 
+				echo '<div class="trksit-alert danger">';
+
 				$wp_errors = $trks_error->get_error_messages();
 
 				foreach ( $wp_errors as $e ) {
-				   echo '<h2>' . $e . '</h2>';
+				   echo '<p><strong>' . $e . '</strong></p>';
 				}
+
+				echo '</div>';
 
 			} else {
 
@@ -74,11 +78,11 @@
 							<a class="trksit-copy-btn" id="trks-copy-btn-test" data-trksit-link="<?php echo $shortURL . '/test'; ?>"><?php _e( 'Copy Test URL *' );?></a> <small>* Test will not trigger analytics or count hit</small>
 						</p>
 
-						<p><a class="button button-large" href="./admin.php?page=trksit-generate">Create another link</a></p>
-
 					</div>
 
 				</div>
+
+				<p><a class="button button-primary button-large" href="./admin.php?page=trksit-generate">Create Another link</a></p>
 
 			</div>
 
@@ -150,8 +154,10 @@
 
 				if ( is_wp_error( $trks_error ) ) {
 
-					echo '<h2 class="trksit-header">' . $trks_error->get_error_message() . '</h2>';
-					echo '<p><a href="/wp-admin/admin.php?page=trksit-settings">Please visit settings to correct</a></p>';
+					echo '<div class="trksit-alert danger">
+						      <p><strong>' . $trks_error->get_error_message() . '</strong></p>
+						      <p><a href="/wp-admin/admin.php?page=trksit-generate">Click here to try a new link</a></p>
+						  </div>';
 
 				} else {
 
@@ -410,6 +416,21 @@
 			<a href="#" class="nav-tab nav-tab-disabled">Step 3</a>
 		</h2>
 
+
+		<?php
+
+			if ( isset( $_SESSION['trksit_error'] ) ) {
+
+				echo '<div class="trksit-alert danger">
+					      <p><strong>' . $_SESSION['trksit_error'] . '</strong></p>
+					  </div>';
+
+				unset( $_SESSION['trksit_error'] );
+
+			}
+
+		?>
+
 		<div class="trksit_col left">
 
 			<div class="postbox">
@@ -419,20 +440,6 @@
 				<div class="inside">
 
 					<p><?php _e( 'Enter the website URL you would like the link to resolve to. <strong>Don\'t add any extra tracking parameters on this link.</strong>' ); ?></p>
-
-					<?php
-
-						if ( isset( $_SESSION['trksit_error'] ) ) {
-
-							echo '<div class="trksit-alert danger">
-								      <p>' . $_SESSION['trksit_error'] . '</p>
-								  </div>';
-
-							unset( $_SESSION['trksit_error'] );
-
-						}
-
-					?>
 
 					<form method="post" class="trksit-form step-1" id="trksit-generate">
 

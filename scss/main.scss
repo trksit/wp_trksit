@@ -139,12 +139,6 @@
 		//max-width: 470px;
 	}
 
-	.trksit-section{
-		padding:0px 0px 20px 0px;
-		margin:0px 0px 20px 0px;
-		border-bottom:1px solid #ccc;
-	}
-
 	.postbox{
 		margin-top: 20px;
 		clear: both;
@@ -157,9 +151,22 @@
 			cursor: text;
 		}
 
+		.hndle{
+			padding: 8px 12px;
+			border-bottom: 1px solid #eee;
+
+			&:after{
+				content: ' ';
+				display: block;
+				clear: both;
+			}
+
+		}
+
 		.inside{
 			padding: 0 15px;
 			margin: 15px 0;
+			overflow: hidden;
 
 			.trksit-alert{
 				-webkit-box-shadow: none;
@@ -371,7 +378,8 @@
 	// WordPress Default Buttons
 	.button{
 		&.button-large{
-			height: 34px;
+			height: 32px;
+			padding: 0 12px;
 		}
 	}
 
@@ -409,7 +417,7 @@
 		&.zeroclipboard-is-hover,
 		&:hover,
 		&:focus{
-			background: #0074a2;
+			background: #2ea2cc;
 			color: #fff;
 		}
 
@@ -698,7 +706,7 @@
 	#trksit_date_selector{
 
 		float: right;
-		padding: 9px 0 4px 0;
+		padding: 5px 0;
 
 		.trksit_date{
 
@@ -707,11 +715,13 @@
 			label{
 				line-height: 28px;
 				font-weight: 600;
-				display: inline-block;
+				display: inline;
 			}
 
 			input[type="text"]{
 				margin: 0 10px 0 5px;
+				line-height: 28px;
+				height: 28px;
 			}
 
 		}
@@ -721,6 +731,49 @@
 	#trks_hits{
 		height: 275px !important;
 		clear: both;
+		z-index: 2;
+	}
+
+	#graph-lines{
+		height: 210px;
+		width: 99999em;
+		position: absolute;
+		border: 1px dotted #eee;
+		border-left: 0;
+		border-right: 0;
+		left: 65px;
+		bottom: 38px;
+		z-index: 0;
+
+		.line{
+			height: 0;
+			width: 100%;
+			border-top: 1px dotted #eee;
+			position: absolute;
+		}
+
+		.line-1{
+			top: 52px;
+		}
+
+		.line-2{
+			top: 104px;
+		}
+
+		.line-3{
+			top: 156px;
+		}
+
+	}
+
+	#graph-lines-end{
+		height: 212px;
+		width: 35px;
+		background: #fff;
+		right: 0;
+		bottom: 38px;
+		z-index: 1;
+		position: absolute;
 	}
 
 	.morris-hover{

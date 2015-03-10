@@ -356,7 +356,7 @@ if ( ( isset( $_GET['view'] ) && $_GET['view'] == 'link-detail' ) && is_numeric(
 else if ( $_GET['page'] == 'trksit-dashboard' ) {
 
 ?>
-	<h2 style="float: left;"><?php echo __( 'trks.it Dashboard', 'trksit_menu' ); ?></h2>
+	<h2><?php echo __( 'trks.it Dashboard', 'trksit_menu' ); ?></h2>
 <?php
 
 	if ( isset( $_GET['trksit_start_date'] ) AND !empty( $_GET['trksit_start_date'] ) AND isset( $_GET['trksit_end_date'] ) AND !empty( $_GET['trksit_end_date'] ) ) {
@@ -379,24 +379,37 @@ else if ( $_GET['page'] == 'trksit-dashboard' ) {
 		$date = $timeline_points[0]->date_created;
 ?>
 
-		<form action="<?php echo trksit_current_page();?>" class="wp-core-ui" method="GET" id="trksit_date_selector">
-			<input type="hidden" name="page" value="trksit-dashboard">
-			<div class="trksit_date">
-				<label for="trksit_start_date"><?php _e( 'Start Date' ); ?></label>
-				<input type="text" id="trksit_start_date" name="trksit_start_date">
-			</div>
-			<div class="trksit_date">
-				<label for="trksit_end_date"><?php _e( 'End Date' ); ?></label>
-				<input type="text" id="trksit_end_date" name="trksit_end_date">
-			</div>
-			<button type="submit" class="button button-primary">Update</button>
-		</form>
+
 
 		<div class="postbox">
 
+			<div class="hndle">
+				<form action="<?php echo trksit_current_page();?>" class="wp-core-ui" method="GET" id="trksit_date_selector">
+					<input type="hidden" name="page" value="trksit-dashboard">
+					<div class="trksit_date">
+						<label for="trksit_start_date"><?php _e( 'Start Date' ); ?></label>
+						<input type="text" id="trksit_start_date" name="trksit_start_date">
+					</div>
+					<div class="trksit_date">
+						<label for="trksit_end_date"><?php _e( 'End Date' ); ?></label>
+						<input type="text" id="trksit_end_date" name="trksit_end_date">
+					</div>
+					<button type="submit" class="button button-primary">Update</button>
+				</form>
+			</div>
+
 			<div class="inside">
 
-				<div id="trks_hits"></div>
+				<div id="trks_hits">
+				</div>
+
+				<div id="graph-lines">
+					<div class="line line-1"></div>
+					<div class="line line-2"></div>
+					<div class="line line-3"></div>
+				</div>
+
+				<div id="graph-lines-end"></div>
 
 			</div>
 
