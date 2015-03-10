@@ -118,6 +118,7 @@ jQuery(document).ready(function($){
 			"processing": true,
 			"serverSide": true,
 			"paging": true,
+			"searching": true,
 			"ajax": {
 				"url": ajaxurl + "?action=nopriv_generate_datatable",
 				"type": "GET"
