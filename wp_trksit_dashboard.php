@@ -76,6 +76,14 @@ if ( ( isset( $_GET['view'] ) && $_GET['view'] == 'link-detail' ) && is_numeric(
 
 					<div id="trks_hits"></div>
 
+					<div id="graph-lines">
+						<div class="line line-1"></div>
+						<div class="line line-2"></div>
+						<div class="line line-3"></div>
+					</div>
+
+					<div id="graph-lines-end"></div>
+
 				</div>
 
 			</div>
@@ -411,8 +419,7 @@ else if ( $_GET['page'] == 'trksit-dashboard' ) {
 
 			<div class="inside">
 
-				<div id="trks_hits">
-				</div>
+				<div id="trks_hits"></div>
 
 				<div id="graph-lines">
 					<div class="line line-1"></div>

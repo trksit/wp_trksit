@@ -169,6 +169,7 @@
 		.hndle{
 			padding: 8px 12px;
 			border-bottom: 1px solid #eee;
+			cursor: default;
 
 			&:after{
 				content: ' ';
@@ -720,8 +721,8 @@
 
 	#trksit_date_selector{
 
+		padding: 5px 15px 5px 0;
 		float: right;
-		padding: 5px 0;
 
 		.trksit_date{
 
@@ -1124,11 +1125,11 @@
 	#trksit-wrap{
 
 		.trksit_col{
+
 			width: 100% !important;
 			max-width: 100% !important;
 			float: none !important;
 			clear: both !important;
-
 
 			&.right,
 			&.middle{

@@ -129,6 +129,7 @@
 #trksit-wrap .postbox .hndle {
   padding: 8px 12px;
   border-bottom: 1px solid #eee;
+  cursor: default;
 }
 #trksit-wrap .postbox .hndle:after {
   content: ' ';
@@ -504,8 +505,8 @@
   background: rgba(0, 0, 0, 0.05);
 }
 #trksit-wrap #trksit_date_selector {
+  padding: 5px 15px 5px 0;
   float: right;
-  padding: 5px 0;
 }
 #trksit-wrap #trksit_date_selector .trksit_date {
   display: inline-block;
