@@ -5,7 +5,6 @@ if( !empty( $_POST ) || ( isset( $_GET['purge-data'] ) && $_GET['purge-data'] ==
 	ob_start();
 
 	echo '<div id="trksit-loading-indicator">
-		      <h2>Loading...</h2>
 		      <img src="' . plugins_url( '/wp_trksit/images/loading.gif' , dirname(__FILE__) ) . '" alt="Loading" />
 		  </div>';
 

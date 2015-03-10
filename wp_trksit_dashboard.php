@@ -9,7 +9,6 @@ if ( isset( $_GET['view'] ) ) {
 	ob_start();
 
 	echo '<div id="trksit-loading-indicator">
-		      <h2>Loading...</h2>
 		      <img src="' . plugins_url( '/wp_trksit/images/loading.gif' , dirname(__FILE__) ) . '" alt="Loading" />
 		  </div>';
 
@@ -71,7 +70,15 @@ if ( ( isset( $_GET['view'] ) && $_GET['view'] == 'link-detail' ) && is_numeric(
 
 			<?php if( $user_display_details != '' ){ echo __( $user_display_details, 'trksit_menu' ); } ?>
 
-			<div id="trks_hits"></div>
+			<div class="postbox">
+
+				<div class="inside">
+
+					<div id="trks_hits"></div>
+
+				</div>
+
+			</div>
 
 			<?php
 				$trksit->wp_trksit_getAnalytics( $start_date, $end_date, $link_id );
@@ -83,7 +90,7 @@ if ( ( isset( $_GET['view'] ) && $_GET['view'] == 'link-detail' ) && is_numeric(
 
 					<div class="postbox">
 
-						<h3 class="hndle"><span><?php _e( 'Sharing Settings' ); ?></span></h3>
+						<h3 class="hndle"><span><?php _e( 'Links' ); ?></span></h3>
 
 						<div class="inside">
 
@@ -192,52 +199,6 @@ if ( ( isset( $_GET['view'] ) && $_GET['view'] == 'link-detail' ) && is_numeric(
 
 				    </div>
 
-					<div class="postbox">
-
-						<h3 class="hndle"><span><?php _e( 'Attached Scripts' ); ?></span></h3>
-
-						<div class="inside">
-
-						<?php
-
-							$active_scripts = $wpdb->get_results( "SELECT script_id FROM " . $wpdb->prefix . "trksit_scripts_to_urls WHERE url_id=" . $url_details[0]->url_id );
-
-							$active_scripts_array = array();
-
-							foreach ( $active_scripts as $active_script ) {
-								$active_scripts_array[] = $active_script->script_id;
-							}
-
-							$scripts = $wpdb->get_results( "SELECT * FROM " . $wpdb->prefix . "trksit_scripts order by label" );
-
-							if ( count( $scripts ) ) {
-
-								$count = 1;
-
-								foreach ( $scripts as $script ) {
-
-									$even_odd = ( $count&1 ? 'odd' : 'even' );
-
-									$checked = ( in_array( $script->script_id, $active_scripts_array ) ) ? ' checked' :  '';
-
-									echo '<label class="checkbox ' . $even_odd . '"><input type="checkbox" name="trksit_scripts[]" value="' . $script->script_id . '"' . $checked . ' />' . stripslashes( $script->label ) . '</label>';
-
-									$count++;
-
-								}
-
-							} else {
-
-								_e( '<p>You haven\'t setup any scripts yet! <a href="#">Click here to create one now!</a></p>' );
-
-							}
-
-						?>
-
-						</div>
-
-					</div>
-
 					<?php
 						foreach ( $trksit->wp_trksit_getOGMetaArray() as $property => $content ) {
 							echo sprintf( '<input type="hidden" name="%s" value="%s">', $property, $content );
@@ -248,6 +209,9 @@ if ( ( isset( $_GET['view'] ) && $_GET['view'] == 'link-detail' ) && is_numeric(
 
 			    <div class="trksit_col right">
 
+					<?php
+
+					/*
 					<div class="postbox">
 
 						<h3 class="hndle"><span><?php _e('Sharing Preview'); ?></span></h3>
@@ -311,6 +275,55 @@ if ( ( isset( $_GET['view'] ) && $_GET['view'] == 'link-detail' ) && is_numeric(
 							<?php
 								}
 							?>
+
+						</div>
+
+					</div>
+					*/
+
+					?>
+
+					<div class="postbox">
+
+						<h3 class="hndle"><span><?php _e( 'Attached Scripts' ); ?></span></h3>
+
+						<div class="inside">
+
+						<?php
+
+							$active_scripts = $wpdb->get_results( "SELECT script_id FROM " . $wpdb->prefix . "trksit_scripts_to_urls WHERE url_id=" . $url_details[0]->url_id );
+
+							$active_scripts_array = array();
+
+							foreach ( $active_scripts as $active_script ) {
+								$active_scripts_array[] = $active_script->script_id;
+							}
+
+							$scripts = $wpdb->get_results( "SELECT * FROM " . $wpdb->prefix . "trksit_scripts order by label" );
+
+							if ( count( $scripts ) ) {
+
+								$count = 1;
+
+								foreach ( $scripts as $script ) {
+
+									$even_odd = ( $count&1 ? 'odd' : 'even' );
+
+									$checked = ( in_array( $script->script_id, $active_scripts_array ) ) ? ' checked' :  '';
+
+									echo '<label class="checkbox ' . $even_odd . '"><input type="checkbox" name="trksit_scripts[]" value="' . $script->script_id . '"' . $checked . ' />' . stripslashes( $script->label ) . '</label>';
+
+									$count++;
+
+								}
+
+							} else {
+
+								_e( '<div class="trksit-alert info"><p>You haven\'t setup any remarketing lists or custom scripts yet!</p> <a href="./admin.php?page=trksit-settings&tab=scripts" class="button button-primary">Create one now!</a></div>' );
+
+							}
+
+						?>
 
 						</div>
 

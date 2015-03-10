@@ -406,16 +406,16 @@
 		font-size:11px;
 		padding:0px 5px;
 
-		&.hover,
+		&.zeroclipboard-is-hover,
 		&:hover,
 		&:focus{
-			background:#21759b;
-			color:#fff;
+			background: #0074a2;
+			color: #fff;
 		}
 
-		&.active,
+		&.zeroclipboard-is-active,
 		&:active{
-			background:#333;
+			background: #333;
 		}
 
 	}
@@ -487,10 +487,85 @@
 
 		margin: 20px 0;
 
+		&.dataTable{
+
+			thead{
+				.sorting_asc,
+				.sorting_desc,
+				.sorting{
+					cursor: pointer;
+					*cursor: hand;
+
+					&:after{
+						display: inline-block;
+						font-family: dashicons;
+						text-decoration: inherit;
+						font-weight: 400;
+						font-style: normal;
+						vertical-align: top;
+						text-align: center;
+						-webkit-transition: color .1s ease-in 0;
+						transition: color .1s ease-in 0;
+						-webkit-font-smoothing: antialiased;
+						-moz-osx-font-smoothing: grayscale;
+						margin-left: 10px;
+						opacity: 0.6;
+					}
+
+					&:hover,
+					&:focus{
+
+						&:after{
+							opacity: 1;
+						}
+
+					}
+
+				}
+
+				.sorting {
+					&:after{
+						content: "\f156";
+					}
+				}
+
+				.sorting_asc {
+					&:after{
+						content: "\f142";
+					}
+				}
+
+				.sorting_desc {
+					&:after{
+						content: "\f140";
+					}
+				}
+
+				.sorting_asc_disabled {
+					&:after{
+						content: "\f142";
+						opacity: 0.3;
+					}
+				}
+
+				.sorting_desc_disabled {
+					&:after{
+						content: "\f140";
+						opacity: 0.3;
+					}
+				}
+
+			}
+
+		}
+
 		&.widefat{
 
-			tr:hover{
-				background: #f9f9f9;
+
+			tbody{
+				tr:hover{
+					background: #f9f9f9;
+				}
 			}
 
 			td{
@@ -527,13 +602,14 @@
 
 			display: inline-block;
 
+			label{
+				font-weight: 600;
+			}
+
 			input,
 			select{
 				height: 30px;
-			}
-
-			label{
-				font-weight: 600;
+				font-weight: 400;
 			}
 
 		}
@@ -809,16 +885,19 @@
 #trksit-loading-indicator{
 
 	width: 200px;
-	height: 130px;
 	position: absolute;
 	left: 50%;
 	margin-left: -100px;
-	top: 50%;
-	margin-top: -65px;
 	text-align: center;
+	padding-top: 200px;
 
-	h2{
-		color: #555;
+	&:before{
+		display: block;
+		text-align: center;
+		content: 'Loading...';
+		margin-bottom: 10px;
+		font-size: 18px;
+		color: #bbb;
 	}
 
 	> img{
@@ -833,7 +912,7 @@
 .ui-datepicker{
 
 	border: 1px solid #E1E1E1;
-	background: #fff url( 'images/ui-bg_flat_75_ffffff_40x100.png' ) 50% 50% repeat-x;
+	background: #fff url( '../images/jquery-ui/ui-bg_flat_75_ffffff_40x100.png' ) 50% 50% repeat-x;
 	color: #222;
 
 	.ui-icon {
@@ -843,7 +922,7 @@
 	}
 
 	.ui-widget-header .ui-icon{
-		background-image: url( 'images/ui-icons_DDDDDD_256x240.png' );
+		background-image: url( '../images/jquery-ui/ui-icons_DDDDDD_256x240.png' );
 
 		&.ui-icon-circle-triangle-e {
 			background-position: -48px -192px;

@@ -139,21 +139,24 @@ jQuery( document ).ready( function( $ ) {
 
 	//DASHBOARD
 	//$('#trks_dashboard').css('display','none');
-	$( '#trks_dashboard_par' ).css('display','block');
+	//$( '#trks_dashboard_par' ).css('display','block');
 
 	if( jQuery().dataTable ) {
 
 		var ajaxurl = '/wp-admin/admin-ajax.php';
 
 		$( '#trks_dashboard' ).dataTable({
-			processing : true,
-			serverSide : true,
-			paging     : true,
-			ajax : {
-				url  : ajaxurl + '?action=nopriv_generate_datatable',
-				type : 'GET'
+			'processing' : true,
+			'serverSide' : true,
+			'paging'    : true,
+			'ajax' : {
+				'url'  : ajaxurl + '?action=nopriv_generate_datatable',
+				'type' : 'GET'
 			},
-			order : [[ 0, 'desc' ]]
+			'order' : [[ 0, 'desc' ]],
+			'aoColumnDefs' : [
+						        { 'bSortable': false, 'aTargets': [ 2, 3, 4, 8 ] }
+						     ]
 		});
 
 	}

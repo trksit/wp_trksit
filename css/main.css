@@ -291,11 +291,11 @@
   font-size: 11px;
   padding: 0px 5px;
 }
-#trksit-wrap .trksit-copy-btn.hover, #trksit-wrap .trksit-copy-btn:hover, #trksit-wrap .trksit-copy-btn:focus {
-  background: #21759b;
+#trksit-wrap .trksit-copy-btn.zeroclipboard-is-hover, #trksit-wrap .trksit-copy-btn:hover, #trksit-wrap .trksit-copy-btn:focus {
+  background: #0074a2;
   color: #fff;
 }
-#trksit-wrap .trksit-copy-btn.active, #trksit-wrap .trksit-copy-btn:active {
+#trksit-wrap .trksit-copy-btn.zeroclipboard-is-active, #trksit-wrap .trksit-copy-btn:active {
   background: #333;
 }
 #trksit-wrap .trksit-alert {
@@ -348,7 +348,54 @@
 #trksit-wrap table {
   margin: 20px 0;
 }
-#trksit-wrap table.widefat tr:hover {
+#trksit-wrap table.dataTable thead .sorting_asc,
+#trksit-wrap table.dataTable thead .sorting_desc,
+#trksit-wrap table.dataTable thead .sorting {
+  cursor: pointer;
+  *cursor: hand;
+}
+#trksit-wrap table.dataTable thead .sorting_asc:after,
+#trksit-wrap table.dataTable thead .sorting_desc:after,
+#trksit-wrap table.dataTable thead .sorting:after {
+  display: inline-block;
+  font-family: dashicons;
+  text-decoration: inherit;
+  font-weight: 400;
+  font-style: normal;
+  vertical-align: top;
+  text-align: center;
+  -webkit-transition: color .1s ease-in 0;
+  transition: color .1s ease-in 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin-left: 10px;
+  opacity: 0.6;
+}
+#trksit-wrap table.dataTable thead .sorting_asc:hover:after, #trksit-wrap table.dataTable thead .sorting_asc:focus:after,
+#trksit-wrap table.dataTable thead .sorting_desc:hover:after,
+#trksit-wrap table.dataTable thead .sorting_desc:focus:after,
+#trksit-wrap table.dataTable thead .sorting:hover:after,
+#trksit-wrap table.dataTable thead .sorting:focus:after {
+  opacity: 1;
+}
+#trksit-wrap table.dataTable thead .sorting:after {
+  content: "\f156";
+}
+#trksit-wrap table.dataTable thead .sorting_asc:after {
+  content: "\f142";
+}
+#trksit-wrap table.dataTable thead .sorting_desc:after {
+  content: "\f140";
+}
+#trksit-wrap table.dataTable thead .sorting_asc_disabled:after {
+  content: "\f142";
+  opacity: 0.3;
+}
+#trksit-wrap table.dataTable thead .sorting_desc_disabled:after {
+  content: "\f140";
+  opacity: 0.3;
+}
+#trksit-wrap table.widefat tbody tr:hover {
   background: #f9f9f9;
 }
 #trksit-wrap table.widefat td {
@@ -374,15 +421,16 @@
 #trksit-wrap .dataTables_wrapper .dataTables_filter {
   display: inline-block;
 }
+#trksit-wrap .dataTables_wrapper .dataTables_length label,
+#trksit-wrap .dataTables_wrapper .dataTables_filter label {
+  font-weight: 600;
+}
 #trksit-wrap .dataTables_wrapper .dataTables_length input,
 #trksit-wrap .dataTables_wrapper .dataTables_length select,
 #trksit-wrap .dataTables_wrapper .dataTables_filter input,
 #trksit-wrap .dataTables_wrapper .dataTables_filter select {
   height: 30px;
-}
-#trksit-wrap .dataTables_wrapper .dataTables_length label,
-#trksit-wrap .dataTables_wrapper .dataTables_filter label {
-  font-weight: 600;
+  font-weight: 400;
 }
 #trksit-wrap .dataTables_wrapper .dataTables_length {
   display: inline-block;
@@ -581,16 +629,19 @@
 
 #trksit-loading-indicator {
   width: 200px;
-  height: 130px;
   position: absolute;
   left: 50%;
   margin-left: -100px;
-  top: 50%;
-  margin-top: -65px;
   text-align: center;
+  padding-top: 200px;
 }
-#trksit-loading-indicator h2 {
-  color: #555;
+#trksit-loading-indicator:before {
+  display: block;
+  text-align: center;
+  content: 'Loading...';
+  margin-bottom: 10px;
+  font-size: 18px;
+  color: #bbb;
 }
 #trksit-loading-indicator > img {
   width: 75px;
@@ -600,7 +651,7 @@
 /* ---- Datepicker styles ---- */
 .ui-datepicker {
   border: 1px solid #E1E1E1;
-  background: #fff url("images/ui-bg_flat_75_ffffff_40x100.png") 50% 50% repeat-x;
+  background: #fff url("../images/jquery-ui/ui-bg_flat_75_ffffff_40x100.png") 50% 50% repeat-x;
   color: #222;
 }
 .ui-datepicker .ui-icon {
@@ -609,7 +660,7 @@
   display: inline-block;
 }
 .ui-datepicker .ui-widget-header .ui-icon {
-  background-image: url("images/ui-icons_DDDDDD_256x240.png");
+  background-image: url("../images/jquery-ui/ui-icons_DDDDDD_256x240.png");
 }
 .ui-datepicker .ui-widget-header .ui-icon.ui-icon-circle-triangle-e {
   background-position: -48px -192px;

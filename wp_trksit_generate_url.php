@@ -3,7 +3,6 @@
 	ob_start();
 
 	echo '<div id="trksit-loading-indicator">
-		      <h2>Loading...</h2>
 		      <img src="' . plugins_url( '/wp_trksit/images/loading.gif' , dirname(__FILE__) ) . '" alt="Loading" />
 		  </div>';
 
@@ -296,15 +295,19 @@
 
 										$count = 1;
 
+										echo '<ul class="list-unstyled">';
+
 										foreach ( $scripts as $script ) {
 
 											$even_odd = ($count&1 ? 'odd' : 'even');
 
-											echo '<label class="checkbox ' . $even_odd . '"><input type="checkbox" name="trksit_scripts[]" value="' . $script->script_id . '">' . stripslashes( $script->label ) . '</label>';
+											echo '<li><label class="checkbox ' . $even_odd . '"><input type="checkbox" name="trksit_scripts[]" value="' . $script->script_id . '">' . stripslashes( $script->label ) . '</label></li>';
 
 											$count++;
 
 										}
+
+										echo '</ul>';
 
 									} else {
 
