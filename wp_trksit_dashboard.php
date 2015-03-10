@@ -86,7 +86,7 @@ if ( ( isset( $_GET['view'] ) && $_GET['view'] == 'link-detail' ) && is_numeric(
 
 			<form class="trksit-form"  method="post">
 
-			    <div class="trksit_col left">
+			    <div class="trksit_col third">
 
 					<div class="postbox">
 
@@ -101,7 +101,7 @@ if ( ( isset( $_GET['view'] ) && $_GET['view'] == 'link-detail' ) && is_numeric(
 									<a class="trksit-help" data-toggle="popover" data-content="<?php _e( 'This is the shortened trks.it URL you will use on various social and marketing platforms.' ); ?>" data-original-title="<?php _e( 'trks.it URL' ); ?>"><i class="dashicons dashicons-editor-help"></i></a>
 								</label>
 
-								<a href="<?php echo $url_details[0]->trksit_url; ?>" target="_blank">
+								<a href="<?php echo $url_details[0]->trksit_url; ?>" target="_blank" style="text-decoration: none;">
 									<span class="uneditable-input" id="final-url"><?php echo $url_details[0]->trksit_url; ?></span>
 								</a>
 
@@ -115,7 +115,7 @@ if ( ( isset( $_GET['view'] ) && $_GET['view'] == 'link-detail' ) && is_numeric(
 									<a class="trksit-help" data-toggle="popover" data-content="<?php _e( 'The user will end up at this url.' ); ?>" data-original-title="<?php _e( 'Destination URL' ); ?>"><i class="dashicons dashicons-editor-help"></i></a>
 								</label>
 
-							    <a href="<?php echo $url_details[0]->destination_url; ?>" target="_blank">
+							    <a href="<?php echo $url_details[0]->destination_url; ?>" target="_blank" style="text-decoration: none;">
 							    	<span class="uneditable-input" id="final-url"><?php echo $url_details[0]->destination_url; ?></span>
 							    </a>
 
@@ -139,6 +139,9 @@ if ( ( isset( $_GET['view'] ) && $_GET['view'] == 'link-detail' ) && is_numeric(
 						</div>
 
 					</div>
+			    </div>
+
+			    <div class="trksit_col third middle">
 
 					<div class="postbox">
 
@@ -205,9 +208,9 @@ if ( ( isset( $_GET['view'] ) && $_GET['view'] == 'link-detail' ) && is_numeric(
 						}
 					?>
 
-			    </div><!-- .trksit_col.left -->
+			    </div><!-- .trksit_col.third.middle -->
 
-			    <div class="trksit_col right">
+			    <div class="trksit_col third">
 
 					<?php
 
@@ -305,17 +308,21 @@ if ( ( isset( $_GET['view'] ) && $_GET['view'] == 'link-detail' ) && is_numeric(
 
 								$count = 1;
 
+								echo '<ul class="list-unstyled">';
+
 								foreach ( $scripts as $script ) {
 
 									$even_odd = ( $count&1 ? 'odd' : 'even' );
 
 									$checked = ( in_array( $script->script_id, $active_scripts_array ) ) ? ' checked' :  '';
 
-									echo '<label class="checkbox ' . $even_odd . '"><input type="checkbox" name="trksit_scripts[]" value="' . $script->script_id . '"' . $checked . ' />' . stripslashes( $script->label ) . '</label>';
+									echo '<li><label class="checkbox ' . $even_odd . '"><input type="checkbox" name="trksit_scripts[]" value="' . $script->script_id . '"' . $checked . ' disabled />' . stripslashes( $script->label ) . '</label></li>';
 
 									$count++;
 
 								}
+
+								echo '</ul>';
 
 							} else {
 
@@ -329,7 +336,7 @@ if ( ( isset( $_GET['view'] ) && $_GET['view'] == 'link-detail' ) && is_numeric(
 
 					</div>
 
-			    </div><!-- .trksit_col.right -->
+			    </div><!-- .trksit_col.third -->
 
 			    <div class="trksit_col full">
 
@@ -341,9 +348,13 @@ if ( ( isset( $_GET['view'] ) && $_GET['view'] == 'link-detail' ) && is_numeric(
 
 					<?php wp_nonce_field( 'trksit_update_url','trksit_update_url' ); ?>
 
-					<button type="submit" class="button button-primary button-large" data-loading-text="<?php _e( 'Please wait...' ); ?>">
-						<?php _e( 'Update URL' ); ?>
-					</button>
+					<?php
+						/*
+						<button type="submit" class="button button-primary button-large" data-loading-text="<?php _e( 'Please wait...' ); ?>">
+							<?php _e( 'Update URL' ); ?>
+						</button>
+						*/
+					?>
 
 			    </div><!-- .trksit_col.full -->
 

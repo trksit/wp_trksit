@@ -120,23 +120,38 @@
 
 	/* ---- Layout ---- */
 
-	.trksit_col.full{
-		width:100%;
-		clear: both;
-		margin:20px 0;
-	}
+	.trksit_col{
 
-	.trksit_col.left,
-	.trksit_col.right{
-		width:50%;
-		//max-width: 450px;
 		box-sizing: border-box;
-		float:left;
-	}
 
-	.trksit_col.right{
-		padding-left:20px;
-		//max-width: 470px;
+		&.full{
+			width:100%;
+			clear: both;
+			margin:20px 0;
+		}
+
+		&.left,
+		&.right{
+			width:50%;
+			//max-width: 450px;
+			float:left;
+		}
+
+		&.right{
+			padding-left:20px;
+			//max-width: 470px;
+		}
+
+		&.third{
+			width: 33.3333%;
+			float: left;
+
+			&.middle{
+				padding: 0 20px;
+			}
+
+		}
+
 	}
 
 	.postbox{
@@ -1108,15 +1123,18 @@
 
 	#trksit-wrap{
 
-		.trksit_col.left,
-		.trksit_col.right{
-			width: 100%;
-			max-width: 100%;
-			float: none;
-			clear: both;
-		}
-		.trksit_col.right{
-			padding-left: 0;
+		.trksit_col{
+			width: 100% !important;
+			max-width: 100% !important;
+			float: none !important;
+			clear: both !important;
+
+
+			&.right,
+			&.middle{
+				padding: 0 !important;
+			}
+
 		}
 
 		#preview{
