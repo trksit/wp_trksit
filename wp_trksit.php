@@ -183,24 +183,21 @@ function trksit_load_scripts() {
 	if ( isset( $_GET['page'] )
 		&& ( $_GET['page'] == 'trksit-dashboard' || $_GET['page'] == 'trksit-settings' || $_GET['page'] == 'trksit-generate' ) ) {
 
-		//wp_register_style( 'trksit-bootstrap', plugins_url( '/wp_trksit/css/bootstrap.min.css', dirname(__FILE__) ) );
-		wp_register_style( 'trksit-bootstrap', plugins_url( '/wp_trksit/css/bootstrap-custom.min.css', dirname(__FILE__) ) );
-		wp_register_style( 'trksit-styles', plugins_url( '/wp_trksit/css/wp_trksit_style.css', dirname(__FILE__) ) );
-		wp_register_style( 'trksit-styles-new', plugins_url( '/wp_trksit/css/wp_trksit_style-new.css', dirname(__FILE__) ) );
-		//wp_register_script( 'trksit-bootstrap-js', plugins_url( '/wp_trksit/js/bootstrap.min.js', dirname(__FILE__) ), array( 'jquery' ) );
-		wp_register_script( 'trksit-bootstrap-js', plugins_url( '/wp_trksit/js/bootstrap-custom.min.js', dirname(__FILE__) ), array('jquery'));
-		wp_register_script( 'trksit-zclip-js', plugins_url( '/wp_trksit/js/jquery.zclip.js', dirname(__FILE__) ), array( 'jquery' ),'1.1.1',true);
-		wp_register_script( 'trksit-validation-js', plugins_url( '/wp_trksit/js/jquery.validate.min.js', dirname(__FILE__) ), array( 'jquery' ), '1.11.1' );
+		wp_register_style( 'trksit-bootstrap', plugins_url( '/wp_trksit/css/bootstrap.min.css', dirname(__FILE__) ) );
+		wp_register_style( 'trksit-styles', plugins_url( '/wp_trksit/css/main.css', dirname(__FILE__) ) );
+
+		wp_register_script( 'trksit-bootstrap-js', plugins_url( '/wp_trksit/js/lib/bootstrap.min.js', dirname(__FILE__) ), array('jquery') );
+		wp_register_script( 'trksit-zclip-js', plugins_url( '/wp_trksit/js/lib/jquery.zclip.js', dirname(__FILE__) ), array( 'jquery' ), '1.1.1', true );
+		wp_register_script( 'trksit-validation-js', plugins_url( '/wp_trksit/js/lib/jquery.validate.min.js', dirname(__FILE__) ), array( 'jquery' ), '1.11.1' );
 		wp_register_script( 'trksit-main-js', plugins_url( '/wp_trksit/js/main.js', dirname(__FILE__) ), array( 'jquery' ), '1.2.1' );
-		wp_register_script( 'jquery-image-picker', plugins_url( '/wp_trksit/js/image-picker.min.js', dirname(__FILE__) ), array( 'jquery' ), '0.1.3', true );
+		wp_register_script( 'trksit-jquery-image-picker', plugins_url( '/wp_trksit/js/lib/image-picker.min.js', dirname(__FILE__) ), array( 'jquery' ), '0.1.3', true );
 
 		wp_enqueue_style( 'trksit-bootstrap' );
 		wp_enqueue_style( 'trksit-styles' );
-		wp_enqueue_style( 'trksit-styles-new' );
 		wp_enqueue_script( 'trksit-bootstrap-js' );
 		wp_enqueue_script( 'trksit-zclip-js' );
 		wp_enqueue_script( 'trksit-validation-js' );
-		wp_enqueue_script( 'jquery-image-picker' );
+		wp_enqueue_script( 'trksit-jquery-image-picker' );
 		wp_enqueue_script( 'trksit-main-js' );
 
 	}
@@ -209,14 +206,14 @@ function trksit_load_scripts() {
 	if ( isset( $_GET['page'] ) && $_GET['page'] == 'trksit-dashboard' ) {
 
 		wp_enqueue_script( 'jquery-ui-datepicker' );
-		wp_enqueue_style( 'morris-css', plugins_url( '/wp_trksit/js/morris.js/morris.css',dirname(__FILE__) ), '', '0.4.3' );
 
-		wp_register_script( 'raphael-js', plugins_url( '/wp_trksit/js/raphael-min.js',dirname(__FILE__) ) , '', '2.1.2' );
+		wp_register_script( 'raphael-js', plugins_url( '/wp_trksit/js/lib/raphael-min.js', dirname(__FILE__) ) , '', '2.1.2' );
 		wp_enqueue_script( 'raphael-js' );
 
-		wp_enqueue_script( 'morris-js', plugins_url( '/wp_trksit/js/morris.js/morris.min.js', dirname(__FILE__) ), array( 'raphael-js' ), '0.4.3' );
-		wp_enqueue_script( 'datatables', plugins_url( '/wp_trksit/js/datatables/js/jquery.dataTables.min.js', dirname(__FILE__) ), array( 'jquery' ), '1.9.4', true );
-		wp_enqueue_style( 'jquery-ui-bootstrap', plugins_url( '/wp_trksit/css/jquery-ui-1.10.0.custom.css', dirname(__FILE__) ), '', '0.4.3' );
+		wp_enqueue_script( 'morris-js', plugins_url( '/wp_trksit/js/lib/morris.min.js', dirname(__FILE__) ), array( 'raphael-js' ), '0.5.1' );
+		wp_enqueue_script( 'datatables', plugins_url( '/wp_trksit/js/lib/jquery.dataTables.1.10.5.min.js', dirname(__FILE__) ), array( 'jquery' ), '1.10.5', true );
+
+		wp_enqueue_style( 'jquery-ui-datepicker-css', plugins_url( '/wp_trksit/css/jquery-ui-1.10.4.custom.min.css', dirname(__FILE__) ), null, null );
 
 	}
 

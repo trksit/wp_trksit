@@ -4,9 +4,9 @@ if( !empty( $_POST ) || ( isset( $_GET['purge-data'] ) && $_GET['purge-data'] ==
 
 	ob_start();
 
-	echo '<div id="loading-indicator" style="margin: 0px auto; width: 200px; text-align: center; padding-top: 200px;">
-		      <h2>Loading...</h2><br />
-		      <img src="' . plugins_url( '/wp_trksit/img/loading.gif' , dirname(__FILE__) ) . '" alt="Loading" />
+	echo '<div id="trksit-loading-indicator">
+		      <h2>Loading...</h2>
+		      <img src="' . plugins_url( '/wp_trksit/images/loading.gif' , dirname(__FILE__) ) . '" alt="Loading" />
 		  </div>';
 
 	trksit_flush_buffers();
@@ -528,7 +528,7 @@ if( $_GET['page'] == 'trksit-settings' ){
 
 		<form action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI'] ); ?>" class="trksit-form input-row inline-label" method="post">
 
-			<label for="source" style="width: auto;" class="margin-r">New Source Name: </label>
+			<label for="source" style="width: auto;" class="margin-r">Add New: </label>
 			<input type="text" name="source" id="source" class="margin-r" value="" autofocus="autofocus" style="display: inline-block; width: auto;" />
 			<input type="submit" name="source_submit" id="source_submit" class="button button-primary button-large" value="Add Source" />
 
@@ -613,7 +613,7 @@ if( $_GET['page'] == 'trksit-settings' ){
 
 		<form action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI'] ); ?>" class="trksit-form input-row inline-label" method="post">
 
-			<label for="source" style="width: auto;" class="margin-r">New Medium Name: </label>
+			<label for="source" style="width: auto;" class="margin-r">Add New: </label>
 			<input type="text" name="medium" id="medium" class="margin-r" value="" autofocus="autofocus" style="display: inline-block; width: auto;" />
 			<input type="submit" name="medium_submit" id="medium_submit" class="button button-primary button-large" value="Add Medium" />
 
@@ -702,7 +702,7 @@ if( $_GET['page'] == 'trksit-settings' ){
 
 		<form action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI'] ); ?>" class="trksit-form input-row inline-label" method="post">
 
-			<label for="source" style="width: auto;" class="margin-r">New Domain: </label>
+			<label for="source" style="width: auto;" class="margin-r">Add New: </label>
 			<input type="text" name="domain" id="domain" class="margin-r" value="" autofocus="autofocus" placeholder="http://example.com" style="display: inline-block; width: auto;" />
 			<input type="submit" name="domain_submit" id="domain_submit" class="button button-primary button-large" value="Add Domain" />
 
@@ -770,9 +770,10 @@ if( $_GET['page'] == 'trksit-settings' ){
 	?>
 
 <style>
-	  #loading-indicator {
-		 display: none;
-	  }
+	#trksit-loading-indicator {
+		display: none;
+	}
 </style>
+
 
 <?php } ?>

@@ -1,3 +1,4 @@
+<div class="wrap" id="trksit-wrap">
 <?php
 
 if ( isset( $_GET['view'] ) ) {
@@ -7,17 +8,15 @@ if ( isset( $_GET['view'] ) ) {
 
 	ob_start();
 
-	echo '<div id="loading-indicator" style="margin: 0px auto; width: 200px; text-align: center; padding-top: 200px;">
-		      <h2>Loading...</h2><br />
-		      <img src="' . plugins_url( '/wp_trksit/img/loading.gif' , dirname(__FILE__) ) . '" alt="Loading" />
+	echo '<div id="trksit-loading-indicator">
+		      <h2>Loading...</h2>
+		      <img src="' . plugins_url( '/wp_trksit/images/loading.gif' , dirname(__FILE__) ) . '" alt="Loading" />
 		  </div>';
 
 	trksit_flush_buffers();
 }
 
 ?>
-
-<div class="wrap" id="trksit-wrap">
 
 <?php
 
@@ -342,67 +341,90 @@ if ( ( isset( $_GET['view'] ) && $_GET['view'] == 'link-detail' ) && is_numeric(
 	}
 }
 else if ( $_GET['page'] == 'trksit-dashboard' ) {
+
 ?>
-	  <h2><?php echo __( 'trks.it Dashboard', 'trksit_menu' ); ?></h2>
+	<h2 style="float: left;"><?php echo __( 'trks.it Dashboard', 'trksit_menu' ); ?></h2>
 <?php
-	if( isset($_GET['trksit_start_date']) AND !empty($_GET['trksit_start_date']) AND isset($_GET['trksit_end_date']) AND !empty($_GET['trksit_end_date']) ){
-		$start_date = date('Y-m-d',strtotime($_GET['trksit_start_date']));
-		$end_date = date('Y-m-d',strtotime($_GET['trksit_end_date']));
-	}else{
-		$start_date = date('Y-m-d',strtotime("last week"));
-		$end_date = date('Y-m-d', time());
+
+	if ( isset( $_GET['trksit_start_date'] ) AND !empty( $_GET['trksit_start_date'] ) AND isset( $_GET['trksit_end_date'] ) AND !empty( $_GET['trksit_end_date'] ) ) {
+
+		$start_date = date( 'Y-m-d', strtotime( $_GET['trksit_start_date'] ) );
+		$end_date = date( 'Y-m-d', strtotime( $_GET['trksit_end_date'] ) );
+
+	} else {
+
+		$start_date = date( 'Y-m-d', strtotime( 'last week' ) );
+		$end_date = date( 'Y-m-d', time() );
+
 	}
 	//get the date of the last week so we can select all links created within the past week
-	$last_week = date('Y-m-d',strtotime("last week"));
-	$today = date('Y-m-d', time());
+	$last_week = date( 'Y-m-d', strtotime( 'last week' ) );
+	$today = date( 'Y-m-d', time() );
 
 	$timeline_points = $wpdb->get_results( "SELECT date_created FROM " . $wpdb->prefix . "trksit_urls LIMIT 1" );
-	if( count($timeline_points) === 1){
+	if ( count( $timeline_points ) === 1 ) {
 		$date = $timeline_points[0]->date_created;
 ?>
-		 <form action="<?php echo trksit_current_page();?>" class="wp-core-ui" method="GET" id="trksit_date_selector">
+
+		<form action="<?php echo trksit_current_page();?>" class="wp-core-ui" method="GET" id="trksit_date_selector">
 			<input type="hidden" name="page" value="trksit-dashboard">
 			<div class="trksit_date">
-			   <label for="trksit_start_date"><?php _e('Start Date'); ?></label>
-			   <input type="text" id="trksit_start_date" name="trksit_start_date">
+				<label for="trksit_start_date"><?php _e( 'Start Date' ); ?></label>
+				<input type="text" id="trksit_start_date" name="trksit_start_date">
 			</div>
 			<div class="trksit_date">
-			   <label for="trksit_end_date"><?php _e('End Date'); ?></label>
-			   <input type="text" id="trksit_end_date" name="trksit_end_date">
+				<label for="trksit_end_date"><?php _e( 'End Date' ); ?></label>
+				<input type="text" id="trksit_end_date" name="trksit_end_date">
 			</div>
-			<input type="submit" value="Update" class="button button-primary button-large">
-		 </form>
-		 <br class="clear">
-		 <div id="trks_hits"></div>
+			<button type="submit" class="button button-primary">Update</button>
+		</form>
+
+		<div class="postbox">
+
+			<div class="inside">
+
+				<div id="trks_hits"></div>
+
+			</div>
+
+		</div>
 
 <?php
-		$trksit->wp_trksit_getAnalytics($start_date,$end_date);
+		$trksit->wp_trksit_getAnalytics( $start_date, $end_date );
 	}
 ?>
-
-	  <div id="trks_dashboard_par" style="display: none;">
-		 <table class="wp-list-table widefat fixed" id="trks_dashboard" style="width: 100%;display:table;white-space:nowrap;overflow: hidden;">
+		 <table class="wp-list-table widefat fixed" id="trks_dashboard" style="width: 100% !important;">
 			<thead>
-			   <tr>
-				  <th class="sortable desc" width="100"><a href="#"><span><?php _e('Created'); ?></span><span class="sorting-indicator"></span></a></th>
-				  <th class="sortable desc" width="75"><a href="#"><span><?php _e('Hits'); ?></span><span class="sorting-indicator"></span></a></th>
-				  <th width="140"><?php _e('trks.it URL'); ?></th>
-				  <th width="50"></th>
-				  <th id="trks_it_destination" width="180"><?php _e('Destination URL'); ?></th>
-				  <th><?php _e('Campaign'); ?></th>
-				  <th><?php _e('Source'); ?></th>
-				  <th><?php _e('Medium'); ?></th>
-				  <th width="80"></th>
-			   </tr>
+				<tr>
+					<th width="100">
+						<?php _e( 'Created' ); ?>
+					</th>
+					<th width="100">
+						<?php _e( 'Hits' ); ?>
+					</th>
+					<th width="125">
+						<?php _e( 'trks.it URL' ); ?>
+					</th>
+					<th width="40"></th>
+					<th id="trks_it_destination"><?php _e( 'Destination URL' ); ?></th>
+					<th><?php _e( 'Campaign' ); ?></th>
+					<th><?php _e( 'Source' ); ?></th>
+					<th><?php _e( 'Medium' ); ?></th>
+					<th width="80"></th>
+				</tr>
 			</thead>
-			<tbody>
-			</tbody>
+			<tbody></tbody>
 		 </table>
-<?php }
+<?php
+
+}
+
 ?>
-	  <style>
-		 #loading-indicator {
-			display: none;
-		 }
-	  </style>
-   </div><!-- #trksit-wrap -->
+
+<style>
+	#trksit-loading-indicator {
+		display: none;
+	}
+</style>
+
+</div><!-- #trksit-wrap -->

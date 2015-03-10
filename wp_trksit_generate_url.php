@@ -2,9 +2,9 @@
 
 	ob_start();
 
-	echo '<div id="loading-indicator" style="margin: 0px auto; width: 200px; text-align: center; padding-top: 200px;">
-		      <h2>Loading...</h2><br />
-		      <img src="' . plugins_url( '/wp_trksit/img/loading.gif' , dirname(__FILE__) ) . '" alt="Loading" />
+	echo '<div id="trksit-loading-indicator">
+		      <h2>Loading...</h2>
+		      <img src="' . plugins_url( '/wp_trksit/images/loading.gif' , dirname(__FILE__) ) . '" alt="Loading" />
 		  </div>';
 
 	trksit_flush_buffers();
@@ -444,7 +444,7 @@
 
 							<input name="destination_url" id="url" type="text" class="url" value="<?php if ( isset( $_GET['url'] ) ) { echo $_GET['url']; } ?>" <?php if ( !isset( $_GET['url'] ) ) { echo 'placeholder="http://"'; } ?> focus />
 
-							<button type="submit" class="button button-primary margin-t" id="trksit-generate-submit-step-1">
+							<button type="submit" class="button button-primary button-large margin-t" id="trksit-generate-submit-step-1">
 								<?php _e( 'Proceed to step 2 &rsaquo;' ); ?>
 							</button>
 
@@ -462,12 +462,12 @@
 	  <?php
 	  }
    ?>
-   <style>
-	  #loading-indicator {
-		 display: none;
-	  }
-   </style>
 
+<style>
+	#trksit-loading-indicator {
+		display: none;
+	}
+</style>
 
 </div><!-- #trksit-wrap -->
 <?php endif; ?>

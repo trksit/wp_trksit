@@ -14,11 +14,11 @@ module.exports = function(grunt) {
         },
         files: {
 		  // bower_components/bootstrap-sass-official/assets/stylesheets/bootstrap.scss
-          'css/bootstrap-custom.min.css': [
+          'css/bootstrap.min.css': [
           	'scss/bootstrap.scss'
           ],
-          'css/wp_trksit_style-new.css': [
-          	'scss/wp_trksit_style.scss'
+          'css/main.css': [
+          	'scss/main.scss'
           ]
         }
       }
@@ -32,7 +32,7 @@ module.exports = function(grunt) {
       },
       dist: {
         files: {
-          'js/bootstrap-custom.min.js': [
+          'js/lib/bootstrap.min.js': [
             //'bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js',
             'bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/transition.js',
             'bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/tooltip.js',
