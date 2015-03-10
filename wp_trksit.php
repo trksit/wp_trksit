@@ -758,7 +758,13 @@ add_action( 'plugins_loaded', 'wp_trksit_pulse', -9999 );
 function wp_trksit_pulse(){
 
 	if ( isset( $_GET['trksitpulse'] ) && $_GET['trksitpulse'] == 'check' ){
-
+		if(isset($_GET['urlid'])){
+			global $wpdb;
+			$results = $wpdb->get_results("SELECT destination_url FROM " . $wpdb->prefix. "trksit_urls WHERE url_id = " . intval($_GET['urlid']));
+			if(!$results){
+				die(json_encode(array('alive' => false)));
+			}
+		}
 		die( json_encode( array( 'alive' => true ) ) );
 	}
 
