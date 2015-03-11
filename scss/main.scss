@@ -93,27 +93,30 @@
 
 			}
 
-		}
+			&.simple{
 
-		a.manage-account{
+				background-color: transparent;
+				border: 0;
+				line-height: 20px;
+				padding-top: 8px;
+				padding-bottom: 8px;
 
-			background-color: transparent;
-			border: 0;
-			float: right;
-			line-height: 20px;
-			padding-top: 8px;
-			padding-bottom: 8px;
+				&:hover,
+				&:focus{
 
-			&:hover,
-			&:focus{
+					i.dashicons{
+						color: #555;
+					}
 
-				i.dashicons{
-					color: #555;
+					color: #45bbe6;
 				}
 
-				color: #45bbe6;
 			}
 
+		}
+
+		.pull-right{
+			float: right;
 		}
 
 	}
@@ -677,6 +680,10 @@
 
 		}
 
+		.dataTables_empty{
+			padding: 20px;
+		}
+
 		.dataTables_paginate,
 		.dataTables_info{
 			line-height: 30px;
@@ -1111,7 +1118,7 @@
 			box-shadow: 0 1px 1px rgba(0,0,0,.04);
 
 			.nav-tab,
-			a.manage-account{
+			.nav-tab.simple{
 				float: none;
 				margin: 0;
 				width: auto;
@@ -1133,6 +1140,10 @@
 					background-color: #fff;
 				}
 
+			}
+
+			.pull-right{
+				float: none;
 			}
 
 		}

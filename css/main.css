@@ -79,19 +79,21 @@
 #trksit-wrap .nav-tab-wrapper .nav-tab.nav-tab-disabled:hover, #trksit-wrap .nav-tab-wrapper .nav-tab.nav-tab-disabled:focus {
   background-color: #e4e4e4;
 }
-#trksit-wrap .nav-tab-wrapper a.manage-account {
+#trksit-wrap .nav-tab-wrapper .nav-tab.simple {
   background-color: transparent;
   border: 0;
-  float: right;
   line-height: 20px;
   padding-top: 8px;
   padding-bottom: 8px;
 }
-#trksit-wrap .nav-tab-wrapper a.manage-account:hover, #trksit-wrap .nav-tab-wrapper a.manage-account:focus {
+#trksit-wrap .nav-tab-wrapper .nav-tab.simple:hover, #trksit-wrap .nav-tab-wrapper .nav-tab.simple:focus {
   color: #45bbe6;
 }
-#trksit-wrap .nav-tab-wrapper a.manage-account:hover i.dashicons, #trksit-wrap .nav-tab-wrapper a.manage-account:focus i.dashicons {
+#trksit-wrap .nav-tab-wrapper .nav-tab.simple:hover i.dashicons, #trksit-wrap .nav-tab-wrapper .nav-tab.simple:focus i.dashicons {
   color: #555;
+}
+#trksit-wrap .nav-tab-wrapper .pull-right {
+  float: right;
 }
 #trksit-wrap .trksit_col {
   box-sizing: border-box;
@@ -466,6 +468,9 @@
 #trksit-wrap .dataTables_wrapper .dataTables_filter input {
   margin: 0 0 0 10px;
 }
+#trksit-wrap .dataTables_wrapper .dataTables_empty {
+  padding: 20px;
+}
 #trksit-wrap .dataTables_wrapper .dataTables_paginate,
 #trksit-wrap .dataTables_wrapper .dataTables_info {
   line-height: 30px;
@@ -794,7 +799,7 @@
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
   }
   #trksit-wrap .nav-tab-wrapper .nav-tab,
-  #trksit-wrap .nav-tab-wrapper a.manage-account {
+  #trksit-wrap .nav-tab-wrapper .nav-tab.simple {
     float: none;
     margin: 0;
     width: auto;
@@ -808,13 +813,16 @@
     padding: 10px;
   }
   #trksit-wrap .nav-tab-wrapper .nav-tab:hover, #trksit-wrap .nav-tab-wrapper .nav-tab:active,
-  #trksit-wrap .nav-tab-wrapper a.manage-account:hover,
-  #trksit-wrap .nav-tab-wrapper a.manage-account:active {
+  #trksit-wrap .nav-tab-wrapper .nav-tab.simple:hover,
+  #trksit-wrap .nav-tab-wrapper .nav-tab.simple:active {
     background-color: #f5f5f5;
   }
   #trksit-wrap .nav-tab-wrapper .nav-tab.nav-tab-active,
-  #trksit-wrap .nav-tab-wrapper a.manage-account.nav-tab-active {
+  #trksit-wrap .nav-tab-wrapper .nav-tab.simple.nav-tab-active {
     background-color: #fff;
+  }
+  #trksit-wrap .nav-tab-wrapper .pull-right {
+    float: none;
   }
 }
 @media only screen and (max-width: 960px) {
