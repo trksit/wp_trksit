@@ -139,6 +139,8 @@
 #trksit-wrap .postbox .inside {
   padding: 0 15px;
   margin: 15px 0;
+}
+#trksit-wrap .postbox .inside.no-overflow {
   overflow: hidden;
 }
 #trksit-wrap .postbox .inside .trksit-alert {
@@ -410,7 +412,12 @@
   content: "\f140";
   opacity: 0.3;
 }
-#trksit-wrap table.widefat tbody tr:hover {
+#trksit-wrap table.widefat thead th:focus,
+#trksit-wrap table.widefat tfoot th:focus {
+  outline: none !important;
+  border-bottom-color: #0074a2;
+}
+#trksit-wrap table.widefat tbody tr:nth-child(even), #trksit-wrap table.widefat tbody tr:hover {
   background: #f9f9f9;
 }
 #trksit-wrap table.widefat td {
@@ -706,6 +713,7 @@
   border: 1px solid #E1E1E1;
   background: #fff url("../images/jquery-ui/ui-bg_flat_75_ffffff_40x100.png") 50% 50% repeat-x;
   color: #222;
+  z-index: 2000 !important;
 }
 .ui-datepicker .ui-icon {
   width: 16px;

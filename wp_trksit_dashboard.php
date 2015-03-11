@@ -72,7 +72,7 @@ if ( ( isset( $_GET['view'] ) && $_GET['view'] == 'link-detail' ) && is_numeric(
 
 			<div class="postbox">
 
-				<div class="inside">
+				<div class="inside no-overflow">
 
 					<div id="trks_hits"></div>
 
@@ -417,7 +417,7 @@ else if ( $_GET['page'] == 'trksit-dashboard' ) {
 				</form>
 			</div>
 
-			<div class="inside">
+			<div class="inside no-overflow">
 
 				<div id="trks_hits"></div>
 

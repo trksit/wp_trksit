@@ -182,7 +182,10 @@
 		.inside{
 			padding: 0 15px;
 			margin: 15px 0;
-			overflow: hidden;
+
+			&.no-overflow{
+				overflow: hidden;
+			}
 
 			.trksit-alert{
 				-webkit-box-shadow: none;
@@ -585,11 +588,27 @@
 
 		&.widefat{
 
+			thead,
+			tfoot{
+				th{
+					&:focus{
+						outline: none !important;
+						border-bottom-color: #0074a2;
+					}
+				}
+			}
 
 			tbody{
-				tr:hover{
-					background: #f9f9f9;
+
+				tr{
+
+					&:nth-child(even),
+					&:hover{
+						background: #f9f9f9;
+					}
+
 				}
+
 			}
 
 			td{
@@ -983,6 +1002,7 @@
 	border: 1px solid #E1E1E1;
 	background: #fff url( '../images/jquery-ui/ui-bg_flat_75_ffffff_40x100.png' ) 50% 50% repeat-x;
 	color: #222;
+	z-index: 2000 !important;
 
 	.ui-icon {
 		width: 16px;
