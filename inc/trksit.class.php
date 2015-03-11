@@ -137,8 +137,6 @@ class trksit {
 		.$where . " "
 		.$orderby;
 
-file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/log1.txt', print_r($trks_query, true), FILE_APPEND);
-
 		$table_data_count = $wpdb->get_results($trks_query);
 		$trks_query .= $sLimit;
 		$table_data = $wpdb->get_results($trks_query);
