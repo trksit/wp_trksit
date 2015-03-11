@@ -28,13 +28,20 @@ class trksit {
 		add_action( 'wp_ajax_nopriv_generate_datatable', array( $this, 'wp_trksit_generate_dashboard_table' ) );
 	}
 
+	public function pluck ( $a, $prop ){
+		$out = array();
+
+		for ( $i=0, $len=count($a) ; $i<$len ; $i++ ) {
+			$out[] = $a[$i][$prop];
+		}
+		return $out;
+	}
+
 	public function wp_trksit_generate_dashboard_table(){
 		$data = array("data" => array());
 		global $wpdb;
 		$start_date = date('Y-m-d',strtotime("last week"));
 		$end_date = date('Y-m-d', time());
-
-		file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/log1.txt', print_r($_GET, true), FILE_APPEND);
 
 		$uid = wp_get_current_user();
 
@@ -42,7 +49,6 @@ class trksit {
 			$dr = maybe_unserialize($daterange);
 			$start_date = $dr['start'];
 			$end_date = $dr['end'];
-			file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/log1.txt', print_r($start_date . " - " . $end_date, true), FILE_APPEND);
 			delete_transient('wp_trksit_daterange_user' . $uid->ID);
 		}
 
@@ -52,6 +58,61 @@ class trksit {
 		$sLimit = "";
 		if ( isset( $_GET['start'] ) && $_GET['length'] != '-1' ){
 			$sLimit = " LIMIT ".intval( $_GET['start'] ).", ". intval( $_GET['length'] );
+		}
+
+		$columns = array(
+			array('db' => 'trksit_url', 'dt' => 2),
+			array('db' => 'destination_url', 'dt' => 3),
+			array('db' => 'campaign', 'dt' => 4),
+			array('db' => 'source', 'dt' => 5),
+			array('db' => 'medium', 'dt' => 6)
+		);
+
+		$globalSearch = array();
+		$columnSearch = array();
+		$dtColumns = self::pluck( $columns, 'dt' );
+		if ( isset($_GET['search']) && $_GET['search']['value'] != '' ) {
+			$str = $_GET['search']['value'];
+
+			for ( $i=0, $ien=count($_GET['columns']) ; $i<$ien ; $i++ ) {
+				$requestColumn = $_GET['columns'][$i];
+				$columnIdx = array_search( $requestColumn['data'], $dtColumns );
+				$column = $columns[ $columnIdx ];
+
+				if ( $requestColumn['searchable'] == 'true' ) {
+					$globalSearch[] = "`".$column['db']."` LIKE '%".$str."%'";
+				}
+			}
+		}
+		// Individual column filtering
+		for ( $i=0, $ien=count($_GET['columns']) ; $i<$ien ; $i++ ) {
+			$requestColumn = $_GET['columns'][$i];
+			$columnIdx = array_search( $requestColumn['data'], $dtColumns );
+			$column = $columns[ $columnIdx ];
+
+			$str = $requestColumn['search']['value'];
+
+			if ( $requestColumn['searchable'] == 'true' &&
+			 $str != '' ) {
+				$columnSearch[] = "`".$column['db']."` LIKE '%".$str."%'";
+			}
+		}
+
+		// Combine the filters into a single string
+		$where = '';
+
+		if ( count( $globalSearch ) ) {
+			$where = '('.implode(' OR ', $globalSearch).')';
+		}
+
+		if ( count( $columnSearch ) ) {
+			$where = $where === '' ?
+				implode(' AND ', $columnSearch) :
+				$where .' AND '. implode(' AND ', $columnSearch);
+		}
+
+		if ( $where !== '' ) {
+			$where = 'WHERE '.$where;
 		}
 
 		$orderby = "ORDER BY date_created DESC";
@@ -73,7 +134,10 @@ class trksit {
 		."BETWEEN '$start_date' AND '$end_date') "
 		."AS hit_total "
 		."FROM ".$wpdb->prefix."trksit_urls tku "
+		.$where . " "
 		.$orderby;
+
+file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/log1.txt', print_r($trks_query, true), FILE_APPEND);
 
 		$table_data_count = $wpdb->get_results($trks_query);
 		$trks_query .= $sLimit;
