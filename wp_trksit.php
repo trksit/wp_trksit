@@ -183,14 +183,14 @@ function trksit_load_scripts() {
 	if ( isset( $_GET['page'] )
 		&& ( $_GET['page'] == 'trksit-dashboard' || $_GET['page'] == 'trksit-settings' || $_GET['page'] == 'trksit-generate' ) ) {
 
-		wp_register_style( 'trksit-bootstrap', plugins_url( '/wp_trksit/css/bootstrap.min.css', dirname(__FILE__) ) );
-		wp_register_style( 'trksit-styles', plugins_url( '/wp_trksit/css/main.css', dirname(__FILE__) ) );
+		wp_register_style( 'trksit-bootstrap', plugin_dir_url(__FILE__) . 'css/bootstrap.min.css');
+		wp_register_style( 'trksit-styles', plugin_dir_url(__FILE__) . 'css/main.css');
 
-		wp_register_script( 'trksit-bootstrap-js', plugins_url( '/wp_trksit/js/lib/bootstrap.min.js', dirname(__FILE__) ), array('jquery') );
-		wp_register_script( 'trksit-zclip-js', plugins_url( '/wp_trksit/js/lib/jquery.zclip.js', dirname(__FILE__) ), array( 'jquery' ), '1.1.1', true );
-		wp_register_script( 'trksit-validation-js', plugins_url( '/wp_trksit/js/lib/jquery.validate.min.js', dirname(__FILE__) ), array( 'jquery' ), '1.11.1' );
-		wp_register_script( 'trksit-main-js', plugins_url( '/wp_trksit/js/main.js', dirname(__FILE__) ), array( 'jquery' ), '1.2.1' );
-		wp_register_script( 'trksit-jquery-image-picker', plugins_url( '/wp_trksit/js/lib/image-picker.min.js', dirname(__FILE__) ), array( 'jquery' ), '0.1.3', true );
+		wp_register_script( 'trksit-bootstrap-js', plugin_dir_url(__FILE__).'js/lib/bootstrap.min.js', array('jquery') );
+		wp_register_script( 'trksit-zclip-js', plugin_dir_url(__FILE__) . 'js/lib/jquery.zclip.js', array( 'jquery' ), '1.1.1', true );
+		wp_register_script( 'trksit-validation-js', plugin_dir_url(__FILE__) . 'js/lib/jquery.validate.min.js', array( 'jquery' ), '1.11.1' );
+		wp_register_script( 'trksit-main-js', plugin_dir_url(__FILE__) . '/js/main.js', array( 'jquery' ), '1.2.1' );
+		wp_register_script( 'trksit-jquery-image-picker', plugin_dir_url(__FILE__) . 'js/lib/image-picker.min.js', array( 'jquery' ), '0.1.3', true );
 
 		wp_enqueue_style( 'trksit-bootstrap' );
 		wp_enqueue_style( 'trksit-styles' );
@@ -207,20 +207,20 @@ function trksit_load_scripts() {
 
 		wp_enqueue_script( 'jquery-ui-datepicker' );
 
-		wp_register_script( 'raphael-js', plugins_url( '/wp_trksit/js/lib/raphael-min.js', dirname(__FILE__) ) , '', '2.1.2' );
+		wp_register_script( 'raphael-js', plugin_dir_url(__FILE__).'js/lib/raphael-min.js', '', '2.1.2' );
 		wp_enqueue_script( 'raphael-js' );
 
-		wp_enqueue_script( 'morris-js', plugins_url( '/wp_trksit/js/lib/morris.min.js', dirname(__FILE__) ), array( 'raphael-js' ), '0.5.1' );
-		wp_enqueue_script( 'datatables', plugins_url( '/wp_trksit/js/lib/jquery.dataTables.1.10.5.min.js', dirname(__FILE__) ), array( 'jquery' ), '1.10.5', true );
+		wp_enqueue_script( 'morris-js', plugin_dir_url(__FILE__).'js/lib/morris.min.js', array( 'raphael-js' ), '0.5.1' );
+		wp_enqueue_script( 'datatables', plugin_dir_url(__FILE__).'js/lib/jquery.dataTables.1.10.5.min.js', array( 'jquery' ), '1.10.5', true );
 
-		wp_enqueue_style( 'jquery-ui-datepicker-css', plugins_url( '/wp_trksit/css/jquery-ui-1.10.4.custom.min.css', dirname(__FILE__) ), null, null );
+		wp_enqueue_style( 'jquery-ui-datepicker-css', plugin_dir_url(__FILE__).'css/jquery-ui-1.10.4.custom.min.css', null, null );
 
 	}
 
 	// Generate Page
 	if ( isset( $_GET['page'] ) && $_GET['page'] == 'trksit-generate' ) {
 
-		wp_register_script( 'trksit-generate-js', plugins_url( '/wp_trksit/js/generate.js' , dirname(__FILE__) ), array( 'jquery' ), '1.2.1', true );
+		wp_register_script( 'trksit-generate-js', plugin_dir_url(__FILE__).'js/generate.js', array( 'jquery' ), '1.2.1', true );
 		wp_enqueue_script( 'trksit-generate-js' );
 
 	}

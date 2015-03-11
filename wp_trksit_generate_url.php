@@ -3,7 +3,7 @@
 	ob_start();
 
 	echo '<div id="trksit-loading-indicator">
-		      <img src="' . plugins_url( '/wp_trksit/images/loading.gif' , dirname(__FILE__) ) . '" alt="Loading" />
+			<img src="' .plugin_dir_url(__FILE__).'images/loading.gif' . '" alt="Loading" />
 		  </div>';
 
 	trksit_flush_buffers();
