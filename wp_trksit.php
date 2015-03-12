@@ -494,7 +494,7 @@ function trksit_github_plugin_updater_init() {
 
 		$config = array(
 			'slug'               => plugin_basename(__FILE__), // this is the slug of your plugin
-			'proper_folder_name' => 'wp_trksit', // this is the name of the folder your plugin lives in
+			'proper_folder_name' => 'wp_trksit-master', // this is the name of the folder your plugin lives in
 			'api_url'            => 'https://api.github.com/repos/trksit/wp_trksit', // the github API url of your github repo
 			'raw_url'            => 'https://raw.github.com/trksit/wp_trksit/master', // the github raw url of your github repo
 			'github_url'         => 'https://github.com/trksit/wp_trksit', // the github url of your github repo
