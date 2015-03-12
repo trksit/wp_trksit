@@ -372,7 +372,7 @@ if($update_results){
 							$script_out = stripslashes(htmlspecialchars_decode($script['script']));
 							$script_out = stripslashes($script_out);
 							echo 'try{ ';
-							echo $script_out;
+							echo strip_tags($script_out);
 							echo ' } catch(err){ ';
 							echo 'handle_error(err.message, ' . $script['id'] . ');';
 							echo '}  ';
@@ -386,7 +386,7 @@ if($update_results){
 						$script_out = stripslashes(htmlspecialchars_decode($error_script[0]->script));
 						$script_out = stripslashes($script_out);
 						echo 'try { ';
-						echo $script_out;
+						echo strip_tags($script_out);
 						echo ' } catch(err) {';
 						echo 'console.log("ERROR: " + err.message);';
 						echo 'console.log(err);';
