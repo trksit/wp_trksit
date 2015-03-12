@@ -123,7 +123,7 @@ if( $_GET['page'] == 'trksit-settings' ){
 			?>
 
 				<a href="https://get.trks.it/chrome-extension/" class="nav-tab simple" target="_blank">
-					<img src="<?php echo plugins_url( '/wp_trksit/images/chrome-icon-120x120.png' ); ?>" style="height: 15px; width: 15px; display: inline; margin-right: 5px; position: relative; top: 1px;" />
+					<img src="<?php echo plugin_dir_url( __FILE__ ).'images/chrome-icon-120x120.png'; ?>" style="height: 15px; width: 15px; display: inline; margin-right: 5px; position: relative; top: 1px;" />
 					<?php _e( 'Chrome Extension' ); ?>
 				</a>
 
