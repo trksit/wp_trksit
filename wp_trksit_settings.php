@@ -102,7 +102,7 @@ if( $_GET['page'] == 'trksit-settings' ){
 			<?php _e( 'General' ); ?>
 		</a>
 		<a href="/wp-admin/admin.php?page=trksit-settings&tab=scripts" class="nav-tab <?php if( isset( $_GET['tab'] ) && $_GET['tab'] == 'scripts' ): ?>nav-tab-active<?php endif; ?>">
-			<?php _e( 'Remarketing & Custom Scripts' ); ?>
+			<?php _e( 'Scripts' ); ?>
 		</a>
 		<a href="/wp-admin/admin.php?page=trksit-settings&tab=sources" class="nav-tab <?php if( isset( $_GET['tab'] ) && $_GET['tab'] == 'sources' ): ?>nav-tab-active<?php endif; ?>">
 			<?php _e( 'Sources' ); ?>
@@ -114,7 +114,24 @@ if( $_GET['page'] == 'trksit-settings' ){
 			<?php _e( 'Domains' ); ?>
 		</a>
 
-		<a href="<?php echo WP_TRKSIT_MANAGE_URL; ?>" target="_blank" class="nav-tab manage-account"><i class="dashicons dashicons-external"></i> Account</a>
+		<div class="pull-right">
+
+			<?php
+
+			if ( strpos( $_SERVER['HTTP_USER_AGENT'], 'Chrome' ) !== false ) :
+
+			?>
+
+				<a href="https://get.trks.it/chrome-extension/" class="nav-tab simple" target="_blank">
+					<img src="<?php echo plugins_url( '/wp_trksit/images/chrome-icon-120x120.png' ); ?>" style="height: 15px; width: 15px; display: inline; margin-right: 5px; position: relative; top: 1px;" />
+					<?php _e( 'Chrome Extension' ); ?>
+				</a>
+
+			<?php endif; ?>
+
+			<a href="<?php echo WP_TRKSIT_MANAGE_URL; ?>" target="_blank" class="nav-tab simple"><i class="dashicons dashicons-external"></i> Account</a>
+
+		</div>
 
 	</h2>
 

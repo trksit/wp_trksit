@@ -43,7 +43,7 @@ if ( ( isset( $_GET['view'] ) && $_GET['view'] == 'link-detail' ) && is_numeric(
 			<h2><?php echo __( 'trks.it - Details for Link ID #' . $url_details[0]->url_id, 'trksit_menu' ); ?></h2>
 			<?php if( $user_display_details != '' ){ echo __( $user_display_details, 'trksit_menu' ); } ?>
 			<div class="postbox">
-				<div class="inside">
+				<div class="inside no-overflow">
 					<div id="trks_hits"></div>
 					<div id="graph-lines">
 						<div class="line line-1"></div>
@@ -223,7 +223,7 @@ else if ( $_GET['page'] == 'trksit-dashboard' ) {
 					<button type="submit" class="button button-primary">Update</button>
 				</form>
 			</div>
-			<div class="inside">
+			<div class="inside no-overflow">
 				<div id="trks_hits"></div>
 				<div id="graph-lines">
 					<div class="line line-1"></div>

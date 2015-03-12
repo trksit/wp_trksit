@@ -93,27 +93,30 @@
 
 			}
 
-		}
+			&.simple{
 
-		a.manage-account{
+				background-color: transparent;
+				border: 0;
+				line-height: 20px;
+				padding-top: 8px;
+				padding-bottom: 8px;
 
-			background-color: transparent;
-			border: 0;
-			float: right;
-			line-height: 20px;
-			padding-top: 8px;
-			padding-bottom: 8px;
+				&:hover,
+				&:focus{
 
-			&:hover,
-			&:focus{
+					i.dashicons{
+						color: #555;
+					}
 
-				i.dashicons{
-					color: #555;
+					color: #45bbe6;
 				}
 
-				color: #45bbe6;
 			}
 
+		}
+
+		.pull-right{
+			float: right;
 		}
 
 	}
@@ -182,7 +185,10 @@
 		.inside{
 			padding: 0 15px;
 			margin: 15px 0;
-			overflow: hidden;
+
+			&.no-overflow{
+				overflow: hidden;
+			}
 
 			.trksit-alert{
 				-webkit-box-shadow: none;
@@ -585,11 +591,27 @@
 
 		&.widefat{
 
+			thead,
+			tfoot{
+				th{
+					&:focus{
+						outline: none !important;
+						border-bottom-color: #0074a2;
+					}
+				}
+			}
 
 			tbody{
-				tr:hover{
-					background: #f9f9f9;
+
+				tr{
+
+					&:nth-child(even),
+					&:hover{
+						background: #f9f9f9;
+					}
+
 				}
+
 			}
 
 			td{
@@ -656,6 +678,10 @@
 				margin: 0 0 0 10px;
 			}
 
+		}
+
+		.dataTables_empty{
+			padding: 20px;
 		}
 
 		.dataTables_paginate,
@@ -983,6 +1009,7 @@
 	border: 1px solid #E1E1E1;
 	background: #fff url( '../images/jquery-ui/ui-bg_flat_75_ffffff_40x100.png' ) 50% 50% repeat-x;
 	color: #222;
+	z-index: 2000 !important;
 
 	.ui-icon {
 		width: 16px;
@@ -1091,7 +1118,7 @@
 			box-shadow: 0 1px 1px rgba(0,0,0,.04);
 
 			.nav-tab,
-			a.manage-account{
+			.nav-tab.simple{
 				float: none;
 				margin: 0;
 				width: auto;
@@ -1113,6 +1140,10 @@
 					background-color: #fff;
 				}
 
+			}
+
+			.pull-right{
+				float: none;
 			}
 
 		}

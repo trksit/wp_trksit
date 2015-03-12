@@ -158,9 +158,11 @@ jQuery( document ).ready( function( $ ){
 			},
 			'order' 	   : [[ 0, 'desc' ]],
 			'aoColumnDefs' : [
-				{ 'bSortable': false, 'aTargets': [ 2, 3, 4, 8 ] }
-			]
-
+						        { 'bSortable': false, 'aTargets': [ 2, 3, 4, 8 ] }
+						     ],
+			'language'     : {
+							 	'emptyTable': 'You don\'t have any link data yet. <a href="/wp-admin/admin.php?page=trksit-generate">Click here to create your first link!</a>'
+			                 }
 		});
 
 	}
