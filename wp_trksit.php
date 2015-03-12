@@ -4,7 +4,7 @@ Plugin Name: trks.it for WordPress
 Plugin URI: https://get.trks.it?utm_source=WordPress%20Admin%20Link
 Description: Ever wonder how many people click links that lead to 3rd party sites from your social media platforms? trks.it is a WordPress plugin for tracking social media engagement.
 Author: trks.it
-Version: 1.5
+Version: 1.5.1
 Author URI: http://get.trks.it?utm_source=WordPress%20Admin%20Link
  */
 
@@ -92,7 +92,7 @@ trksit_enforce_defaults();
 }
 add_action('admin_init', 'trksit_enforce_defaults');
 function trksit_enforce_defaults(){
-	$sources = serialize(array('SLC Facebook','SLC Twitter','SLC Youtube','SLC LinkedIn','SLC Pinterest','SLC Online Community','SLC Blogger Outreach','CMLC Blog','CMLC Resources','CMLC Article Library','CMLC Landing Page','CMLC Website Page','CMLC Slideshare','CMLC Prezi','ELC Email','PALC Facebook Advertising','PALC Twitter Advertising','PALC Youtube Advertising','PALC LinkedIn Advertising','PALC Online Advertising','PALC Online Remarketing Advertising','PALC Online to Offline Advertising','PALC Sponsorship Advertising','PALC Out of Home Advertising','PALC TV Advertising','PALC Radio Advertising'));
+	$sources = serialize(array('Social - Facebook','Social - Twitter','Social - Youtube','Social - LinkedIn','Social - Pinterest','Social - Online Community','Social - Blogger Outreach','Content Mktg - Blog','Content Mktg - Resources','Content Mktg - Article Library','Content Mktg - Landing Page','Content Mktg - Website Page','Content Mktg - Slideshare','Content Mktg - Prezi','Email - Promotion','Email - Newsletter','Paid - Facebook ','Paid - Twitter ','Paid - Youtube ','Paid - LinkedIn ','Paid - Other','Paid - Online to Offline ','Paid - Sponsorship ','Paid - Out of Home ','Paid - TV ','Paid - Radio'));
 	$domains = serialize(array(get_option('siteurl')));
 	$medium = serialize(array('Blog Post','Infographic','Video','Guide','Ebook','Webinar','White Paper','Presentation','Research Study','Paid Search','Display','Banner'));
 	if(!get_option('trksit_sources')){
