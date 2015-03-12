@@ -145,19 +145,23 @@ class trksit {
 			$date_created = date('M j, Y', $datetime);
 			$details_nonce = wp_create_nonce('trksit-view-details');
 			$details_link = 'admin.php?page=trksit-dashboard&view=link-detail&linkid=' . $table_row->url_id . '&_wpnonce=' . $details_nonce;
-			$cstef = array(
+			$copylink = "&nbsp;";
+			if(isset($_COOKIE['trksit_flash_status']) && $_COOKIE['trksit_flash_status'] == "true"){
+				$copylink = '<span class="copy-btn-wrap"><a class="trksit-copy-btn" id="trks-copy-btn-'.$table_row->url_id.'" href="'.$table_row->trksit_url . '" target="_blank">Copy</a></span>';
+			}
+			$row_data = array(
 				$date_created,
 				$table_row->hit_total,
 				str_replace("https://", "", $table_row->trksit_url),
-				'<span class="copy-btn-wrap"><a class="trksit-copy-btn" id="trks-copy-btn-'.$table_row->url_id.'" href="'.$table_row->trksit_url . '" target="_blank">Copy</a></span>',
+				$copylink,
 				'<a href="'.$table_row->destination_url.'" title="'.$table_row->destination_url.'">'.$table_row->destination_url.'</a>',
 				stripslashes($table_row->campaign),
 				stripslashes($table_row->source),
 				stripslashes($table_row->medium),
 				'<a href="'.$details_link.'">View Details</a>'
 			);
-			array_push($data['data'], $cstef);
-			$cstef = array();
+			array_push($data['data'], $row_data);
+			$row_data = array();
 		}
 		$data['draw'] = intval($_GET['draw']);
 		$data['recordsTotal'] = count($table_data_count);
