@@ -111,7 +111,7 @@ jQuery( document ).ready( function( $ ){
 	}
 
 	// ZeroClipboard functions to work with jQuery DataTable plugin generated links
-	$( '#trks_dashboard' ).on( 'hover', '.trksit-copy-btn', function( e ){
+	$( '#trks_dashboard' ).on( 'hover', 'tr', function( e ){
 		if(hasFlash){
 			e.preventDefault();
 			var zc = new ZeroClipboard($( '.trksit-copy-btn'));
