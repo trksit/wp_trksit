@@ -24,9 +24,9 @@
 
 
 	//THIS SHOULD BE GOTTEN FROM THE DB
-	$api_signature = 'testing12345678';
+	$api_signature = get_option('trksit_public_api_key');
 	//KILL NEXT LINE TO SECURE
-	$_GET['api_signature'] = 'testing12345678';
+	//$_GET['api_signature'] = 'testing12345678';
 	$testing = false;
 	$scripterror = false;
 	$script_id = null;
@@ -50,7 +50,7 @@
 	if( $_SERVER['REQUEST_METHOD'] == 'GET' && ( isset( $_GET['url_id'] ) && isset( $_GET['api_signature'] ) ) ){
 
 		// Check API Signature (Needs work!)
-		if( $_GET['api_signature'] == $api_signature ){
+		if( isset($_GET['api_signature']) && $_GET['api_signature'] == $api_signature ){
 
 			global $wpdb;
 			if(!$scripterror){
