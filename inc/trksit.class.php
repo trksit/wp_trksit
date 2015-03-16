@@ -774,8 +774,11 @@ class trksit {
 			)
 		);
 
+		$su = preg_replace("#^https?://#", "", $site_url );
 		$au = json_decode($associated_url['body']);
-		if($site_url == $au->msg){
+		$auu = preg_replace("#^https?://#", "", $au->msg );
+
+		if($su == $auu){
 			$urlsmatch = true;
 		}
 
