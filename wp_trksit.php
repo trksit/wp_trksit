@@ -486,11 +486,15 @@ function trksit_current_page() {
 add_action( 'init', 'trksit_github_plugin_updater_init' );
 function trksit_github_plugin_updater_init() {
 
-	include_once 'updater.php';
-
-	define( 'WP_GITHUB_FORCE_UPDATE', false );
-
 	if ( is_admin() ) { // note the use of is_admin() to double check that this is happening in the admin
+
+		include_once 'updater.php';
+
+		if ( $_SERVER['PHP_SELF'] == '/wp-admin/update-core.php' && isset($_GET['force-check']) ) {
+			define( 'WP_GITHUB_FORCE_UPDATE', true );
+		} else {
+			define( 'WP_GITHUB_FORCE_UPDATE', false );
+		}
 
 		$config = array(
 			'slug'               => plugin_basename(__FILE__), // this is the slug of your plugin
