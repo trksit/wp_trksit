@@ -91,7 +91,8 @@ jQuery( document ).ready( function( $ ){
 	}
 
 	// Set location of SWF File
-	ZeroClipboard.config( { swfPath: '/wp-content/plugins/wp_trksit/js/swf/ZeroClipboard.swf' } );
+    // TODO: This should not be hard coded, but we need to figure out where the plugin is installed to.
+	ZeroClipboard.config( { swfPath: '/wp-content/plugins/wp_trksit-master/js/swf/ZeroClipboard.swf' } );
 
 	// ZeroClipboard functions for non-generated items
 	if ( hasFlash ) {
