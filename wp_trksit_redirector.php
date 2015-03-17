@@ -142,15 +142,15 @@
 									SET hit_count = hit_count + 1
 									WHERE url_id = %d
 									AND hit_date = %s",
-$url_id, $today
+									$url_id, $today
 								)
 							);
 
-if($update_results){
-	$redirect = $js_redir . $meta_redir;
-}
+							if($update_results){
+								$redirect = $js_redir . $meta_redir;
+							}
 
-						} else if($hit_result_count === 0){
+						} elseif($hit_result_count === 0){
 							$wpdb->insert(
 								$wpdb->prefix . 'trksit_hits',
 								array(
@@ -196,235 +196,234 @@ if($update_results){
 
 	}else{ die; }
 
-	if((isset($redirect_lookup) && $redirect_lookup) || $scripterror){
+if((isset($redirect_lookup) && $redirect_lookup) || $scripterror){
 ?>
 <!DOCTYPE html>
 <html prefix="og: http://ogp.me/ns#" xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://www.facebook.com/2008/fbml">
-   <head>
-	  <?php if($redirect == ''): ?>
-	  <meta http-equiv="refresh" content="0; url=<?php echo $redirect_lookup[0]->destination_url; ?>">
-	  <?php endif; ?>
+<head>
+	<?php if($redirect == ''): ?>
+	<meta http-equiv="refresh" content="0; url=<?php echo $redirect_lookup[0]->destination_url; ?>">
+	<?php endif; ?>
 
-	  <title><?php if(!$scripterror) { echo $redirect_lookup[0]->meta_title; } else { echo "Script Error"; }?></title>
-	  <?php if(!$scripterror): ?>
-	  <meta name="description" content="<?php echo $redirect_lookup[0]->meta_description; ?>" />
+	<title><?php if(!$scripterror) { echo $redirect_lookup[0]->meta_title; } else { echo "Script Error"; }?></title>
+	<?php if(!$scripterror): ?>
+	<meta name="description" content="<?php echo $redirect_lookup[0]->meta_description; ?>" />
 
-	  <link rel="canonical" href="<?php echo $redirect_lookup[0]->destination_url; ?>">
+	<link rel="canonical" href="<?php echo $redirect_lookup[0]->destination_url; ?>">
 
-	  <!-- Making Sure Page doesn't get indexed or cached -->
-	  <!--meta name="robots" content="noindex, nofollow" />
-	  <meta http-equiv="cache-control" content="max-age=0" />
-	  <meta http-equiv="cache-control" content="no-cache" />
-	  <meta http-equiv="expires" content="0" />
-	  <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
-	  <meta http-equiv="pragma" content="no-cache" /-->
+	<?php
+	/*
+	150317 - dbrong - Why are we not doing this???
+	<!-- Making Sure Page doesn't get indexed or cached -->
 
-<?php
+	<meta name="robots" content="noindex, nofollow">
+	<meta http-equiv="cache-control" content="max-age=0">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">
+	<meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT">
+	<meta http-equiv="pragma" content="no-cache">
+	*/
 
-		//Get the Open Graph data & unseralize it
-		$ogArray = unserialize($redirect_lookup[0]->og_data);
+	//Get the Open Graph data & unseralize it
+	$ogArray = unserialize($redirect_lookup[0]->og_data);
 
-		foreach($ogArray as $key => $value){
-			echo '<meta property="' . $key . '" content="' . $value . '" />';
-		}
+	foreach($ogArray as $key => $value){
+		echo '<meta property="' . $key . '" content="' . $value . '" />';
+	}
 
-		//if the open graph image is NOT set, we need to set it
-		if(!isset($ogArray['og:image'])){
-			echo '<meta property="og:image" content="' . $redirect_lookup[0]->meta_image . '" />';
-		}
+	//if the open graph image is NOT set, we need to set it
+	if(!isset($ogArray['og:image'])){
+		echo '<meta property="og:image" content="' . $redirect_lookup[0]->meta_image . '" />';
+	}
 
-		//if the open graph URL is NOT set, we need to set it
-		if(!isset($ogArray['og:url'])){
-			echo '<meta property="og:url" content="' . $redirect_lookup[0]->destination_url . '" />';
-		}
+	//if the open graph URL is NOT set, we need to set it
+	if(!isset($ogArray['og:url'])){
+		echo '<meta property="og:url" content="' . $redirect_lookup[0]->destination_url . '" />';
+	}
 
-		//skip analytics if testing
-		if(!$testing):
-			if(!is_null($analytics_id) && $analytics_id != ''):
-?>
-	  <script type="text/javascript">
-		function getCookie(c_name) {
-			if (document.cookie.length > 0) {
-				c_start = document.cookie.indexOf(c_name + "=");
-				if (c_start != -1) {
-					c_start = c_start + c_name.length + 1;
-					c_end = document.cookie.indexOf(";", c_start);
-					if (c_end == -1) c_end = document.cookie.length;
-					return unescape(document.cookie.substring(c_start, c_end));
+	//skip analytics if testing
+	if(!$testing):
+		if(!is_null($analytics_id) && $analytics_id != ''):
+	?>
+			<script type="text/javascript">
+				function getCookie(c_name) {
+					if (document.cookie.length > 0) {
+						c_start = document.cookie.indexOf(c_name + "=");
+						if (c_start != -1) {
+							c_start = c_start + c_name.length + 1;
+							c_end = document.cookie.indexOf(";", c_start);
+							if (c_end == -1) c_end = document.cookie.length;
+							return unescape(document.cookie.substring(c_start, c_end));
+						}
+					}
+					return "";
 				}
-			}
-			return "";
-		}
-	  </script>
-
-
-
-	  <script type="text/javascript">
-	  //always set the GA account
-	  var _gaq = _gaq || [];
-	  _gaq.push(['_setAccount', '<?php echo $analytics_id; ?>']);
-<?php
+				
+				//always set the GA account
+				var _gaq = _gaq || [];
+				_gaq.push(['_setAccount', '<?php echo $analytics_id; ?>']);
+				<?php
 				if($domain_party == 'third'){
 					echo "_gaq.push(['_setSessionCookieTimeout', 0])";
 				}
-?>
+				?>
 
-	  //REQUIRED FOR LOCAL DEVELOPMENT
-	  _gaq.push(['_setDomainName', 'none']);
-	  _gaq.push(['_setAllowLinker', true]);
+				//REQUIRED FOR LOCAL DEVELOPMENT
+				_gaq.push(['_setDomainName', 'none']);
+				_gaq.push(['_setAllowLinker', true]);
 
-	  //if they haven't been here.. push an event to set their GA cookies
-	  var delay = 0;
-	  if(!getCookie("trks_new")){
-		  // Fire an event to set it
-		  _gaq.push(['_trackEvent', 'trks.it', 'New Visitor', '<?php echo $redirect_lookup[0]->destination_url; ?>', 0, true]);
-		  delay = 100;
-	  }
-
-	  //		pushing a custom variable & event to Google Analytics to track this clicked link
-	  setTimeout(function(){
-
-		  _gaq.push(['_setCustomVar', 1, 'trks.it', '<?php echo $party; ?>', 1]);
-		  _gaq.push(['_trackEvent', 'trks.it', 'Clicked <?php echo $domain_party; ?> Party Link', '<?php echo $_GET['su'] . " - " . $redirect_lookup[0]->destination_url; ?>'], 0, true);
-	 }, delay);
-
-	  (function() {
-		  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-		  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-		  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-	  })();
-
-	  </script>
-		 <?php endif; endif; endif; ?>
-
-		 <style>
-			#holdup {
-				  color: #666;
-				  font-family: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
-				  -webkit-animation: fadein 10s; /* Safari, Chrome and Opera > 12.1 */
-				  -moz-animation: fadein 10s; /* Firefox < 16 */
-				  -ms-animation: fadein 10s; /* Internet Explorer */
-				  -o-animation: fadein 10s; /* Opera < 12.1 */
-				  animation: fadein 10s;
-			}
-			/**
-			* This business will not work in IE9 <
-			**/
-
-			@keyframes fadein {
-				  0% { opacity: 0; }
-				  7% { opacity: 0; }
-				  100% { opacity: 1; }
-			}
-
-			/* Firefox < 16 */
-			@-moz-keyframes fadein {
-				  0% { opacity: 0; }
-				  7% { opacity: 0; }
-				  100% { opacity: 1; }
-
-			}
-
-			/* Safari, Chrome and Opera > 12.1 */
-			@-webkit-keyframes fadein {
-				  0% { opacity: 0; }
-				  7% { opacity: 0; }
-				  100% { opacity: 1; }
-
-			}
-
-			/* Internet Explorer */
-			@-ms-keyframes fadein {
-				  0% { opacity: 0; }
-				  7% { opacity: 0; }
-				  100% { opacity: 1; }
-
-			}
-
-			/* Opera < 12.1 */
-			@-o-keyframes fadein {
-				  0% { opacity: 0; }
-				  7% { opacity: 0; }
-				  100% { opacity: 1; }
-			}
-			code {
-				  color: #FF0000;
-			}
-		 </style>
-
-	  </head>
-	  <body>
-		 <?php if(!$scripterror): ?>
-		 <h2 id='holdup'>Please wait, loading requested site</h2>
-		 <?php else: ?>
-		 <h2>Script Error</h2>
-		 <code id='script_error_message'></code>
-		 <p>Information on using the console <a href='http://codex.wordpress.org/Using_Your_Browser_to_Diagnose_JavaScript_Errors' target='_blank'>here</a>
-		 <?php endif; ?>
-
-				<script>
-
-<?php
-				//testing outputs user defined scripts
-				if(!$scripterror){
-					foreach($script_array as $script){
-						if($script['error'] == 0) {
-							$script_out = stripslashes(htmlspecialchars_decode($script['script']));
-							$script_out = stripslashes($script_out);
-							echo 'try{ ';
-							echo strip_tags($script_out);
-							echo ' } catch(err){ ';
-							echo 'handle_error(err.message, ' . $script['id'] . ');';
-							echo '}  ';
-						}
-					}
-				} else {
-					//scrit execute/debug only outputs the script being debugged
-					$error_script = $wpdb->get_results("SELECT script FROM "
-						. $wpdb->prefix . "trksit_scripts WHERE script_id=" . $script_id . " LIMIT 1");
-					if($error_script){
-						$script_out = stripslashes(htmlspecialchars_decode($error_script[0]->script));
-						$script_out = stripslashes($script_out);
-						echo 'try { ';
-						echo strip_tags($script_out);
-						echo ' } catch(err) {';
-						echo 'console.log("ERROR: " + err.message);';
-						echo 'console.log(err);';
-						echo 'document.getElementById("script_error_message").innerHTML=err + " - Open console for more information";';
-						echo '}';
-					}
+				//if they haven't been here.. push an event to set their GA cookies
+				var delay = 0;
+				if(!getCookie("trks_new")){
+					// Fire an event to set it
+					_gaq.push(['_trackEvent', 'trks.it', 'New Visitor', '<?php echo $redirect_lookup[0]->destination_url; ?>', 0, true]);
+					delay = 100;
 				}
-?>
 
-		<?php echo 'var ajaxurl = "wp-admin/admin-ajax.php"'; ?>
+				//		pushing a custom variable & event to Google Analytics to track this clicked link
+				setTimeout(function(){
+
+				_gaq.push(['_setCustomVar', 1, 'trks.it', '<?php echo $party; ?>', 1]);
+				_gaq.push(['_trackEvent', 'trks.it', 'Clicked <?php echo $domain_party; ?> Party Link', '<?php echo $_GET['su'] . " - " . $redirect_lookup[0]->destination_url; ?>'], 0, true);
+				}, delay);
+
+				(function() {
+					var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+					ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+					var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+				})();
+			</script>
+		<?php endif; ?>
+	<?php endif; ?>
+	<?php endif; ?>
+
+	<style>
+		#holdup {
+			  color: #666;
+			  font-family: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+			  -webkit-animation: fadein 10s; /* Safari, Chrome and Opera > 12.1 */
+			  -moz-animation: fadein 10s; /* Firefox < 16 */
+			  -ms-animation: fadein 10s; /* Internet Explorer */
+			  -o-animation: fadein 10s; /* Opera < 12.1 */
+			  animation: fadein 10s;
+		}
+		/**
+		* This business will not work in IE9 <
+		**/
+
+		@keyframes fadein {
+			  0% { opacity: 0; }
+			  7% { opacity: 0; }
+			  100% { opacity: 1; }
+		}
+
+		/* Firefox < 16 */
+		@-moz-keyframes fadein {
+			  0% { opacity: 0; }
+			  7% { opacity: 0; }
+			  100% { opacity: 1; }
+
+		}
+
+		/* Safari, Chrome and Opera > 12.1 */
+		@-webkit-keyframes fadein {
+			  0% { opacity: 0; }
+			  7% { opacity: 0; }
+			  100% { opacity: 1; }
+
+		}
+
+		/* Internet Explorer */
+		@-ms-keyframes fadein {
+			  0% { opacity: 0; }
+			  7% { opacity: 0; }
+			  100% { opacity: 1; }
+
+		}
+
+		/* Opera < 12.1 */
+		@-o-keyframes fadein {
+			  0% { opacity: 0; }
+			  7% { opacity: 0; }
+			  100% { opacity: 1; }
+		}
+		code {
+			  color: #FF0000;
+		}
+	</style>
+
+</head>
+<body>
+	<?php if(!$scripterror): ?>
+		<h2 id='holdup'>Please wait, loading requested site</h2>
+	<?php else: ?>
+		<h2>Script Error</h2>
+		<code id='script_error_message'></code>
+		<p>Information on using the console <a href='http://codex.wordpress.org/Using_Your_Browser_to_Diagnose_JavaScript_Errors' target='_blank'>here</a>
+	<?php endif; ?>
+
+	<script>
+		<?php
+		//testing outputs user defined scripts
+		if(!$scripterror){
+			foreach($script_array as $script){
+				if($script['error'] == 0) {
+					$script_out = stripslashes(htmlspecialchars_decode($script['script']));
+					$script_out = stripslashes($script_out);
+					echo 'try{ ';
+					echo strip_tags($script_out);
+					echo ' } catch(err){ ';
+					echo 'handle_error(err.message, ' . $script['id'] . ');';
+					echo '}  ';
+				}
+			}
+		} else {
+			//scrit execute/debug only outputs the script being debugged
+			$error_script = $wpdb->get_results("SELECT script FROM "
+				. $wpdb->prefix . "trksit_scripts WHERE script_id=" . $script_id . " LIMIT 1");
+			if($error_script){
+				$script_out = stripslashes(htmlspecialchars_decode($error_script[0]->script));
+				$script_out = stripslashes($script_out);
+				echo 'try { ';
+				echo strip_tags($script_out);
+				echo ' } catch(err) {';
+				echo 'console.log("ERROR: " + err.message);';
+				echo 'console.log(err);';
+				echo 'document.getElementById("script_error_message").innerHTML=err + " - Open console for more information";';
+				echo '}';
+			}
+		}
+		
+		echo 'var ajaxurl = "wp-admin/admin-ajax.php"'; 
 
 		//In catch block, ajax call to set error flags
 		//if a script produces an error
 		//emails site admin
+		?>
+
 		function handle_error(error, id){
 			var dd = {
 			action: 'nopriv_handle_script',
 				error: error,
 				id: id
-	};
+			};
 
-	setTimeout(function(){ doAjax(ajaxurl, error, id); }, 0);
-	}
+			setTimeout(function(){ doAjax(ajaxurl, error, id); }, 0);
+		}
 
-	function doAjax(url, error, id) {
-		var xmlhttp = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
-		xmlhttp.onreadystatechange = function() {
-			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-				//console.log(xmlhttp.responseText);
-	}
-	}
-	xmlhttp.open("POST", url, true);
-	xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-	xmlhttp.send("action=nopriv_handle_script&error=" + error + "&id=" + id);
-	}
+		function doAjax(url, error, id) {
+			var xmlhttp = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+			<?php/*xmlhttp.onreadystatechange = function() {
+				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+					console.log(xmlhttp.responseText);
+				}
+			}*/?>
+			xmlhttp.open("POST", url, true);
+			xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			xmlhttp.send("action=nopriv_handle_script&error=" + error + "&id=" + id);
+		}
 	</script>
-			<?php if(!$scripterror){ echo $redirect; } ?>
-		 </body>
-	  </html>
-   <?php } ?>
-
+	<?php if(!$scripterror){ echo $redirect; } ?>
+</body>
+</html>
+<?php } ?>
