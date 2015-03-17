@@ -273,8 +273,11 @@ function trksit_update_settings_redirect(){
 		}
 
 		if ( count( $page ) > 0 && $page[0] == 'trksit' && !$trksit->wp_trksit_user_is_active() && !isset( $_GET['trksit_active'] ) ) {
-			wp_redirect( '/wp-admin/admin.php?page=trksit-settings&trksit_active=false' );
-			exit;
+			if($_GET['page'] != 'trksit-dashboard'){
+				wp_redirect( '/wp-admin/admin.php?page=trksit-settings&trksit_active=false' );
+
+				exit;
+			}
 		}
 
 	}
@@ -367,6 +370,14 @@ function trksit_add_pages() {
 			'trksit_settings',
 			$svg_menu_icon
 		);
+		add_submenu_page(
+				'trksit-settings',
+				__( 'Dashboard', 'trksit_menu' ),
+				__( 'Dashboard', 'trksit_menu' ),
+				'edit_private_pages',
+				'trksit-dashboard',
+				'trksit_dashboard'
+			);
 
 	} else {
 
