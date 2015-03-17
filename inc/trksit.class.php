@@ -635,7 +635,7 @@ class trksit {
 		if($json = json_decode($result['body'])){
 			if($json->error === true){
 				set_transient('trksit_active_user', 'inactive', 60*60*24);
-				set_transient("trksit_error_message", 'API Inactive, please try again later');
+				set_transient("trksit_error_message", 'API Temporarily offline, please try again later');
 				return false;
 			} else {
 				set_transient('trksit_active_user', 'active', 60*60*24);
@@ -643,7 +643,7 @@ class trksit {
 			}
 		} else {
 			set_transient('trksit_active_user', 'inactive', 60*60*24);
-			set_transient("trksit_error_message", 'API Inactive, please try again later');
+			set_transient("trksit_error_message", 'API Temporarily offline, please try again later');
 			return false;
 		}
 	}
