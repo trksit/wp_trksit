@@ -3,7 +3,6 @@
 		setcookie("trks_new", "new_user", time()+400000);
 	}
 
-
 	// Setting cache-control headers
 	header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
 	header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0',false);
@@ -24,7 +23,8 @@
 
 
 	//THIS SHOULD BE GOTTEN FROM THE DB
-	$api_signature = get_option('trksit_public_api_key');
+	//// 15031 - removed all api signature checks because they did not appear to be doing jack. - dbrong
+	//$api_signature = get_option('trksit_public_api_key');
 	//KILL NEXT LINE TO SECURE
 	//$_GET['api_signature'] = 'testing12345678';
 	$testing = false;
@@ -47,10 +47,10 @@
 	}
 
 	// Check request method and ensure all parameters are present in return from API.
-	if( $_SERVER['REQUEST_METHOD'] == 'GET' && ( isset( $_GET['url_id'] ) && isset( $_GET['api_signature'] ) ) ){
+	if( $_SERVER['REQUEST_METHOD'] == 'GET' && ( isset( $_GET['url_id'] )  ) ){ // && isset( $_GET['api_signature'] )
 
-		// Check API Signature (Needs work!)
-		if( isset($_GET['api_signature']) && $_GET['api_signature'] == $api_signature ){
+		// Check API Signature (Needs work! UPDATE 150317 - Does nothing!!!)
+		//if( isset($_GET['api_signature']) && $_GET['api_signature'] == $api_signature ){
 
 			global $wpdb;
 			if(!$scripterror){
@@ -192,9 +192,9 @@
 			} else {
 				$redirect = 'no';
 			}
-		}else{ die; }
+		//}else{ die; }
 
-	}else{ die; }
+	}else{ die("No URL ID or API Signature received"); }
 
 if((isset($redirect_lookup) && $redirect_lookup) || $scripterror){
 ?>
@@ -202,49 +202,37 @@ if((isset($redirect_lookup) && $redirect_lookup) || $scripterror){
 <html prefix="og: http://ogp.me/ns#" xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://www.facebook.com/2008/fbml">
 <head>
 	<?php if($redirect == ''): ?>
-	<meta http-equiv="refresh" content="0; url=<?php echo $redirect_lookup[0]->destination_url; ?>">
+		<meta http-equiv="refresh" content="0; url=<?php echo $redirect_lookup[0]->destination_url; ?>">
 	<?php endif; ?>
-
 	<title><?php if(!$scripterror) { echo $redirect_lookup[0]->meta_title; } else { echo "Script Error"; }?></title>
-	<?php if(!$scripterror): ?>
-	<meta name="description" content="<?php echo $redirect_lookup[0]->meta_description; ?>" />
+	<?php 
+	if(!$scripterror): ?>
+		<meta name="description" content="<?php echo $redirect_lookup[0]->meta_description; ?>" />
 
-	<link rel="canonical" href="<?php echo $redirect_lookup[0]->destination_url; ?>">
+		<link rel="canonical" href="<?php echo $redirect_lookup[0]->destination_url; ?>">
 
-	<?php
-	/*
-	150317 - dbrong - Why are we not doing this???
-	<!-- Making Sure Page doesn't get indexed or cached -->
+		<?php
+		//Get the Open Graph data & unseralize it
+		$ogArray = unserialize($redirect_lookup[0]->og_data);
 
-	<meta name="robots" content="noindex, nofollow">
-	<meta http-equiv="cache-control" content="max-age=0">
-	<meta http-equiv="cache-control" content="no-cache">
-	<meta http-equiv="expires" content="0">
-	<meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT">
-	<meta http-equiv="pragma" content="no-cache">
-	*/
+		foreach($ogArray as $key => $value){
+			echo '<meta property="' . $key . '" content="' . $value . '" />';
+		}
 
-	//Get the Open Graph data & unseralize it
-	$ogArray = unserialize($redirect_lookup[0]->og_data);
+		//if the open graph image is NOT set, we need to set it
+		if(!isset($ogArray['og:image'])){
+			echo '<meta property="og:image" content="' . $redirect_lookup[0]->meta_image . '" />';
+		}
 
-	foreach($ogArray as $key => $value){
-		echo '<meta property="' . $key . '" content="' . $value . '" />';
-	}
+		//if the open graph URL is NOT set, we need to set it
+		if(!isset($ogArray['og:url'])){
+			echo '<meta property="og:url" content="' . $redirect_lookup[0]->destination_url . '" />';
+		}
 
-	//if the open graph image is NOT set, we need to set it
-	if(!isset($ogArray['og:image'])){
-		echo '<meta property="og:image" content="' . $redirect_lookup[0]->meta_image . '" />';
-	}
-
-	//if the open graph URL is NOT set, we need to set it
-	if(!isset($ogArray['og:url'])){
-		echo '<meta property="og:url" content="' . $redirect_lookup[0]->destination_url . '" />';
-	}
-
-	//skip analytics if testing
-	if(!$testing):
-		if(!is_null($analytics_id) && $analytics_id != ''):
-	?>
+		//skip analytics if testing
+		if(!$testing):
+			if(!is_null($analytics_id) && $analytics_id != ''):
+			?>
 			<script type="text/javascript">
 				function getCookie(c_name) {
 					if (document.cookie.length > 0) {
@@ -293,9 +281,10 @@ if((isset($redirect_lookup) && $redirect_lookup) || $scripterror){
 					var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 				})();
 			</script>
-		<?php endif; ?>
-	<?php endif; ?>
-	<?php endif; ?>
+			<?php
+			endif;
+		endif; // !$testing
+	endif; // !$scripterror ?>
 
 	<style>
 		#holdup {
