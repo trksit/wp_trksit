@@ -631,16 +631,20 @@ class trksit {
 		if(is_wp_error($result)){
 			set_transient('trksit_active_user', 'inactive', 60*60*24);
 			return $result;
-		} else {
-			if(json_decode($result['body'])->error){
-				$status_msg = json_decode($result['body'])->status_messages;
+		}
+		if($json = json_decode($result['body'])){
+			if($json->error === true){
 				set_transient('trksit_active_user', 'inactive', 60*60*24);
-				set_transient('trksit_status_messages', serialize($status_msg), 60*60*24);
+				set_transient("trksit_error_message", 'API Inactive, please try again later');
 				return false;
 			} else {
 				set_transient('trksit_active_user', 'active', 60*60*24);
 				return true;
 			}
+		} else {
+			set_transient('trksit_active_user', 'inactive', 60*60*24);
+			set_transient("trksit_error_message", 'API Inactive, please try again later');
+			return false;
 		}
 	}
 
