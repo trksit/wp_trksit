@@ -123,6 +123,12 @@ function trksit_enforce_defaults(){
 	}
 }
 
+function get_plugin_version(){
+	$plugin_data = get_plugin_data( __FILE__ );
+	$plugin_version = $plugin_data['Version'];
+	return $plugin_version;
+}
+
 /*
  *register_uninstall_hook( __FILE__, 'trksit_uninstall');
  *function trksit_uninstall(){
@@ -184,7 +190,7 @@ function trksit_load_scripts() {
 		&& ( $_GET['page'] == 'trksit-dashboard' || $_GET['page'] == 'trksit-settings' || $_GET['page'] == 'trksit-generate' ) ) {
 
 		wp_register_style( 'trksit-bootstrap', plugin_dir_url(__FILE__) . 'css/bootstrap.min.css');
-		wp_register_style( 'trksit-styles', plugin_dir_url(__FILE__) . 'css/main.css');
+		wp_register_style( 'trksit-styles', plugin_dir_url(__FILE__) . 'css/main.css', null, get_plugin_version(), null);
 
 		wp_register_script( 'trksit-bootstrap-js', plugin_dir_url(__FILE__).'js/lib/bootstrap.min.js', array('jquery') );
 		wp_register_script( 'trksit-zclip-js', plugin_dir_url(__FILE__) . 'js/lib/jquery.zclip.js', array( 'jquery' ), '1.1.1', true );
