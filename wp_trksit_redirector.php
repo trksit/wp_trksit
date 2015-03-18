@@ -205,7 +205,7 @@ if((isset($redirect_lookup) && $redirect_lookup) || $scripterror){
 		<meta http-equiv="refresh" content="0; url=<?php echo $redirect_lookup[0]->destination_url; ?>">
 	<?php endif; ?>
 	<title><?php if(!$scripterror) { echo $redirect_lookup[0]->meta_title; } else { echo "Script Error"; }?></title>
-	<?php 
+	<?php
 	if(!$scripterror): ?>
 		<meta name="description" content="<?php echo $redirect_lookup[0]->meta_description; ?>" />
 
@@ -246,7 +246,7 @@ if((isset($redirect_lookup) && $redirect_lookup) || $scripterror){
 					}
 					return "";
 				}
-				
+
 				//always set the GA account
 				var _gaq = _gaq || [];
 				_gaq.push(['_setAccount', '<?php echo $analytics_id; ?>']);
@@ -351,7 +351,6 @@ if((isset($redirect_lookup) && $redirect_lookup) || $scripterror){
 		<p>Information on using the console <a href='http://codex.wordpress.org/Using_Your_Browser_to_Diagnose_JavaScript_Errors' target='_blank'>here</a>
 	<?php endif; ?>
 
-	<script>
 		<?php
 		//testing outputs user defined scripts
 		if(!$scripterror){
@@ -359,11 +358,15 @@ if((isset($redirect_lookup) && $redirect_lookup) || $scripterror){
 				if($script['error'] == 0) {
 					$script_out = stripslashes(htmlspecialchars_decode($script['script']));
 					$script_out = stripslashes($script_out);
-					echo 'try{ ';
-					echo strip_tags($script_out);
-					echo ' } catch(err){ ';
-					echo 'handle_error(err.message, ' . $script['id'] . ');';
-					echo '}  ';
+					if(strpos($script_out, '<script>') !== false){
+						echo $script_out;
+					} else {
+						echo '<script> try{ ';
+						echo $script_out;
+						echo ' } catch(err){ ';
+						echo 'handle_error(err.message, ' . $script['id'] . ');';
+						echo '}  </script>';
+					}
 				}
 			}
 		} else {
@@ -373,23 +376,26 @@ if((isset($redirect_lookup) && $redirect_lookup) || $scripterror){
 			if($error_script){
 				$script_out = stripslashes(htmlspecialchars_decode($error_script[0]->script));
 				$script_out = stripslashes($script_out);
-				echo 'try { ';
-				echo strip_tags($script_out);
-				echo ' } catch(err) {';
-				echo 'console.log("ERROR: " + err.message);';
-				echo 'console.log(err);';
-				echo 'document.getElementById("script_error_message").innerHTML=err + " - Open console for more information";';
-				echo '}';
+				if(strpos($script_out, '<script>') !== false){
+					echo $script_out;
+				} else {
+					echo '<script> try { ';
+					echo strip_tags($script_out);
+					echo ' } catch(err) {';
+					echo 'console.log("ERROR: " + err.message);';
+					echo 'console.log(err);';
+					echo 'document.getElementById("script_error_message").innerHTML=err + " - Open console for more information";';
+					echo '} </script>';
+				}
 			}
 		}
-		
-		echo 'var ajaxurl = "wp-admin/admin-ajax.php"'; 
 
 		//In catch block, ajax call to set error flags
 		//if a script produces an error
 		//emails site admin
 		?>
-
+		<script>
+		var ajaxurl = "wp-admin/admin-ajax.php";
 		function handle_error(error, id){
 			var dd = {
 			action: 'nopriv_handle_script',

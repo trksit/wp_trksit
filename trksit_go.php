@@ -1,60 +1,60 @@
 <?php
-   if(!isset($_COOKIE['trksit_new'])){
-	  setcookie("trks_new", "new_user", time()+900);
-   }
-   // Setting cache-control headers
-   header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
-   header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0',false);
-   header("Pragma: no-cache");
+if(!isset($_COOKIE['trksit_new'])){
+	setcookie("trks_new", "new_user", time()+900);
+}
+// Setting cache-control headers
+header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
+header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0',false);
+header("Pragma: no-cache");
 
-   //Loading WordPress
-   define( 'SHORTINIT', true );
-   require_once( '../../../wp-load.php' );
+//Loading WordPress
+define( 'SHORTINIT', true );
+require_once( '../../../wp-load.php' );
 
-   //Forward to 404 page if id is not set.
-   if(!isset($_GET['url_id'])){
-	  $four04 = '/index.php?error404=true';
-	  echo '<script type="text/javascript">setTimeout(function(){window.location.href = "'.$four04.'"},0);</script>';
-	  echo '<meta http-equiv="refresh" content="2; url='.$four04.'">';
-   }
+//Forward to 404 page if id is not set.
+if(!isset($_GET['url_id'])){
+	$four04 = '/index.php?error404=true';
+	echo '<script type="text/javascript">setTimeout(function(){window.location.href = "'.$four04.'"},0);</script>';
+	echo '<meta http-equiv="refresh" content="2; url='.$four04.'">';
+}
 
-   //Getting options
-   $analytics_id = get_option('trksit_analytics_id');
-   $redirect_delay = get_option('trksit_redirect_delay');
-   $redirect = '';
+//Getting options
+$analytics_id = get_option('trksit_analytics_id');
+$redirect_delay = get_option('trksit_redirect_delay');
+$redirect = '';
 
 
-   //THIS SHOULD BE GOTTEN FROM THE DB
-   $api_signature = 'testing12345678';
-   //KILL NEXT LINE TO SECURE
-   $_GET['api_signature'] = 'testing12345678';
-   $testing = false;
-   $scripterror = false;
-   $script_id = null;
+//THIS SHOULD BE GOTTEN FROM THE DB
+$api_signature = 'testing12345678';
+//KILL NEXT LINE TO SECURE
+$_GET['api_signature'] = 'testing12345678';
+$testing = false;
+$scripterror = false;
+$script_id = null;
 
-   if(isset($_GET['testing'])){
-	  if($_GET['testing'] == 'test'){
-		 $testing = true;
-	  }
-	  if($_GET['testing'] == 'scripterror'){
-		 if(isset($_GET['scriptid'])){
+if(isset($_GET['testing'])){
+	if($_GET['testing'] == 'test'){
+		$testing = true;
+	}
+	if($_GET['testing'] == 'scripterror'){
+		if(isset($_GET['scriptid'])){
 			$script_id = intval($_GET['scriptid']);
-		 }
-		 if(!isset($_GET['script_error_nonce']) || !wp_verify_nonce($_GET['script_error_nonce'], 'script_error_' . $script_id)){
+		}
+		if(!isset($_GET['script_error_nonce']) || !wp_verify_nonce($_GET['script_error_nonce'], 'script_error_' . $script_id)){
 			die("Access denied");
-		 }
-		 $scripterror = true;
-	  }
-   }
+		}
+		$scripterror = true;
+	}
+}
 
-   // Check request method and ensure all parameters are present in return from API.
-   if( $_SERVER['REQUEST_METHOD'] == 'GET' && ( isset( $_GET['url_id'] ) && isset( $_GET['api_signature'] ) ) ){
+// Check request method and ensure all parameters are present in return from API.
+if( $_SERVER['REQUEST_METHOD'] == 'GET' && ( isset( $_GET['url_id'] ) && isset( $_GET['api_signature'] ) ) ){
 
-	  // Check API Signature (Needs work!)
-	  if( $_GET['api_signature'] == $api_signature ){
+	// Check API Signature (Needs work!)
+	if( $_GET['api_signature'] == $api_signature ){
 
-		 global $wpdb;
-		 if(!$scripterror){
+		global $wpdb;
+		if(!$scripterror){
 
 			$incoming_url_id = $_GET['url_id'];
 
@@ -63,110 +63,110 @@
 
 			// If destination URL exsists in wpdb result. Output redirect script.
 			if($redirect_lookup && $redirect_lookup[0]->destination_url){
-			   //get the short URL code
-			   $surl = $_GET['su'];
+				//get the short URL code
+				$surl = $_GET['su'];
 
-			   //Check for transient that is set when a link is not in the database
-			   //If found, API call to revert the flag set at trks.it
-			   if(get_transient('trksit_404_' . $surl)){
-				  $trksit = new trksit();
-				  $flags_set = $trksit->wp_trksit_setMissingFlags($surl, true);
-				  delete_transient( 'trksit_404_' . $surl );
-			   }
+				//Check for transient that is set when a link is not in the database
+				//If found, API call to revert the flag set at trks.it
+				if(get_transient('trksit_404_' . $surl)){
+					$trksit = new trksit();
+					$flags_set = $trksit->wp_trksit_setMissingFlags($surl, true);
+					delete_transient( 'trksit_404_' . $surl );
+				}
 
-			   //Set redirect URLs
-			   $js_redir = '<script type="text/javascript">setTimeout(function(){window.location.href = "'
-				  . $redirect_lookup[0]->destination_url . '"},' . $redirect_delay . ');</script>';
-			   $meta_redir = '<meta http-equiv="refresh" content="2; url='.$redirect_lookup[0]->destination_url.'">';
+				//Set redirect URLs
+				$js_redir = '<script type="text/javascript">setTimeout(function(){window.location.href = "'
+					. $redirect_lookup[0]->destination_url . '"},' . $redirect_delay . ');</script>';
+				$meta_redir = '<meta http-equiv="refresh" content="2; url='.$redirect_lookup[0]->destination_url.'">';
 
-			   $url_id = $redirect_lookup[0]->url_id;
-			   $today = date('Y-m-d');
+				$url_id = $redirect_lookup[0]->url_id;
+				$today = date('Y-m-d');
 
 				$redirect = $js_redir . $meta_redir;
 
-			   //Getting all the scripts for this URL
-			   if(!$scripterror){
-				  $scripts_to_url = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . "trksit_scripts_to_urls WHERE url_id=" . $url_id);
-				  $script_array = array();
-				  foreach($scripts_to_url as $single_script){
-					 $script_results = array();
-					 $single_script = $wpdb->get_results("SELECT script, script_id, script_error FROM "
-					 . $wpdb->prefix . "trksit_scripts WHERE script_id="
-					 . $single_script->script_id);
-					 $script_results['script'] = $single_script[0]->script;
-					 $script_results['id'] = $single_script[0]->script_id;
-					 $script_results['error'] = $single_script[0]->script_error;
-					 array_push($script_array, $script_results);
-				  }
-			   }
+				//Getting all the scripts for this URL
+				if(!$scripterror){
+					$scripts_to_url = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . "trksit_scripts_to_urls WHERE url_id=" . $url_id);
+					$script_array = array();
+					foreach($scripts_to_url as $single_script){
+						$script_results = array();
+						$single_script = $wpdb->get_results("SELECT script, script_id, script_error FROM "
+							. $wpdb->prefix . "trksit_scripts WHERE script_id="
+							. $single_script->script_id);
+						$script_results['script'] = $single_script[0]->script;
+						$script_results['id'] = $single_script[0]->script_id;
+						$script_results['error'] = $single_script[0]->script_error;
+						array_push($script_array, $script_results);
+					}
+				}
 
-			   //Do not increment hit counter if testing link or debugging javascript
-			   if(!$testing && !$scripterror){
-				  $hit_result = $wpdb->get_results(
-					 "SELECT * FROM " . $wpdb->prefix . "trksit_hits WHERE url_id="
-					 . $url_id . " AND hit_date='" . $today . "'"
-				  );
-				  $hit_result_count = count($hit_result);
+				//Do not increment hit counter if testing link or debugging javascript
+				if(!$testing && !$scripterror){
+					$hit_result = $wpdb->get_results(
+						"SELECT * FROM " . $wpdb->prefix . "trksit_hits WHERE url_id="
+						. $url_id . " AND hit_date='" . $today . "'"
+					);
+					$hit_result_count = count($hit_result);
 
-				  if($hit_result_count === 1){
+					if($hit_result_count === 1){
 
-					 $update_results = $wpdb->query(
-						$wpdb->prepare(
-						   "UPDATE " . $wpdb->prefix ."trksit_hits
-						   SET hit_count = hit_count + 1
-						   WHERE url_id = %d
-						   AND hit_date = %s",
-						   $url_id, $today
+						$update_results = $wpdb->query(
+							$wpdb->prepare(
+								"UPDATE " . $wpdb->prefix ."trksit_hits
+								SET hit_count = hit_count + 1
+								WHERE url_id = %d
+								AND hit_date = %s",
+$url_id, $today
 						)
-					 );
+					);
 
-					 if($update_results){
-						$redirect = $js_redir . $meta_redir;
-					 }
+if($update_results){
+	$redirect = $js_redir . $meta_redir;
+}
 
-				  } else if($hit_result_count === 0){
-					 $wpdb->insert(
-						$wpdb->prefix . 'trksit_hits',
-						array(
-						   'hit_count' => 1,
-						   'url_id' => $url_id,
-						   'hit_date' => $today
-						),
-						array( '%d', '%d','%s' )
-					 );
+					} else if($hit_result_count === 0){
+						$wpdb->insert(
+							$wpdb->prefix . 'trksit_hits',
+							array(
+								'hit_count' => 1,
+								'url_id' => $url_id,
+								'hit_date' => $today
+							),
+							array( '%d', '%d','%s' )
+						);
 
 
-				  } else { die; }
-			   } else {
-				  //testing redirects, script_error should not
-				  if(!$testing) {
-					 $redirect = 'no';
-				  }
-			   }
+					} else { die; }
+				} else {
+					//testing redirects, script_error should not
+					if(!$testing) {
+						$redirect = 'no';
+					}
+				}
 
 			} else {
-			   //$trksit = new trksit();
-			   //$surl = $_GET['su'];
+				//$trksit = new trksit();
+				//$surl = $_GET['su'];
 
-			   //set transient to let us know that a 404 has ocurred with this short URL
-			   //set_transient('trksit_404_'.$surl, '404', 60*60*24*30);
+				//set transient to let us know that a 404 has ocurred with this short URL
+				//set_transient('trksit_404_'.$surl, '404', 60*60*24*30);
 
-			   //flag the URL in the API
-			   //$flags_set = $trksit->wp_trksit_setMissingFlags($surl);
+				//flag the URL in the API
+				//$flags_set = $trksit->wp_trksit_setMissingFlags($surl);
 
-			   //If we have a redirect URL returned use it, otherwise 404
-			   $four04 = '/index.php?error404=true';
-			   echo '<script type="text/javascript">setTimeout(function(){window.location.href = "'.$four04.'"},0);</script>';
-			   echo '<meta http-equiv="refresh" content="2; url='.$four04.'">';
+				//If we have a redirect URL returned use it, otherwise 404
+				$four04 = '/index.php?error404=true';
+				echo '<script type="text/javascript">setTimeout(function(){window.location.href = "'.$four04.'"},0);</script>';
+				echo '<meta http-equiv="refresh" content="2; url='.$four04.'">';
 			}
-		 } else {
+		} else {
 			$redirect = 'no';
-		 }
-	  }else{ die; }
+		}
+	}else{ die; }
 
-   }else{ die; }
+}else{ die; }
 
-   if((isset($redirect_lookup) && $redirect_lookup) || $scripterror){
+if((isset($redirect_lookup) && $redirect_lookup) || $scripterror){
 ?>
 <!DOCTYPE html>
 <html prefix="og: http://ogp.me/ns#" xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://www.facebook.com/2008/fbml">
@@ -189,80 +189,80 @@
 	  <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
 	  <meta http-equiv="pragma" content="no-cache" /-->
 
-	  <?php
+<?php
 
-		 //Get the Open Graph data & unseralize it
-		 $ogArray = unserialize($redirect_lookup[0]->og_data);
+	//Get the Open Graph data & unseralize it
+	$ogArray = unserialize($redirect_lookup[0]->og_data);
 
-		 foreach($ogArray as $key => $value){
-			echo '<meta property="' . $key . '" content="' . $value . '" />
-			';
-		 }
+	foreach($ogArray as $key => $value){
+		echo '<meta property="' . $key . '" content="' . $value . '" />
+';
+	}
 
-		 //if the open graph image is NOT set, we need to set it
-		 if(!isset($ogArray['og:image'])){
-			echo '<meta property="og:image" content="' . $redirect_lookup[0]->meta_image . '" />
-			';
-		 }
+	//if the open graph image is NOT set, we need to set it
+	if(!isset($ogArray['og:image'])){
+		echo '<meta property="og:image" content="' . $redirect_lookup[0]->meta_image . '" />
+';
+	}
 
-		 //if the open graph URL is NOT set, we need to set it
-		 if(!isset($ogArray['og:url'])){
-			echo '<meta property="og:url" content="' . $redirect_lookup[0]->destination_url . '" />
-			';
-		 }
+	//if the open graph URL is NOT set, we need to set it
+	if(!isset($ogArray['og:url'])){
+		echo '<meta property="og:url" content="' . $redirect_lookup[0]->destination_url . '" />
+';
+	}
 
-		 //skip analytics if testing
-		 if(!$testing):
-			 if(!is_null($analytics_id) && $analytics_id != ''):
-	  ?>
-	  <script type="text/javascript">
-		 function getCookie(c_name) {
-			   if (document.cookie.length > 0) {
-				  c_start = document.cookie.indexOf(c_name + "=");
-				  if (c_start != -1) {
-					 c_start = c_start + c_name.length + 1;
-					 c_end = document.cookie.indexOf(";", c_start);
-					 if (c_end == -1) c_end = document.cookie.length;
-					 return unescape(document.cookie.substring(c_start, c_end));
-				  }
-			   }
-			   return "";
-			}
-		 </script>
+	//skip analytics if testing
+	if(!$testing):
+		if(!is_null($analytics_id) && $analytics_id != ''):
+?>
+			<script type="text/javascript">
+			function getCookie(c_name) {
+				if (document.cookie.length > 0) {
+					c_start = document.cookie.indexOf(c_name + "=");
+					if (c_start != -1) {
+						c_start = c_start + c_name.length + 1;
+						c_end = document.cookie.indexOf(";", c_start);
+						if (c_end == -1) c_end = document.cookie.length;
+						return unescape(document.cookie.substring(c_start, c_end));
+}
+}
+return "";
+}
+</script>
 
 
 
-		 <script type="text/javascript">
+			<script type="text/javascript">
 			//		always set the GA account
 			var _gaq = _gaq || [];
-			_gaq.push(['_setAccount', '<?php echo $analytics_id; ?>']);
+	_gaq.push(['_setAccount', '<?php echo $analytics_id; ?>']);
 
-			//REQUIRED FOR LOCAL DEVELOPMENT
-			//		_gaq.push(['_setDomainName', 'none']);
-			//		_gaq.push(['_setAllowLinker', true]);
+	//REQUIRED FOR LOCAL DEVELOPMENT
+	//		_gaq.push(['_setDomainName', 'none']);
+	//		_gaq.push(['_setAllowLinker', true]);
 
-			// 		if they haven't been here.. push an event to set their GA cookies
-			var delay = 0;
-			if(!getCookie("trks_new")){
-			   // Fire an event to set it
-			   _gaq.push(['_trackEvent', 'trks.it', 'New Visitor', '<?php echo $redirect_lookup[0]->destination_url; ?>', 0, true]);
-			   delay = 100;
-			}
+	// 		if they haven't been here.. push an event to set their GA cookies
+	var delay = 0;
+	if(!getCookie("trks_new")){
+		// Fire an event to set it
+		_gaq.push(['_trackEvent', 'trks.it', 'New Visitor', '<?php echo $redirect_lookup[0]->destination_url; ?>', 0, true]);
+		delay = 100;
+}
 
-			//		pushing a custom variable & event to Google Analytics to track this clicked link
-			setTimeout(function(){
+//		pushing a custom variable & event to Google Analytics to track this clicked link
+setTimeout(function(){
 
-			   _gaq.push(['_setCustomVar', 1, 'trks.it', '<?php echo $redirect_lookup[0]->destination_url; ?>', 1]);
-			   _gaq.push(['_trackEvent', 'trks.it', 'Clicked Link', '<?php echo $redirect_lookup[0]->destination_url; ?>'], 0, true);
-			}, delay);
+	_gaq.push(['_setCustomVar', 1, 'trks.it', '<?php echo $redirect_lookup[0]->destination_url; ?>', 1]);
+	_gaq.push(['_trackEvent', 'trks.it', 'Clicked Link', '<?php echo $redirect_lookup[0]->destination_url; ?>'], 0, true);
+}, delay);
 
-			(function() {
-			   var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-			   ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-			   var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-			})();
+(function() {
+	var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+	ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
 
-		 </script>
+</script>
 		 <?php endif; endif; endif; ?>
 
 		 <style>
@@ -330,67 +330,76 @@
 		 <p>Information on using the console <a href='http://codex.wordpress.org/Using_Your_Browser_to_Diagnose_JavaScript_Errors' target='_blank'>here</a>
 		 <?php endif; ?>
 
-		 <script>
 
-			<?php
-			   //testing outputs user defined scripts
-			   if(!$scripterror){
-				  foreach($script_array as $script){
-					 if($script['error'] == 0) {
+<?php
+			//testing outputs user defined scripts
+			if(!$scripterror){
+				foreach($script_array as $script){
+					if($script['error'] == 0) {
 						$script_out = stripslashes(htmlspecialchars_decode($script['script']));
 						$script_out = stripslashes($script_out);
-						echo 'try{ ';
+						if(strpos($script_out, '<script>') !== false){
+							echo $script_out;
+						} else {
+							echo '<script> try{ ';
+							echo $script_out;
+							echo ' } catch(err){ ';
+							echo 'handle_error(err.message, ' . $script['id'] . ');';
+							echo '}  </script>';
+						}
+					}
+				}
+			} else {
+				//scrit execute/debug only outputs the script being debugged
+				$error_script = $wpdb->get_results("SELECT script FROM "
+					. $wpdb->prefix . "trksit_scripts WHERE script_id=" . $script_id . " LIMIT 1");
+				if($error_script){
+					$script_out = stripslashes(htmlspecialchars_decode($error_script[0]->script));
+					$script_out = stripslashes($script_out);
+					if(strpos($script_out, '<script>') !== false){
+						echo $script_out;
+					} else {
+						echo '<script> try { ';
 						echo strip_tags($script_out);
-						echo ' } catch(err){ ';
-						echo 'handle_error(err.message, ' . $script['id'] . ');';
-						echo '}  ';
-					 }
-				  }
-			   } else {
-				  //scrit execute/debug only outputs the script being debugged
-				  $error_script = $wpdb->get_results("SELECT script FROM "
-				  . $wpdb->prefix . "trksit_scripts WHERE script_id=" . $script_id . " LIMIT 1");
-				  if($error_script){
-					 $script_out = stripslashes(htmlspecialchars_decode($error_script[0]->script));
-					 $script_out = stripslashes($script_out);
-					 echo 'try { ';
-					 echo strip_tags($script_out);
-					 echo ' } catch(err) {';
-					 echo 'console.log("ERROR: " + err.message);';
-					 echo 'console.log(err);';
-					 echo 'document.getElementById("script_error_message").innerHTML=err + " - Open console for more information";';
-					 echo '}';
-				  }
-			   }
-			?>
+						echo ' } catch(err) {';
+						echo 'console.log("ERROR: " + err.message);';
+						echo 'console.log(err);';
+						echo 'document.getElementById("script_error_message").innerHTML=err + " - Open console for more information";';
+						echo '} </script>';
+					}
+				}
+			}
+?>
 
 			<?php echo 'var ajaxurl = "wp-admin/admin-ajax.php"'; ?>
 
 			//In catch block, ajax call to set error flags
 			//if a script produces an error
 			//emails site admin
-			function handle_error(error, id){
-			   var dd = {
-				  action: 'nopriv_handle_script',
-				  error: error,
-				  id: id
-			   };
+	<script>
+	var ajaxurl = "wp-admin/admin-ajax.php";
+	function handle_error(error, id){
+		var dd = {
+		action: 'nopriv_handle_script',
+			error: error,
+			id: id
+};
 
-			   setTimeout(function(){ doAjax(ajaxurl, error, id); }, 0);
-			}
+setTimeout(function(){ doAjax(ajaxurl, error, id); }, 0);
+}
 
-			function doAjax(url, error, id) {
-				  var xmlhttp = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
-				  xmlhttp.onreadystatechange = function() {
-					 if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-						//console.log(xmlhttp.responseText);
-					 }
-				  }
-				  xmlhttp.open("POST", url, true);
-				  xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-				  xmlhttp.send("action=nopriv_handle_script&error=" + error + "&id=" + id);
-			   }
-			</script>
+function doAjax(url, error, id) {
+	var xmlhttp = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+	xmlhttp.onreadystatechange = function() {
+		if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+			//console.log(xmlhttp.responseText);
+}
+}
+xmlhttp.open("POST", url, true);
+xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+xmlhttp.send("action=nopriv_handle_script&error=" + error + "&id=" + id);
+}
+</script>
 			<?php if(!$scripterror){ echo $redirect; } ?>
 		 </body>
 	  </html>
