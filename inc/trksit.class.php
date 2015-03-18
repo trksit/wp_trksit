@@ -578,8 +578,8 @@ class trksit {
 				update_option('trksit_script_platforms', $p);
 			}
 		}
-		$trksit_replace = array('http://', 'https://', '<script>', '</script>');
-		$trksit_replacements = array('//', '//', '', '');
+		$trksit_replace = array('http://', 'https://');
+		$trksit_replacements = array('//', '//');
 		$trksit_script_label = $post['trksit_script_label'];
 		$trksit_script = htmlspecialchars(str_replace($trksit_replace, $trksit_replacements, $post['trksit_script']));
 		$trksit_platform = $platform;
