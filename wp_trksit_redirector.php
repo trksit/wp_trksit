@@ -27,7 +27,8 @@
 	//$api_signature = get_option('trksit_public_api_key');
 	//KILL NEXT LINE TO SECURE
 	//$_GET['api_signature'] = 'testing12345678';
-	$testing = false;
+	
+	$testing = true;	// SET TO TRUE TO DISABLE REDIRECT!!!
 	$scripterror = false;
 	$script_id = null;
 
@@ -101,8 +102,7 @@
 					}
 
 					//Set redirect URLs
-					$js_redir = '<script type="text/javascript">setTimeout(function(){window.location.href = "'
-						. $redirect_lookup[0]->destination_url . '"},' . $redirect_delay . ');</script>';
+					$js_redir = '<script type="text/javascript">setTimeout(function(){window.location.href = "'	. $redirect_lookup[0]->destination_url . '"},' . $redirect_delay . ');</script>';
 					$meta_redir = '<meta http-equiv="refresh" content="2; url='.$redirect_lookup[0]->destination_url.'">';
 
 					$url_id = $redirect_lookup[0]->url_id;
@@ -201,7 +201,7 @@ if((isset($redirect_lookup) && $redirect_lookup) || $scripterror){
 <!DOCTYPE html>
 <html prefix="og: http://ogp.me/ns#" xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://www.facebook.com/2008/fbml">
 <head>
-	<?php if($redirect == ''): ?>
+	<?php if(!$testing && $redirect == ''): ?>
 		<meta http-equiv="refresh" content="0; url=<?php echo $redirect_lookup[0]->destination_url; ?>">
 	<?php endif; ?>
 	<title><?php if(!$scripterror) { echo $redirect_lookup[0]->meta_title; } else { echo "Script Error"; }?></title>
@@ -418,7 +418,7 @@ if((isset($redirect_lookup) && $redirect_lookup) || $scripterror){
 			xmlhttp.send("action=nopriv_handle_script&error=" + error + "&id=" + id);
 		}
 	</script>
-	<?php if(!$scripterror){ echo $redirect; } ?>
+	<?php if(!$testing && !$scripterror){ echo $redirect; } ?>
 </body>
 </html>
 <?php } ?>
