@@ -251,7 +251,6 @@ return "";
 
 //		pushing a custom variable & event to Google Analytics to track this clicked link
 setTimeout(function(){
-
 	_gaq.push(['_setCustomVar', 1, 'trks.it', '<?php echo $redirect_lookup[0]->destination_url; ?>', 1]);
 	_gaq.push(['_trackEvent', 'trks.it', 'Clicked Link', '<?php echo $redirect_lookup[0]->destination_url; ?>'], 0, true);
 }, delay);
@@ -265,144 +264,138 @@ setTimeout(function(){
 </script>
 		 <?php endif; endif; endif; ?>
 
-		 <style>
-			#holdup {
-				  color: #666;
-				  font-family: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
-				  -webkit-animation: fadein 10s; /* Safari, Chrome and Opera > 12.1 */
-				  -moz-animation: fadein 10s; /* Firefox < 16 */
-				  -ms-animation: fadein 10s; /* Internet Explorer */
-				  -o-animation: fadein 10s; /* Opera < 12.1 */
-				  animation: fadein 10s;
-			}
-			/**
-			* This business will not work in IE9 <
-			**/
+	<style>
+		#holdup {
+			color: #666;
+			font-family: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+			-webkit-animation: fadein 10s; /* Safari, Chrome and Opera > 12.1 */
+			-moz-animation: fadein 10s; /* Firefox < 16 */
+			-ms-animation: fadein 10s; /* Internet Explorer */
+			-o-animation: fadein 10s; /* Opera < 12.1 */
+			animation: fadein 10s;
+		}
+		/**
+		* This business will not work in IE9 <
+		**/
 
-			@keyframes fadein {
-				  0% { opacity: 0; }
-				  7% { opacity: 0; }
-				  100% { opacity: 1; }
-			}
+		@keyframes fadein {
+			0% { opacity: 0; }
+			7% { opacity: 0; }
+			100% { opacity: 1; }
+		}
 
-			/* Firefox < 16 */
-			@-moz-keyframes fadein {
-				  0% { opacity: 0; }
-				  7% { opacity: 0; }
-				  100% { opacity: 1; }
+		/* Firefox < 16 */
+		@-moz-keyframes fadein {
+			0% { opacity: 0; }
+			7% { opacity: 0; }
+			100% { opacity: 1; }
 
-			}
+		}
 
-			/* Safari, Chrome and Opera > 12.1 */
-			@-webkit-keyframes fadein {
-				  0% { opacity: 0; }
-				  7% { opacity: 0; }
-				  100% { opacity: 1; }
+		/* Safari, Chrome and Opera > 12.1 */
+		@-webkit-keyframes fadein {
+			0% { opacity: 0; }
+			7% { opacity: 0; }
+			100% { opacity: 1; }
 
-			}
+		}
 
-			/* Internet Explorer */
-			@-ms-keyframes fadein {
-				  0% { opacity: 0; }
-				  7% { opacity: 0; }
-				  100% { opacity: 1; }
+		/* Internet Explorer */
+		@-ms-keyframes fadein {
+			0% { opacity: 0; }
+			7% { opacity: 0; }
+			100% { opacity: 1; }
 
-			}
+		}
 
-			/* Opera < 12.1 */
-			@-o-keyframes fadein {
-				  0% { opacity: 0; }
-				  7% { opacity: 0; }
-				  100% { opacity: 1; }
-			}
-			code {
-				  color: #FF0000;
-			}
-		 </style>
+		/* Opera < 12.1 */
+		@-o-keyframes fadein {
+			0% { opacity: 0; }
+			7% { opacity: 0; }
+			100% { opacity: 1; }
+		}
+		code {
+			color: #FF0000;
+		}
+	</style>
 
-	  </head>
-	  <body>
-		 <?php if(!$scripterror): ?>
-		 <h2 id='holdup'>Please wait, loading requested site</h2>
-		 <?php else: ?>
-		 <h2>Script Error</h2>
-		 <code id='script_error_message'></code>
-		 <p>Information on using the console <a href='http://codex.wordpress.org/Using_Your_Browser_to_Diagnose_JavaScript_Errors' target='_blank'>here</a>
-		 <?php endif; ?>
-
-
-<?php
-			//testing outputs user defined scripts
-			if(!$scripterror){
-				foreach($script_array as $script){
-					if($script['error'] == 0) {
-						$script_out = stripslashes(htmlspecialchars_decode($script['script']));
-						$script_out = stripslashes($script_out);
-						if(strpos($script_out, '<script>') !== false){
-							echo $script_out;
-						} else {
-							echo '<script> try{ ';
-							echo $script_out;
-							echo ' } catch(err){ ';
-							echo 'handle_error(err.message, ' . $script['id'] . ');';
-							echo '}  </script>';
-						}
-					}
+</head>
+ <body>
+	<?php if(!$scripterror): ?>
+		<h2 id='holdup'>Please wait, loading requested site</h2>
+	<?php else: ?>
+		<h2>Script Error</h2>
+		<code id='script_error_message'></code>
+		<p>Information on using the console <a href='http://codex.wordpress.org/Using_Your_Browser_to_Diagnose_JavaScript_Errors' target='_blank'>here</a>
+	<?php endif; ?>
+	<?php
+	//testing outputs user defined scripts
+	if(!$scripterror){
+		foreach($script_array as $script){
+			if($script['error'] == 0) {
+				$script_out = stripslashes(htmlspecialchars_decode($script['script']));
+				$script_out = stripslashes($script_out);
+				if(strpos($script_out, '<script>') !== false){
+					echo $script_out;
+				} else {
+					echo '<script> try{ ';
+					echo $script_out;
+					echo ' } catch(err){ ';
+					echo 'handle_error(err.message, ' . $script['id'] . ');';
+					echo '}  </script>';
 				}
+			}
+		}
+	} else {
+		//scrit execute/debug only outputs the script being debugged
+		$error_script = $wpdb->get_results("SELECT script FROM "
+			. $wpdb->prefix . "trksit_scripts WHERE script_id=" . $script_id . " LIMIT 1");
+		if($error_script){
+			$script_out = stripslashes(htmlspecialchars_decode($error_script[0]->script));
+			$script_out = stripslashes($script_out);
+			if(strpos($script_out, '<script>') !== false){
+				echo $script_out;
 			} else {
-				//scrit execute/debug only outputs the script being debugged
-				$error_script = $wpdb->get_results("SELECT script FROM "
-					. $wpdb->prefix . "trksit_scripts WHERE script_id=" . $script_id . " LIMIT 1");
-				if($error_script){
-					$script_out = stripslashes(htmlspecialchars_decode($error_script[0]->script));
-					$script_out = stripslashes($script_out);
-					if(strpos($script_out, '<script>') !== false){
-						echo $script_out;
-					} else {
-						echo '<script> try { ';
-						echo strip_tags($script_out);
-						echo ' } catch(err) {';
-						echo 'console.log("ERROR: " + err.message);';
-						echo 'console.log(err);';
-						echo 'document.getElementById("script_error_message").innerHTML=err + " - Open console for more information";';
-						echo '} </script>';
-					}
-				}
+				echo '<script> try { ';
+				echo strip_tags($script_out);
+				echo ' } catch(err) {';
+				echo 'console.log("ERROR: " + err.message);';
+				echo 'console.log(err);';
+				echo 'document.getElementById("script_error_message").innerHTML=err + " - Open console for more information";';
+				echo '} </script>';
 			}
-?>
+		}
+	}
+	
+	echo 'var ajaxurl = "wp-admin/admin-ajax.php"'; ?>
 
-			<?php echo 'var ajaxurl = "wp-admin/admin-ajax.php"'; ?>
-
-			//In catch block, ajax call to set error flags
-			//if a script produces an error
-			//emails site admin
+	//In catch block, ajax call to set error flags
+	//if a script produces an error
+	//emails site admin
 	<script>
 	var ajaxurl = "wp-admin/admin-ajax.php";
 	function handle_error(error, id){
 		var dd = {
-		action: 'nopriv_handle_script',
+			action: 'nopriv_handle_script',
 			error: error,
 			id: id
-};
+		};
+		setTimeout(function(){ doAjax(ajaxurl, error, id); }, 0);
+	}
 
-setTimeout(function(){ doAjax(ajaxurl, error, id); }, 0);
-}
-
-function doAjax(url, error, id) {
-	var xmlhttp = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
-	xmlhttp.onreadystatechange = function() {
-		if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-			//console.log(xmlhttp.responseText);
-}
-}
-xmlhttp.open("POST", url, true);
-xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-xmlhttp.send("action=nopriv_handle_script&error=" + error + "&id=" + id);
-}
-</script>
-			<?php if(!$scripterror){ echo $redirect; } ?>
-		 </body>
-	  </html>
-   <?php } ?>
-
-
+	function doAjax(url, error, id) {
+		var xmlhttp = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+		xmlhttp.onreadystatechange = function() {
+			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+				//console.log(xmlhttp.responseText);
+			}
+		}
+		xmlhttp.open("POST", url, true);
+		xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		xmlhttp.send("action=nopriv_handle_script&error=" + error + "&id=" + id);
+	}
+	</script>
+	<?php if(!$scripterror){ echo $redirect; } ?>
+</body>
+</html>
+<?php } ?>
