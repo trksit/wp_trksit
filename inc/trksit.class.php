@@ -200,8 +200,8 @@ class trksit {
 		$site = str_replace("http://", "", get_site_url());
 		$msg = "The script \"" . $script->label . "\" has thrown an execution error.  The script has been disabled in the database.  Please fix the script syntax and update in the trksit plugin settings.";
 		$subject = "Script error on the " . $site . " website";
-		$headers = 'From: <no-reply@'.$site.'>' . "\r\n";
-		wp_mail($email, $subject, $msg, $headers);
+		//$headers = 'From: <no-reply@'.$site.'>' . "\r\n"; // Let their site handle it
+		wp_mail($email, $subject, $msg); // , $headers
 
 		echo $email;
 		exit;
