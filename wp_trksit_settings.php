@@ -25,9 +25,19 @@ if( isset( $_GET['purge-data'] ) && $_GET['purge-data'] == 'true' ){
 		die( '<h1>Unauthorized Operation</h1>' );
 	}
 }
+
+$trksit_analytics_id = '';
+$trksit_public_api_key = '';
+$trksit_private_api_key = '';
+$trksit_jquery = '';
+$trksit_redirect_delay = '';
+
 if( $_GET['page'] == 'trksit-settings' ){
 	//see trksit_update_settings_redirect() in main plugin file
 	//Options are saved in action hook, then page is refreshed to update menu
+	
+
+	
 	if( !isset( $_POST['trksit_page'] ) && empty( $_POST ) ) {
 		$trksit_analytics_id = get_option('trksit_analytics_id');
 		$trksit_public_api_key = get_option('trksit_public_api_key');
@@ -87,20 +97,23 @@ if( $_GET['page'] == 'trksit-settings' ){
 	</h2>
 	<?php
 		// START General Settings Panel Output
-		if( ( isset( $_GET['tab'] ) && $_GET['tab'] == 'general' ) || empty( $_GET['tab'] ) ):
+	if( ( isset( $_GET['tab'] ) && $_GET['tab'] == 'general' ) || empty( $_GET['tab'] ) ):
+		$api_online = true;
 	?>
 	<form name="trksit_settings_form" id="trksit_settings_form" class="trksit-form" method="post" action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI'] ); ?>">
-		<?php if( get_transient( 'trksit_active_user' ) && get_transient( 'trksit_active_user' ) == 'inactive' ): ?>
+
+		<?php if( get_transient( 'trksit_error_message' ) && get_transient( 'trksit_error_message' ) != '' ): ?>
+			<div class="trksit-alert warning">
+				<h4>API temporarily offline</h4>
+				<?php
+				echo '<p><strong>' . get_transient('trksit_error_message') . "</strong></p>";
+				delete_transient('trksit_error_message');
+				$api_online = false;
+				?>
+			</div>
+		<?php elseif( get_transient( 'trksit_active_user' ) && get_transient( 'trksit_active_user' ) == 'inactive' ): ?>
 			<div class="trksit-alert warning">
 				<h4>Plugin not Active</h4>
-<?php
-
-						if(get_transient('trksit_error_message')){
-							echo '<p><strong>' . get_transient('trksit_error_message') . "</strong></p>";
-							delete_transient('trksit_error_message');
-							die();
-						}
-?>
 				<p>Please <a href="<?php echo WP_TRKSIT_MANAGE_URL; ?>" target="_blank">register here</a> then enter valid API keys</p>
 				<?php
 					if( $status = get_transient( 'trksit_status_messages' ) ){
@@ -118,6 +131,7 @@ if( $_GET['page'] == 'trksit-settings' ){
 				?>
 			</div>
 		<?php endif; ?>
+		<?php if ( $api_online ) : ?>
 		<div class="trksit_col left">
 		<div class="postbox" id="trksit-api-settings">
 			<h3 class="hndle"><span><?php _e( 'API Settings' ); ?></span></h3>
@@ -178,6 +192,7 @@ if( $_GET['page'] == 'trksit-settings' ){
 				<a href="<?php echo wp_nonce_url( admin_url( 'admin.php?page=trksit-settings&purge-data=true' ), 'purge_my_data', 'trksit_purge_nonce' ); ?>" onclick="return confirm( 'This will delete all URLs from WordPress and the trks.it API. Continue?' );" class="btn btn-danger">Purge all data</a>
 			</div>
 		</div>
+		<?php endif; // api_online? ?>
 	</form>
 	<?php
 		endif; // END General Settings Panel Output

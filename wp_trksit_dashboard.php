@@ -193,6 +193,16 @@ if ( ( isset( $_GET['view'] ) && $_GET['view'] == 'link-detail' ) && is_numeric(
 else if ( $_GET['page'] == 'trksit-dashboard' ) {
 ?>
 	<h2><?php echo __( 'trks.it Dashboard', 'trksit_menu' ); ?></h2>
+	<?php if( get_transient( 'trksit_error_message' ) && get_transient( 'trksit_error_message' ) != '' ): ?>
+		<div class="trksit-alert warning">
+			<h4>API temporarily offline</h4>
+			<?php
+			echo '<p><strong>' . get_transient('trksit_error_message') . "</strong></p>";
+			delete_transient('trksit_error_message');
+			$api_online = false;
+			?>
+		</div>
+	<?php endif; ?>
 <?php
 	if ( isset( $_GET['trksit_start_date'] ) AND !empty( $_GET['trksit_start_date'] ) AND isset( $_GET['trksit_end_date'] ) AND !empty( $_GET['trksit_end_date'] ) ) {
 		$start_date = date( 'Y-m-d', strtotime( $_GET['trksit_start_date'] ) );
