@@ -340,7 +340,26 @@ if((isset($redirect_lookup) && $redirect_lookup) || $scripterror){
 			  color: #FF0000;
 		}
 	</style>
+	<script>
+	//In catch block, ajax call to set error flags.  If a script produces an error send an email to the site admin
+	var ajaxurl = "wp-admin/admin-ajax.php";
+	function handle_error(error, id){
+		var dd = {
+		action: 'nopriv_handle_script',
+			error: error,
+			id: id
+		};
 
+		setTimeout(function(){ doAjax(ajaxurl, error, id); }, 0);
+	}
+
+	function doAjax(url, error, id) {
+		var xmlhttp = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+		xmlhttp.open("POST", url, true);
+		xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		xmlhttp.send("action=nopriv_handle_script&error=" + error + "&id=" + id);
+	}
+	</script>
 </head>
 <body>
 	<?php if(!$scripterror): ?>
@@ -389,35 +408,8 @@ if((isset($redirect_lookup) && $redirect_lookup) || $scripterror){
 				}
 			}
 		}
-
-		//In catch block, ajax call to set error flags
-		//if a script produces an error
-		//emails site admin
 		?>
-		<script>
-		var ajaxurl = "wp-admin/admin-ajax.php";
-		function handle_error(error, id){
-			var dd = {
-			action: 'nopriv_handle_script',
-				error: error,
-				id: id
-			};
 
-			setTimeout(function(){ doAjax(ajaxurl, error, id); }, 0);
-		}
-
-		function doAjax(url, error, id) {
-			var xmlhttp = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
-			<?php/*xmlhttp.onreadystatechange = function() {
-				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-					console.log(xmlhttp.responseText);
-				}
-			}*/?>
-			xmlhttp.open("POST", url, true);
-			xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-			xmlhttp.send("action=nopriv_handle_script&error=" + error + "&id=" + id);
-		}
-	</script>
 	<?php if(!$testing && !$scripterror){ echo $redirect; } ?>
 </body>
 </html>
