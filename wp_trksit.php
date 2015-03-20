@@ -4,7 +4,7 @@ Plugin Name: trks.it for WordPress
 Plugin URI: https://get.trks.it?utm_source=WordPress%20Admin%20Link
 Description: Ever wonder how many people click links that lead to 3rd party sites from your social media platforms? trks.it is a WordPress plugin for tracking social media engagement.
 Author: trks.it
-Version: 1.150317
+Version: 1.150320
 Author URI: http://get.trks.it?utm_source=WordPress%20Admin%20Link
  */
 
@@ -22,11 +22,11 @@ function trksit_Install(){
 		$charset_collate .= " COLLATE $wpdb->collate";
 
 	$trksit = new trksit();
-	$active = $trksit->wp_trksit_user_is_active();
+	/*$active = $trksit->wp_trksit_user_is_active();
 	if(is_wp_error($active)){
 		echo "<code>trks.it API unavailable.  Plugin can not be activated.</code>";
 		exit;
-	}
+	}*/
 
 	$table_1_name = $wpdb->prefix . "trksit_urls";
 	$table_1_sql = "CREATE TABLE $table_1_name (
@@ -354,7 +354,7 @@ function trksit_add_pages() {
 			//echo $active->get_error_message();
 		}
 
-		if( $trksit->wp_trksit_user_is_active() ){
+		if( $trksit->wp_trksit_user_is_active() ){		// What??? fix this logic when fixing the API uptime checks
 			$active = true;
 		}
 
@@ -366,26 +366,12 @@ function trksit_add_pages() {
 
 	}
 
-	if( !$active ){
+	$api_online = true;
+	if ( get_transient( 'trksit_error_message' ) ) {
+		$api_online = false;
+	}
 
-		add_menu_page(
-			__( 'Plugin Settings &lsaquo; trks.it', 'trksit_menu' ),
-			__( 'trks.it Settings','trksit_menu' ),
-			'edit_private_pages',
-			'trksit-settings',
-			'trksit_settings',
-			$svg_menu_icon
-		);
-		add_submenu_page(
-				'trksit-settings',
-				__( 'Dashboard', 'trksit_menu' ),
-				__( 'Dashboard', 'trksit_menu' ),
-				'edit_private_pages',
-				'trksit-dashboard',
-				'trksit_dashboard'
-			);
-
-	} else {
+	if ( $active ) {
 
 		add_menu_page(
 			__( 'Dashboard &lsaquo; trks.it', 'trksit_menu' ),
@@ -405,14 +391,16 @@ function trksit_add_pages() {
 			'trksit_dashboard'
 		);
 
-		add_submenu_page(
-			'trksit-dashboard',
-			__( 'Generate URL &lsaquo; trks.it', 'trksit_menu' ),
-			__( 'Generate URL', 'trksit_menu' ),
-			'edit_private_pages',
-			'trksit-generate',
-			'trksit_generate'
-		);
+		if ( $api_online ) {
+			add_submenu_page(
+				'trksit-dashboard',
+				__( 'Generate URL &lsaquo; trks.it', 'trksit_menu' ),
+				__( 'Generate URL', 'trksit_menu' ),
+				'edit_private_pages',
+				'trksit-generate',
+				'trksit_generate'
+			);
+		}
 
 		add_submenu_page(
 			'trksit-dashboard',
@@ -422,8 +410,19 @@ function trksit_add_pages() {
 			'trksit-settings',
 			'trksit_settings'
 		);
+	} else {
+		add_menu_page(
+			__( 'Plugin Settings &lsaquo; trks.it', 'trksit_menu' ),
+			__( 'trks.it', 'trksit_menu' ),
+			'edit_private_pages',
+			'trksit-settings',
+			'trksit_settings',
+			$svg_menu_icon
+		);
 
 	}
+
+	
 
 }
 

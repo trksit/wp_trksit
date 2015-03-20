@@ -635,15 +635,15 @@ class trksit {
 		if($json = json_decode($result['body'])){
 			if($json->error === true){
 				set_transient('trksit_active_user', 'inactive', 60*60*24);
-				set_transient("trksit_error_message", 'API Temporarily offline, please try again later');
+				//set_transient("trksit_error_message", 'API temporarily offline, please try again later or contact us at webmaster@trks.it if this problem persists.');
 				return false;
 			} else {
 				set_transient('trksit_active_user', 'active', 60*60*24);
 				return true;
 			}
 		} else {
-			set_transient('trksit_active_user', 'inactive', 60*60*24);
-			set_transient("trksit_error_message", 'API Temporarily offline, please try again later');
+			//set_transient('trksit_active_user', 'inactive', 60*60*24);
+			set_transient("trksit_error_message", 'API temporarily offline, please try again later or contact us at webmaster@trks.it if this problem persists.');
 			return false;
 		}
 	}
