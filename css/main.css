@@ -179,6 +179,7 @@
 }
 #trksit-wrap .input-row textarea.code-input {
   font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  height: 350px;
 }
 #trksit-wrap .input-row:last-child {
   margin-bottom: 0;

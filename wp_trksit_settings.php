@@ -36,8 +36,6 @@ if( $_GET['page'] == 'trksit-settings' ){
 	//see trksit_update_settings_redirect() in main plugin file
 	//Options are saved in action hook, then page is refreshed to update menu
 	
-
-	
 	if( !isset( $_POST['trksit_page'] ) && empty( $_POST ) ) {
 		$trksit_analytics_id = get_option('trksit_analytics_id');
 		$trksit_public_api_key = get_option('trksit_public_api_key');
