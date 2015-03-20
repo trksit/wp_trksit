@@ -28,7 +28,7 @@
 	//KILL NEXT LINE TO SECURE
 	//$_GET['api_signature'] = 'testing12345678';
 	
-	$testing = true;	// SET TO TRUE TO DISABLE REDIRECT!!!
+	$testing = false;	// SET TO TRUE TO DISABLE REDIRECT!!!
 	$scripterror = false;
 	$script_id = null;
 
