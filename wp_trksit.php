@@ -147,7 +147,8 @@ function get_plugin_version(){
 $wp_host = explode( '.', $_SERVER['HTTP_HOST'] );
 $wp_host = array_pop( $wp_host );
 define( 'WP_TKSIT_PRODUCTION', ( $wp_host == 'local' || $wp_host == 'dev' ) ? false : true );
-define( 'WP_TKSIT_SUPPORT_BTN', '<a href="http://support.trks.it/?utm_source=WordPress%20Plugin%20Admin&utm_medium=referral" target="_blank" class="help-button pull-right">Need Help?</a>' );
+
+define( 'WP_TKSIT_SUPPORT_BTN', '<a href="http://support.trks.it/?utm_source=WordPress%20Plugin%20Admin&utm_medium=referral" target="_blank" class="help-button pull-right">Support</a>' );
 
 $parsed = array_shift( ( explode( '.', $_SERVER['HTTP_HOST'] ) ) );
 $beta = substr( $parsed, 0, 4 );
