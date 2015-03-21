@@ -14,7 +14,7 @@
 
 <div class="wrap" id="trksit-wrap">
 
-	<h2><?php echo __( 'Generate a new trks.it URL', 'trksit_menu' ); ?></h2>
+	<h2 style="display: inline-block;"><?php echo __( 'Generate a new trks.it URL', 'trksit_menu' ); ?></h2> <?php echo WP_TKSIT_SUPPORT_BTN; ?>
 
 	<?php
 

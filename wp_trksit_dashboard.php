@@ -40,7 +40,7 @@ if ( ( isset( $_GET['view'] ) && $_GET['view'] == 'link-detail' ) && is_numeric(
 				$user_display_details = '<h3>Created by: ' . $user_info->display_name . ' [' . $user_info->user_login . ']</h3>';
 			}
 ?>
-			<h2><?php echo __( 'trks.it - Details for Link ID #' . $url_details[0]->url_id, 'trksit_menu' ); ?></h2>
+			<h2 style="display: inline-block;"><?php echo __( 'trks.it - Details for Link ID #' . $url_details[0]->url_id, 'trksit_menu' ); ?></h2> <?php echo WP_TKSIT_SUPPORT_BTN; ?>
 			<?php if( $user_display_details != '' ){ echo __( $user_display_details, 'trksit_menu' ); } ?>
 			<div class="postbox">
 				<div class="inside no-overflow">
@@ -192,7 +192,7 @@ if ( ( isset( $_GET['view'] ) && $_GET['view'] == 'link-detail' ) && is_numeric(
 }
 else if ( $_GET['page'] == 'trksit-dashboard' ) {
 ?>
-	<h2><?php echo __( 'trks.it Dashboard', 'trksit_menu' ); ?></h2>
+	<h2 style="display: inline-block;"><?php echo __( 'trks.it Dashboard', 'trksit_menu' ); ?></h2> <?php echo WP_TKSIT_SUPPORT_BTN; ?>
 	<?php if( get_transient( 'trksit_error_message' ) && get_transient( 'trksit_error_message' ) != '' ): ?>
 		<div class="trksit-alert warning">
 			<h4>API temporarily offline</h4>

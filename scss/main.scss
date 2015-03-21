@@ -2,6 +2,10 @@
 
 #trksit-wrap{
 
+	.pull-right{
+		float: right;
+	}
+
 	> h2{
 		margin-bottom: 20px;
 	}
@@ -396,6 +400,27 @@
 
 	a.btn{
 		text-decoration: none;
+	}
+
+	.help-button{
+		display: inline-block;
+		-moz-border-radius: 4px;
+		-webkit-border-radius: 4px;
+		border-radius: 4px;
+		margin-top: 9px;
+		line-height: 29px;
+		padding: 0 15px;
+		font-weight: 600;
+		font-size: 13px;
+		background-color: #555;
+		text-decoration: none;
+		color: #fff;
+
+		&:hover,
+		&:focus{
+			background-color: #2ea2cc;
+		}
+
 	}
 
 	// WordPress Default Buttons

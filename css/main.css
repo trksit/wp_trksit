@@ -10,6 +10,9 @@
   /* ---- Share Preview ---- */
   /* ---- Image Picker ---- */
 }
+#trksit-wrap .pull-right {
+  float: right;
+}
 #trksit-wrap > h2 {
   margin-bottom: 20px;
 }
@@ -279,6 +282,23 @@
 }
 #trksit-wrap a.btn {
   text-decoration: none;
+}
+#trksit-wrap .help-button {
+  display: inline-block;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
+  margin-top: 9px;
+  line-height: 29px;
+  padding: 0 15px;
+  font-weight: 600;
+  font-size: 13px;
+  background-color: #555;
+  text-decoration: none;
+  color: #fff;
+}
+#trksit-wrap .help-button:hover, #trksit-wrap .help-button:focus {
+  background-color: #2ea2cc;
 }
 #trksit-wrap .button.button-large {
   height: 32px;

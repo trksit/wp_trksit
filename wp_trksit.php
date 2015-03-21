@@ -147,6 +147,7 @@ function get_plugin_version(){
 $wp_host = explode( '.', $_SERVER['HTTP_HOST'] );
 $wp_host = array_pop( $wp_host );
 define( 'WP_TKSIT_PRODUCTION', ( $wp_host == 'local' || $wp_host == 'dev' ) ? false : true );
+define( 'WP_TKSIT_SUPPORT_BTN', '<a href="http://support.trks.it/?utm_source=WordPress%20Plugin%20Admin&utm_medium=referral" target="_blank" class="help-button pull-right">Need Help?</a>' );
 
 $parsed = array_shift( ( explode( '.', $_SERVER['HTTP_HOST'] ) ) );
 $beta = substr( $parsed, 0, 4 );
@@ -156,13 +157,13 @@ if ( WP_TKSIT_PRODUCTION ) {
 
 	if ( $_SERVER['HTTP_HOST'] == 'beta.trks.it' || $beta == 'beta' ) {
 
-		define( 'WP_TRKSIT_MANAGE_URL', 'http://manage-beta.trks.it' );
+		define( 'WP_TRKSIT_MANAGE_URL', 'http://manage-beta.trks.it/?utm_source=WordPress%20Plugin%20Admin&utm_medium=referral' );
 		define( 'WP_TRKSIT_API_URL', 'http://api-beta.trks.it' );
 		define( 'WP_TRKSIT_SHORT_URL', 'http://shortener-beta.trks.it/' );
 
 	} else {
 
-		define( 'WP_TRKSIT_MANAGE_URL', 'http://manage.trks.it' );
+		define( 'WP_TRKSIT_MANAGE_URL', 'http://manage.trks.it/?utm_source=WordPress%20Plugin%20Admin&utm_medium=referral' );
 		define( 'WP_TRKSIT_API_URL', 'https://api.trks.it' );
 		define( 'WP_TRKSIT_SHORT_URL', 'http://trks.it/' );
 
@@ -170,7 +171,7 @@ if ( WP_TKSIT_PRODUCTION ) {
 
 } else {
 
-	define( 'WP_TRKSIT_MANAGE_URL', 'http://manage.trksit.local' );
+	define( 'WP_TRKSIT_MANAGE_URL', 'http://manage.trksit.local/?utm_source=WordPress%20Plugin%20Admin&utm_medium=referral' );
 	define( 'WP_TRKSIT_API_URL', 'http://api.trksit.local' );
 	define( 'WP_TRKSIT_SHORT_URL', 'http://trksit.local/' );
 
@@ -422,7 +423,7 @@ function trksit_add_pages() {
 
 	}
 
-	
+
 
 }
 

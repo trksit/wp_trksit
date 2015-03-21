@@ -35,7 +35,7 @@ $trksit_redirect_delay = '';
 if( $_GET['page'] == 'trksit-settings' ){
 	//see trksit_update_settings_redirect() in main plugin file
 	//Options are saved in action hook, then page is refreshed to update menu
-	
+
 	if( !isset( $_POST['trksit_page'] ) && empty( $_POST ) ) {
 		$trksit_analytics_id = get_option('trksit_analytics_id');
 		$trksit_public_api_key = get_option('trksit_public_api_key');
@@ -64,7 +64,7 @@ if( $_GET['page'] == 'trksit-settings' ){
 	}
 ?>
 <div class="wrap" id="trksit-wrap">
-	<h2><?php echo __( 'trks.it Settings', 'trksit_menu' ); ?></h2>
+	<h2 style="display: inline-block;"><?php echo __( 'trks.it Settings', 'trksit_menu' ); ?></h2> <?php echo WP_TKSIT_SUPPORT_BTN; ?>
 	<h2 class="nav-tab-wrapper">
 		<a href="/wp-admin/admin.php?page=trksit-settings&tab=general" class="nav-tab <?php if( ( isset( $_GET['tab'] ) && $_GET['tab'] == 'general' ) || empty( $_GET['tab'] ) ): ?>nav-tab-active<?php endif; ?>">
 			<?php _e( 'General' ); ?>
