@@ -60,26 +60,25 @@
 
 				$redirect_lookup = $wpdb->get_results( 'SELECT * FROM ' . $wpdb->prefix . 'trksit_urls WHERE url_id=' . $incoming_url_id );
 
-
 				// If destination URL exsists in wpdb result. Output redirect script.
 				if($redirect_lookup && $redirect_lookup[0]->destination_url){
 					//get the short URL code
-					$surl = $_GET['su'];
-					$domain_party = "third";
+					$surl = substr($redirect_lookup[0]->trksit_url, -5);
+					$domain_party = "3rd";
 					$dest = $redirect_lookup[0]->destination_url;
 					$domains = maybe_unserialize(get_option('trksit_domains'));
 					if(is_array($domains) && in_array($dest, $domains)){
-						$domain_party = "first";
+						$domain_party = "1st";
 					} else {
 						if(get_option('siteurl') == $dest){
-							$domain_party = "first";
+							$domain_party = "1st";
 						}
 						trksit_enforce_defaults();
 					}
 
 					if(isset($_COOKIE['trks_party'])){
 						$party = $_COOKIE['trks_party'];
-						if($party == 'first' && $domain_party == 'third'){
+						if($party == '1st' && $domain_party == '3rd'){
 							setcookie('trks_party', 'both', time()+400000);
 						}
 					} else {
@@ -264,15 +263,15 @@ if((isset($redirect_lookup) && $redirect_lookup) || $scripterror){
 				var delay = 0;
 				if(!getCookie("trks_new")){
 					// Fire an event to set it
-					_gaq.push(['_trackEvent', 'trks.it', 'New Visitor', '<?php echo $redirect_lookup[0]->destination_url; ?>', 0, true]);
+					_gaq.push(['_trackEvent', 'trksit', 'New Visitor', '<?php echo $redirect_lookup[0]->destination_url; ?>', 0, true]);
 					delay = 100;
 				}
 
 				//		pushing a custom variable & event to Google Analytics to track this clicked link
 				setTimeout(function(){
 
-				_gaq.push(['_setCustomVar', 1, 'trks.it', '<?php echo $party; ?>', 1]);
-				_gaq.push(['_trackEvent', 'trks.it', 'Clicked <?php echo $domain_party; ?> Party Link', '<?php echo $_GET['su'] . " - " . $redirect_lookup[0]->destination_url; ?>'], 0, true);
+				_gaq.push(['_setCustomVar', 1, 'trksit', '<?php echo $party; ?>', 1]);
+				_gaq.push(['_trackEvent', 'trksit', 'Clicked <?php echo $domain_party; ?> Party', '<?php echo $surl . " - " . $redirect_lookup[0]->destination_url; ?>'], 0, true);
 				}, delay);
 
 				(function() {
