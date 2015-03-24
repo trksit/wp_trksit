@@ -127,6 +127,23 @@ function trksit_enforce_defaults(){
 	}
 }
 
+add_action('admin_init', 'trksit_repair_domains');
+function trksit_repair_domains(){
+	if(!get_option('trksit_domains_upgraded')){
+		$domains = maybe_unserialize(get_option('trksit_domains'));
+		$dd = array();
+		foreach($domains as $domain){
+			if(!getDomain($domain)){
+				array_push($dd, $domain);
+			} else {
+				array_push($dd, getDomain($domain));
+			}
+		}
+		update_option('trksit_domains', serialize($dd));
+		update_option('trksit_domains_upgraded', true);
+	}
+}
+
 function getDomain($url) {
   $pieces = parse_url($url);
   $domain = isset($pieces['host']) ? $pieces['host'] : '';
