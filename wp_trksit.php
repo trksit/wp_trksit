@@ -893,7 +893,12 @@ function wp_trksit_validate_domains(){
 
 			$t_domains = maybe_unserialize( get_option( 'trksit_domains' ) );
 
-			array_push( $t_domains, getDomain($_POST['domain']) );
+			if(!getDomain($_POST['domain'])){
+				array_push($t_domains, $_POST['domain']);
+			} else {
+				array_push( $t_domains, getDomain($_POST['domain']) );
+			}
+
 			update_option( 'trksit_domains', serialize( $t_domains ) );
 
 		} else {
