@@ -200,7 +200,7 @@
 
 										for ( $i = 0; $i < count( $sources ); $i++ ) {
 
-											$val = strtolower( $sources[$i] );
+											$val = $sources[$i];
 											echo '<option value="' . $val . '">' . $sources[$i] . '</option>';
 
 										}
@@ -227,7 +227,7 @@
 
 										for ( $i = 0; $i < count( $medium ); $i++ ) {
 
-											$val = strtolower( $medium[$i] );
+											$val = $medium[$i];
 											echo '<option value="' . $val . '">' . $medium[$i] . '</option>';
 
 										}
