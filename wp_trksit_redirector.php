@@ -263,7 +263,7 @@ if((isset($redirect_lookup) && $redirect_lookup) || $scripterror){
 				var delay = 0;
 				if(!getCookie("trks_new")){
 					// Fire an event to set it
-					_gaq.push(['_trackEvent', 'trksit', 'New Visitor', '<?php echo $redirect_lookup[0]->destination_url; ?>', 0, true]);
+					_gaq.push(['_trackEvent', 'trksit', 'New Visitor', '<?php echo $surl . " - " .  $redirect_lookup[0]->destination_url; ?>', 0, true]);
 					delay = 100;
 				}
 
