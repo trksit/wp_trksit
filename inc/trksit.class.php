@@ -401,7 +401,7 @@ class trksit {
 		//Set 1st or 3rd party link, preppend to source parameter.
 		$domain_party = "3rd";
 		$domains = maybe_unserialize(get_option('trksit_domains'));
-		if(in_array($postArray['destination_url'], $domains)){
+		if(in_array(getDomain($postArray['destination_url']), $domains)){
 			$domain_party = "1st";
 		}
 

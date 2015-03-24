@@ -93,7 +93,6 @@ trksit_enforce_defaults();
 add_action('admin_init', 'trksit_enforce_defaults');
 function trksit_enforce_defaults(){
 	$sources = serialize(array('Social - Facebook','Social - Twitter','Social - Youtube','Social - LinkedIn','Social - Pinterest','Social - Online Community','Social - Blogger Outreach','Content Mktg - Blog','Content Mktg - Resources','Content Mktg - Article Library','Content Mktg - Landing Page','Content Mktg - Website Page','Content Mktg - Slideshare','Content Mktg - Prezi','Email - Promotion','Email - Newsletter','Paid - Facebook ','Paid - Twitter ','Paid - Youtube ','Paid - LinkedIn ','Paid - Other','Paid - Online to Offline ','Paid - Sponsorship ','Paid - Out of Home ','Paid - TV ','Paid - Radio'));
-	$domains = serialize(array(get_option('siteurl')));
 	$medium = serialize(array('Blog Post','Infographic','Video','Guide','Ebook','Webinar','White Paper','Presentation','Research Study','Paid Search','Display','Banner'));
 	if(!get_option('trksit_sources')){
 		update_option('trksit_sources', $sources);
@@ -104,10 +103,15 @@ function trksit_enforce_defaults(){
 		}
 	}
 	if(!get_option('trksit_domains')){
+		//$domains = serialize(array(get_option('siteurl')));
+		$siteurl = get_option('siteurl');
+		$domains = serialize(array(getDomain($siteurl)));
 		update_option('trksit_domains', $domains);
 	} else {
 		$domains_blank = maybe_unserialize(get_option('trksit_domains'));
 		if($domains_blank[0] == "" || !is_array($domains_blank)){
+			$siteurl = get_option('siteurl');
+			$domains = serialize(array(getDomain($siteurl)));
 			update_option('trksit_domains', $domains);
 		}
 	}
@@ -121,6 +125,15 @@ function trksit_enforce_defaults(){
 		}
 
 	}
+}
+
+function getDomain($url) {
+  $pieces = parse_url($url);
+  $domain = isset($pieces['host']) ? $pieces['host'] : '';
+  if (preg_match('/(?P<domain>[a-z0-9][a-z0-9\-]{1,63}\.[a-z\.]{2,6})$/i', $domain, $regs)) {
+    return $regs['domain'];
+  }
+  return false;
 }
 
 function get_plugin_version(){
@@ -863,12 +876,12 @@ function wp_trksit_validate_domains(){
 
 			$t_domains = maybe_unserialize( get_option( 'trksit_domains' ) );
 
-			array_push( $t_domains, $_POST['domain'] );
+			array_push( $t_domains, getDomain($_POST['domain']) );
 			update_option( 'trksit_domains', serialize( $t_domains ) );
 
 		} else {
 
-			$_SESSION['trksit_error'] = 'Invalid URL. Example: http://example.com';
+			$_SESSION['trksit_error'] = 'Invalid Domain. Example: example.com';
 
 		}
 

@@ -65,7 +65,7 @@
 					//get the short URL code
 					$surl = substr($redirect_lookup[0]->trksit_url, -5);
 					$domain_party = "3rd";
-					$dest = $redirect_lookup[0]->destination_url;
+					$dest = getDomain($redirect_lookup[0]->destination_url);
 					$domains = maybe_unserialize(get_option('trksit_domains'));
 					if(is_array($domains) && in_array($dest, $domains)){
 						$domain_party = "1st";
