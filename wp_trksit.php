@@ -83,7 +83,7 @@ add_action('admin_init', 'trksit_enforce_defaults');
 function trksit_enforce_defaults(){
 	// Add options if they do not previously exist
 	add_option('trksit_jquery', 0);
-	add_option('trksit_redirect_delay', 500);
+	add_option('trksit_redirect_delay', 100);
 	add_option('trksit_token', '');
 	add_option('trksit_token_expires', 1);
 
