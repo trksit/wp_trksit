@@ -593,8 +593,8 @@ function trksit_current_page() {
 /*
  * UPDATING the plugin automatically
  */
-add_action( 'init', 'trksit_github_plugin_updater_init' );
-function trksit_github_plugin_updater_init() {
+//add_action( 'init', 'trksit_github_plugin_updater_init' );
+//function trksit_github_plugin_updater_init() {
 
 	if ( is_admin() ) { // note the use of is_admin() to double check that this is happening in the admin
 
@@ -623,7 +623,7 @@ function trksit_github_plugin_updater_init() {
 
 	}
 
-}
+//}
 
 /** Increase http request timeout */
 define( 'WP_TRKSIT_CURL_TIMEOUT', 15 );
