@@ -31,7 +31,7 @@
 		}
 		if($_GET['testing'] == 'scripterror'){
 			if(isset($_GET['scriptid'])){
-				$script_id = intval($_GET['scriptid']);
+				$script_id = $_GET['scriptid'];
 			}
 			if(!isset($_GET['script_error_nonce']) || !wp_verify_nonce($_GET['script_error_nonce'], 'script_error_' . $script_id)){
 				die("Access denied");
@@ -40,13 +40,13 @@
 		}
 	}
 	// Check request method and ensure all parameters are present in return from API.
-	if( $_SERVER['REQUEST_METHOD'] == 'GET' && ( isset( $_GET['url_id'] )  ) ){ // && isset( $_GET['api_signature'] )
+	if( $_SERVER['REQUEST_METHOD'] == 'GET' && ( isset( $_GET['url_id'] ) && is_numeric($_GET['url_id'])  ) ){ // && isset( $_GET['api_signature'] )
 		// Check API Signature (Needs work! UPDATE 150317 - Does nothing!!!)
 		//if( isset($_GET['api_signature']) && $_GET['api_signature'] == $api_signature ){
 			global $wpdb;
 			if(!$scripterror){
 				$incoming_url_id = $_GET['url_id'];
-				$redirect_lookup = $wpdb->get_results( 'SELECT * FROM ' . $wpdb->prefix . 'trksit_urls WHERE url_id=' . intval($incoming_url_id) );
+				$redirect_lookup = $wpdb->get_results( 'SELECT * FROM ' . $wpdb->prefix . 'trksit_urls WHERE url_id=' . $incoming_url_id );
 				// If destination URL exsists in wpdb result. Output redirect script.
 				if($redirect_lookup && $redirect_lookup[0]->destination_url){
 					//get the short URL code
@@ -91,13 +91,13 @@
 					$redirect = $js_redir . $meta_redir;
 					//Getting all the scripts for this URL
 					if(!$scripterror){
-						$scripts_to_url = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . "trksit_scripts_to_urls WHERE url_id=" . intval($url_id));
+						$scripts_to_url = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . "trksit_scripts_to_urls WHERE url_id=" . $url_id);
 						$script_array = array();
 						foreach($scripts_to_url as $single_script){
 							$script_results = array();
 							$single_script = $wpdb->get_results("SELECT script, script_id, script_error FROM "
 								. $wpdb->prefix . "trksit_scripts WHERE script_id="
-								. intval($single_script->script_id));
+								. $single_script->script_id);
 							$script_results['script'] = $single_script[0]->script;
 							$script_results['id'] = $single_script[0]->script_id;
 							$script_results['error'] = $single_script[0]->script_error;
@@ -108,7 +108,7 @@
 					if(!$testing && !$scripterror){
 						$hit_result = $wpdb->get_results(
 							"SELECT * FROM " . $wpdb->prefix . "trksit_hits WHERE url_id="
-							. intval($url_id) . " AND hit_date='" . $today . "'"
+							. $url_id . " AND hit_date='" . $today . "'"
 						);
 						$hit_result_count = count($hit_result);
 						if($hit_result_count === 1){
@@ -333,7 +333,7 @@ if((isset($redirect_lookup) && $redirect_lookup) || $scripterror){
 		} else {
 			//scrit execute/debug only outputs the script being debugged
 			$error_script = $wpdb->get_results("SELECT script FROM "
-				. $wpdb->prefix . "trksit_scripts WHERE script_id=" . intval($script_id) . " LIMIT 1");
+				. $wpdb->prefix . "trksit_scripts WHERE script_id=" . $script_id . " LIMIT 1");
 			if($error_script){
 				$script_out = stripslashes(htmlspecialchars_decode($error_script[0]->script));
 				$script_out = stripslashes($script_out);
