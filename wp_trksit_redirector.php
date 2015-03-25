@@ -2,26 +2,20 @@
 	if(!isset($_COOKIE['trksit_new'])){
 		setcookie("trks_new", "new_user", time()+400000);
 	}
-
 	// Setting cache-control headers
 	header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
 	header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0',false);
 	header("Pragma: no-cache");
-
 	//Forward to 404 page if id is not set.
 	if(!isset($_GET['url_id'])){
 		$four04 = '/index.php?error404=true';
 		echo '<script type="text/javascript">setTimeout(function(){window.location.href = "'.$four04.'"},0);</script>';
 		echo '<meta http-equiv="refresh" content="2; url='.$four04.'">';
 	}
-
-
 	//Getting options
 	$analytics_id = get_option('trksit_analytics_id');
 	$redirect_delay = get_option('trksit_redirect_delay');
 	$redirect = '';
-
-
 	//THIS SHOULD BE GOTTEN FROM THE DB
 	//// 15031 - removed all api signature checks because they did not appear to be doing jack. - dbrong
 	//$api_signature = get_option('trksit_public_api_key');
@@ -31,7 +25,6 @@
 	$testing = false;	// SET TO TRUE TO DISABLE REDIRECT!!!
 	$scripterror = false;
 	$script_id = null;
-
 	if(isset($_GET['testing'])){
 		if($_GET['testing'] == 'test'){
 			$testing = true;
@@ -46,20 +39,14 @@
 			$scripterror = true;
 		}
 	}
-
 	// Check request method and ensure all parameters are present in return from API.
 	if( $_SERVER['REQUEST_METHOD'] == 'GET' && ( isset( $_GET['url_id'] )  ) ){ // && isset( $_GET['api_signature'] )
-
 		// Check API Signature (Needs work! UPDATE 150317 - Does nothing!!!)
 		//if( isset($_GET['api_signature']) && $_GET['api_signature'] == $api_signature ){
-
 			global $wpdb;
 			if(!$scripterror){
-
 				$incoming_url_id = $_GET['url_id'];
-
 				$redirect_lookup = $wpdb->get_results( 'SELECT * FROM ' . $wpdb->prefix . 'trksit_urls WHERE url_id=' . intval($incoming_url_id) );
-
 				// If destination URL exsists in wpdb result. Output redirect script.
 				if($redirect_lookup && $redirect_lookup[0]->destination_url){
 					//get the short URL code
@@ -75,7 +62,6 @@
 						}
 						trksit_enforce_defaults();
 					}
-
 					if(isset($_COOKIE['trks_party'])){
 						$party = $_COOKIE['trks_party'];
 						if($party == '1st' && $domain_party == '3rd'){
@@ -85,13 +71,11 @@
 						setcookie('trks_party', $domain_party, time()+400000);
 						$party = $domain_party;
 					}
-
 					if( !isset($_COOKIE['original_source']) ){
 						original_cookies(false, true);
 					} else {
 						converting_cookies(false, true);
 					}
-
 					//Check for transient that is set when a link is not in the database
 					//If found, API call to revert the flag set at trks.it
 					if(get_transient('trksit_404_' . $surl)){
@@ -99,16 +83,12 @@
 						$flags_set = $trksit->wp_trksit_setMissingFlags($surl, true);
 						delete_transient( 'trksit_404_' . $surl );
 					}
-
 					//Set redirect URLs
 					$js_redir = '<script type="text/javascript">setTimeout(function(){window.location.href = "'	. $redirect_lookup[0]->destination_url . '"},' . $redirect_delay . ');</script>';
 					$meta_redir = '<meta http-equiv="refresh" content="2; url='.$redirect_lookup[0]->destination_url.'">';
-
 					$url_id = $redirect_lookup[0]->url_id;
 					$today = date('Y-m-d');
-
 					$redirect = $js_redir . $meta_redir;
-
 					//Getting all the scripts for this URL
 					if(!$scripterror){
 						$scripts_to_url = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . "trksit_scripts_to_urls WHERE url_id=" . intval($url_id));
@@ -124,7 +104,6 @@
 							array_push($script_array, $script_results);
 						}
 					}
-
 					//Do not increment hit counter if testing link or debugging javascript
 					if(!$testing && !$scripterror){
 						$hit_result = $wpdb->get_results(
@@ -132,9 +111,7 @@
 							. intval($url_id) . " AND hit_date='" . $today . "'"
 						);
 						$hit_result_count = count($hit_result);
-
 						if($hit_result_count === 1){
-
 							$update_results = $wpdb->query(
 								$wpdb->prepare(
 									"UPDATE " . $wpdb->prefix ."trksit_hits
@@ -144,11 +121,9 @@
 									$url_id, $today
 								)
 							);
-
 							if($update_results){
 								$redirect = $js_redir . $meta_redir;
 							}
-
 						} elseif($hit_result_count === 0){
 							$wpdb->insert(
 								$wpdb->prefix . 'trksit_hits',
@@ -159,8 +134,6 @@
 								),
 								array( '%d', '%d','%s' )
 							);
-
-
 						} else { die; }
 					} else {
 						//testing redirects, script_error should not
@@ -168,17 +141,13 @@
 							$redirect = 'no';
 						}
 					}
-
 				} else {
 					$trksit = new trksit();
 					$surl = $_GET['su'];
-
 					//set transient to let us know that a 404 has ocurred with this short URL
 					set_transient('trksit_404_'.$surl, '404', 60*60*24*30);
-
 					//flag the URL in the API
 					$flags_set = $trksit->wp_trksit_setMissingFlags($surl);
-
 					//If we have a redirect URL returned use it, otherwise 404
 					if($redir_url = json_decode($flags_set['body'])->url){
 						$four04 = $redir_url;
@@ -192,9 +161,7 @@
 				$redirect = 'no';
 			}
 		//}else{ die; }
-
 	}else{ die("No URL ID or API Signature received"); }
-
 if((isset($redirect_lookup) && $redirect_lookup) || $scripterror){
 ?>
 <!DOCTYPE html>
@@ -207,27 +174,21 @@ if((isset($redirect_lookup) && $redirect_lookup) || $scripterror){
 	<?php
 	if(!$scripterror): ?>
 		<meta name="description" content="<?php echo $redirect_lookup[0]->meta_description; ?>" />
-
 		<link rel="canonical" href="<?php echo $redirect_lookup[0]->destination_url; ?>">
-
 		<?php
 		//Get the Open Graph data & unseralize it
 		$ogArray = unserialize($redirect_lookup[0]->og_data);
-
 		foreach($ogArray as $key => $value){
 			echo '<meta property="' . $key . '" content="' . $value . '" />';
 		}
-
 		//if the open graph image is NOT set, we need to set it
 		if(!isset($ogArray['og:image'])){
 			echo '<meta property="og:image" content="' . $redirect_lookup[0]->meta_image . '" />';
 		}
-
 		//if the open graph URL is NOT set, we need to set it
 		if(!isset($ogArray['og:url'])){
 			echo '<meta property="og:url" content="' . $redirect_lookup[0]->destination_url . '" />';
 		}
-
 		//skip analytics if testing
 		if(!$testing):
 			if(!is_null($analytics_id) && $analytics_id != ''):
@@ -245,7 +206,6 @@ if((isset($redirect_lookup) && $redirect_lookup) || $scripterror){
 					}
 					return "";
 				}
-
 				//always set the GA account
 				var _gaq = _gaq || [];
 				_gaq.push(['_setAccount', '<?php echo $analytics_id; ?>']);
@@ -254,11 +214,9 @@ if((isset($redirect_lookup) && $redirect_lookup) || $scripterror){
 					echo "_gaq.push(['_setSessionCookieTimeout', 0])";
 				}
 				?>
-
 				//REQUIRED FOR LOCAL DEVELOPMENT
 				_gaq.push(['_setDomainName', 'none']);
 				_gaq.push(['_setAllowLinker', true]);
-
 				//if they haven't been here.. push an event to set their GA cookies
 				var delay = 0;
 				if(!getCookie("trks_new")){
@@ -266,14 +224,11 @@ if((isset($redirect_lookup) && $redirect_lookup) || $scripterror){
 					_gaq.push(['_trackEvent', 'trksit', 'New Visitor', '<?php echo $surl . " - " .  $redirect_lookup[0]->destination_url; ?>', 0, true]);
 					delay = 100;
 				}
-
 				//		pushing a custom variable & event to Google Analytics to track this clicked link
 				setTimeout(function(){
-
 				_gaq.push(['_setCustomVar', 1, 'trksit', '<?php echo $party; ?>', 1]);
 				_gaq.push(['_trackEvent', 'trksit', 'Clicked <?php echo $domain_party; ?> Party', '<?php echo $surl . " - " . $redirect_lookup[0]->destination_url; ?>'], 0, true);
 				}, delay);
-
 				(function() {
 					var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
 					ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
@@ -284,7 +239,6 @@ if((isset($redirect_lookup) && $redirect_lookup) || $scripterror){
 			endif;
 		endif; // !$testing
 	endif; // !$scripterror ?>
-
 	<style>
 		#holdup {
 			  color: #666;
@@ -298,37 +252,29 @@ if((isset($redirect_lookup) && $redirect_lookup) || $scripterror){
 		/**
 		* This business will not work in IE9 <
 		**/
-
 		@keyframes fadein {
 			  0% { opacity: 0; }
 			  7% { opacity: 0; }
 			  100% { opacity: 1; }
 		}
-
 		/* Firefox < 16 */
 		@-moz-keyframes fadein {
 			  0% { opacity: 0; }
 			  7% { opacity: 0; }
 			  100% { opacity: 1; }
-
 		}
-
 		/* Safari, Chrome and Opera > 12.1 */
 		@-webkit-keyframes fadein {
 			  0% { opacity: 0; }
 			  7% { opacity: 0; }
 			  100% { opacity: 1; }
-
 		}
-
 		/* Internet Explorer */
 		@-ms-keyframes fadein {
 			  0% { opacity: 0; }
 			  7% { opacity: 0; }
 			  100% { opacity: 1; }
-
 		}
-
 		/* Opera < 12.1 */
 		@-o-keyframes fadein {
 			  0% { opacity: 0; }
@@ -348,10 +294,8 @@ if((isset($redirect_lookup) && $redirect_lookup) || $scripterror){
 			error: error,
 			id: id
 		};
-
 		setTimeout(function(){ doAjax(ajaxurl, error, id); }, 0);
 	}
-
 	function doAjax(url, error, id) {
 		var xmlhttp = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
 		xmlhttp.open("POST", url, true);
@@ -368,7 +312,6 @@ if((isset($redirect_lookup) && $redirect_lookup) || $scripterror){
 		<code id='script_error_message'></code>
 		<p>Information on using the console <a href='http://codex.wordpress.org/Using_Your_Browser_to_Diagnose_JavaScript_Errors' target='_blank'>here</a>
 	<?php endif; ?>
-
 		<?php
 		//testing outputs user defined scripts
 		if(!$scripterror){
@@ -408,7 +351,6 @@ if((isset($redirect_lookup) && $redirect_lookup) || $scripterror){
 			}
 		}
 		?>
-
 	<?php if(!$testing && !$scripterror){ echo $redirect; } ?>
 </body>
 </html>
