@@ -4,7 +4,7 @@ Plugin Name: trks.it for WordPress
 Plugin URI: https://get.trks.it?utm_source=WordPress%20Admin%20Link
 Description: Ever wonder how many people click links that lead to 3rd party sites from your social media platforms? trks.it is a WordPress plugin for tracking social media engagement.
 Author: trks.it
-Version: 1.150324
+Version: 1.150325
 Author URI: http://get.trks.it?utm_source=WordPress%20Admin%20Link
  */
 
@@ -93,7 +93,6 @@ trksit_enforce_defaults();
 add_action('admin_init', 'trksit_enforce_defaults');
 function trksit_enforce_defaults(){
 	$sources = serialize(array('Social - Facebook','Social - Twitter','Social - Youtube','Social - LinkedIn','Social - Pinterest','Social - Online Community','Social - Blogger Outreach','Content Mktg - Blog','Content Mktg - Resources','Content Mktg - Article Library','Content Mktg - Landing Page','Content Mktg - Website Page','Content Mktg - Slideshare','Content Mktg - Prezi','Email - Promotion','Email - Newsletter','Paid - Facebook ','Paid - Twitter ','Paid - Youtube ','Paid - LinkedIn ','Paid - Other','Paid - Online to Offline ','Paid - Sponsorship ','Paid - Out of Home ','Paid - TV ','Paid - Radio'));
-	$domains = serialize(array(get_option('siteurl')));
 	$medium = serialize(array('Blog Post','Infographic','Video','Guide','Ebook','Webinar','White Paper','Presentation','Research Study','Paid Search','Display','Banner'));
 	if(!get_option('trksit_sources')){
 		update_option('trksit_sources', $sources);
@@ -104,10 +103,15 @@ function trksit_enforce_defaults(){
 		}
 	}
 	if(!get_option('trksit_domains')){
+		//$domains = serialize(array(get_option('siteurl')));
+		$siteurl = get_option('siteurl');
+		$domains = serialize(array(getDomain($siteurl)));
 		update_option('trksit_domains', $domains);
 	} else {
 		$domains_blank = maybe_unserialize(get_option('trksit_domains'));
 		if($domains_blank[0] == "" || !is_array($domains_blank)){
+			$siteurl = get_option('siteurl');
+			$domains = serialize(array(getDomain($siteurl)));
 			update_option('trksit_domains', $domains);
 		}
 	}
@@ -121,6 +125,32 @@ function trksit_enforce_defaults(){
 		}
 
 	}
+}
+
+add_action('admin_init', 'trksit_repair_domains');
+function trksit_repair_domains(){
+	if(!get_option('trksit_domains_upgraded')){
+		$domains = maybe_unserialize(get_option('trksit_domains'));
+		$dd = array();
+		foreach($domains as $domain){
+			if(!getDomain($domain)){
+				array_push($dd, $domain);
+			} else {
+				array_push($dd, getDomain($domain));
+			}
+		}
+		update_option('trksit_domains', serialize($dd));
+		update_option('trksit_domains_upgraded', true);
+	}
+}
+
+function getDomain($url) {
+  $pieces = parse_url($url);
+  $domain = isset($pieces['host']) ? $pieces['host'] : '';
+  if (preg_match('/(?P<domain>[a-z0-9][a-z0-9\-]{1,63}\.[a-z\.]{2,6})$/i', $domain, $regs)) {
+    return $regs['domain'];
+  }
+  return false;
 }
 
 function get_plugin_version(){
@@ -863,12 +893,17 @@ function wp_trksit_validate_domains(){
 
 			$t_domains = maybe_unserialize( get_option( 'trksit_domains' ) );
 
-			array_push( $t_domains, $_POST['domain'] );
+			if(!getDomain($_POST['domain'])){
+				array_push($t_domains, $_POST['domain']);
+			} else {
+				array_push( $t_domains, getDomain($_POST['domain']) );
+			}
+
 			update_option( 'trksit_domains', serialize( $t_domains ) );
 
 		} else {
 
-			$_SESSION['trksit_error'] = 'Invalid URL. Example: http://example.com';
+			$_SESSION['trksit_error'] = 'Invalid Domain. Example: example.com';
 
 		}
 
