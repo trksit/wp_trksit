@@ -289,6 +289,9 @@ function trksit_load_scripts() {
 		wp_register_script( 'trksit-main-js', plugin_dir_url(__FILE__) . '/js/main.js', array( 'jquery' ), '1.2.1' );
 		wp_register_script( 'trksit-jquery-image-picker', plugin_dir_url(__FILE__) . 'js/lib/image-picker.min.js', array( 'jquery' ), '0.1.3', true );
 
+		//wp_localize_script to set the path of the plugin accessible by javascript
+		wp_localize_script('trksit-main-js', 'zc_path', array( 'url' => plugin_dir_url(__FILE__) . 'js/swf/ZeroClipboard.swf'));
+
 		wp_enqueue_style( 'trksit-bootstrap' );
 		wp_enqueue_style( 'trksit-styles' );
 		wp_enqueue_script( 'trksit-bootstrap-js' );

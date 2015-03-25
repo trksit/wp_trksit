@@ -1,5 +1,4 @@
 jQuery( document ).ready( function( $ ){
-
 	// HELP POPOVERS
 	var $help_pops = $( '.trksit-help' );
 
@@ -91,8 +90,7 @@ jQuery( document ).ready( function( $ ){
 	}
 
 	// Set location of SWF File
-    // TODO: This should not be hard coded, but we need to figure out where the plugin is installed to.
-	ZeroClipboard.config( { swfPath: '/wp-content/plugins/wp_trksit-master/js/swf/ZeroClipboard.swf' } );
+	ZeroClipboard.config( { swfPath: zc_path.url  } );
 
 	// ZeroClipboard functions for non-generated items
 	if ( hasFlash ) {
