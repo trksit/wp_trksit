@@ -21,7 +21,7 @@ if ( ( isset( $_GET['view'] ) && $_GET['view'] == 'link-detail' ) && is_numeric(
 			$trksit->wp_trksit_saveURL( $wpdb, $_POST, true, $_GET['linkid'] );
 		}
 		$link_id = $_GET['linkid'];
-		$url_details = $wpdb->get_results( "SELECT * FROM " . $wpdb->prefix . "trksit_urls WHERE url_id = " . $link_id . "" );
+		$url_details = $wpdb->get_results( "SELECT * FROM " . $wpdb->prefix . "trksit_urls WHERE url_id = " . intval($link_id) . "" );
 		if ( count( $url_details === 1 ) ) {
 			$trksit->wp_trksit_parseURL( $url_details[0]->destination_url );
 			$og_data = unserialize ( $url_details[0]->og_data );
@@ -147,7 +147,7 @@ if ( ( isset( $_GET['view'] ) && $_GET['view'] == 'link-detail' ) && is_numeric(
 						<h3 class="hndle"><span><?php _e( 'Attached Scripts' ); ?></span></h3>
 						<div class="inside">
 						<?php
-							$active_scripts = $wpdb->get_results( "SELECT script_id FROM " . $wpdb->prefix . "trksit_scripts_to_urls WHERE url_id=" . $url_details[0]->url_id );
+							$active_scripts = $wpdb->get_results( "SELECT script_id FROM " . $wpdb->prefix . "trksit_scripts_to_urls WHERE url_id=" . intval($url_details[0]->url_id) );
 							$active_scripts_array = array();
 							foreach ( $active_scripts as $active_script ) {
 								$active_scripts_array[] = $active_script->script_id;

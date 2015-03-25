@@ -58,7 +58,7 @@
 
 				$incoming_url_id = $_GET['url_id'];
 
-				$redirect_lookup = $wpdb->get_results( 'SELECT * FROM ' . $wpdb->prefix . 'trksit_urls WHERE url_id=' . $incoming_url_id );
+				$redirect_lookup = $wpdb->get_results( 'SELECT * FROM ' . $wpdb->prefix . 'trksit_urls WHERE url_id=' . intval($incoming_url_id) );
 
 				// If destination URL exsists in wpdb result. Output redirect script.
 				if($redirect_lookup && $redirect_lookup[0]->destination_url){
@@ -111,13 +111,13 @@
 
 					//Getting all the scripts for this URL
 					if(!$scripterror){
-						$scripts_to_url = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . "trksit_scripts_to_urls WHERE url_id=" . $url_id);
+						$scripts_to_url = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . "trksit_scripts_to_urls WHERE url_id=" . intval($url_id));
 						$script_array = array();
 						foreach($scripts_to_url as $single_script){
 							$script_results = array();
 							$single_script = $wpdb->get_results("SELECT script, script_id, script_error FROM "
 								. $wpdb->prefix . "trksit_scripts WHERE script_id="
-								. $single_script->script_id);
+								. intval($single_script->script_id));
 							$script_results['script'] = $single_script[0]->script;
 							$script_results['id'] = $single_script[0]->script_id;
 							$script_results['error'] = $single_script[0]->script_error;
@@ -129,7 +129,7 @@
 					if(!$testing && !$scripterror){
 						$hit_result = $wpdb->get_results(
 							"SELECT * FROM " . $wpdb->prefix . "trksit_hits WHERE url_id="
-							. $url_id . " AND hit_date='" . $today . "'"
+							. intval($url_id) . " AND hit_date='" . $today . "'"
 						);
 						$hit_result_count = count($hit_result);
 
@@ -390,7 +390,7 @@ if((isset($redirect_lookup) && $redirect_lookup) || $scripterror){
 		} else {
 			//scrit execute/debug only outputs the script being debugged
 			$error_script = $wpdb->get_results("SELECT script FROM "
-				. $wpdb->prefix . "trksit_scripts WHERE script_id=" . $script_id . " LIMIT 1");
+				. $wpdb->prefix . "trksit_scripts WHERE script_id=" . intval($script_id) . " LIMIT 1");
 			if($error_script){
 				$script_out = stripslashes(htmlspecialchars_decode($error_script[0]->script));
 				$script_out = stripslashes($script_out);
