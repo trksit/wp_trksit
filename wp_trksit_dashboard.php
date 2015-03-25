@@ -21,7 +21,7 @@ if ( ( isset( $_GET['view'] ) && $_GET['view'] == 'link-detail' ) && is_numeric(
 			$trksit->wp_trksit_saveURL( $wpdb, $_POST, true, $_GET['linkid'] );
 		}
 		$link_id = $_GET['linkid'];
-		$url_details = $wpdb->get_results( "SELECT * FROM " . $wpdb->prefix . "trksit_urls WHERE url_id = " . intval($link_id) . "" );
+		$url_details = $wpdb->get_results( "SELECT * FROM " . $wpdb->prefix . "trksit_urls WHERE url_id = " . $link_id . "" );
 		if ( count( $url_details === 1 ) ) {
 			$trksit->wp_trksit_parseURL( $url_details[0]->destination_url );
 			$og_data = unserialize ( $url_details[0]->og_data );
