@@ -431,7 +431,12 @@ class WP_GitHub_Updater {
 		$fail  = __( 'The plugin has been updated, but could not be reactivated. Please reactivate it manually.', 'github_plugin_updater' );
 		$success = __( 'Plugin reactivated successfully.', 'github_plugin_updater' );
 		echo is_wp_error( $activate ) ? $fail : $success;
-		return $result;
 
+		require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+		if ( is_plugin_active($this->config['slug']) ) {
+			do_action('activate_' . $this->config['slug']);
+		}
+
+		return $result;
 	}
 }
