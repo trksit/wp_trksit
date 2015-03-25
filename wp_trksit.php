@@ -4,7 +4,7 @@ Plugin Name: trks.it for WordPress
 Plugin URI: https://get.trks.it?utm_source=WordPress%20Admin%20Link
 Description: Ever wonder how many people click links that lead to 3rd party sites from your social media platforms? trks.it is a WordPress plugin for tracking social media engagement.
 Author: trks.it
-Version: 1.150325.1
+Version: 1.150325.2
 Author URI: http://get.trks.it?utm_source=WordPress%20Admin%20Link
  */
 
@@ -67,11 +67,6 @@ function trksit_Install(){
 		ENGINE = InnoDB
 		$charset_collate;";
 
-	update_option('trksit_jquery', 0);
-	update_option('trksit_redirect_delay', 500);
-	update_option('trksit_token', '');
-	update_option('trksit_token_expires', 1);
-
 	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
 	dbDelta( $table_1_sql ); // This is a WordPress function, cool huh?
@@ -79,11 +74,19 @@ function trksit_Install(){
 	dbDelta( $table_3_sql );
 	dbDelta( $table_4_sql );
 
-	trksit_enforce_defaults();
-	trksit_repair_domains();
+	//trksit_enforce_defaults();
+	//trksit_repair_domains();
 }
-//add_action('admin_init', 'trksit_enforce_defaults');
+
+// TODO: Fix the github updater so that the install function runs from the recently downloaded update, not the old version
+add_action('admin_init', 'trksit_enforce_defaults');
 function trksit_enforce_defaults(){
+	// Add options if they do not previously exist
+	add_option('trksit_jquery', 0);
+	add_option('trksit_redirect_delay', 500);
+	add_option('trksit_token', '');
+	add_option('trksit_token_expires', 1);
+
 	$sources = serialize(array('Social - Facebook','Social - Twitter','Social - Youtube','Social - LinkedIn','Social - Pinterest','Social - Online Community','Social - Blogger Outreach','Content Mktg - Blog','Content Mktg - Resources','Content Mktg - Article Library','Content Mktg - Landing Page','Content Mktg - Website Page','Content Mktg - Slideshare','Content Mktg - Prezi','Email - Promotion','Email - Newsletter','Paid - Facebook ','Paid - Twitter ','Paid - Youtube ','Paid - LinkedIn ','Paid - Other','Paid - Online to Offline ','Paid - Sponsorship ','Paid - Out of Home ','Paid - TV ','Paid - Radio'));
 	$medium = serialize(array('Blog Post','Infographic','Video','Guide','Ebook','Webinar','White Paper','Presentation','Research Study','Paid Search','Display','Banner'));
 	if(!get_option('trksit_sources')){
@@ -119,7 +122,7 @@ function trksit_enforce_defaults(){
 	}
 }
 
-//add_action('admin_init', 'trksit_repair_domains');
+add_action('admin_init', 'trksit_repair_domains');
 function trksit_repair_domains(){
 	if ( !get_option('trksit_domains_upgraded') && get_option('trksit_domains') ) {
 		$domains = maybe_unserialize( get_option( 'trksit_domains' ) );
