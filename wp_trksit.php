@@ -11,22 +11,13 @@ Author URI: http://get.trks.it?utm_source=WordPress%20Admin%20Link
 // Installation Script
 register_activation_hook( __FILE__, 'trksit_Install' );
 function trksit_Install(){
-
 	global $wpdb;
-
 	$charset_collate = '';
 
 	if ( ! empty($wpdb->charset) )
 		$charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
 	if ( ! empty($wpdb->collate) )
 		$charset_collate .= " COLLATE $wpdb->collate";
-
-	$trksit = new trksit();
-	/*$active = $trksit->wp_trksit_user_is_active();
-	if(is_wp_error($active)){
-		echo "<code>trks.it API unavailable.  Plugin can not be activated.</code>";
-		exit;
-	}*/
 
 	$table_1_name = $wpdb->prefix . "trksit_urls";
 	$table_1_sql = "CREATE TABLE $table_1_name (
@@ -46,51 +37,52 @@ function trksit_Install(){
 		ENGINE = InnoDB
 		$charset_collate;";
 
-$table_2_name = $wpdb->prefix . "trksit_hits";
-$table_2_sql = "CREATE TABLE $table_2_name (
-	hit_count INT(10) unsigned NOT NULL,
-	url_id INT(10) unsigned NOT NULL,
-	hit_date DATE DEFAULT '0000-00-00' NOT NULL,
-	PRIMARY KEY  (url_id, hit_date))
-	ENGINE = InnoDB
-	$charset_collate;";
+	$table_2_name = $wpdb->prefix . "trksit_hits";
+	$table_2_sql = "CREATE TABLE $table_2_name (
+		hit_count INT(10) unsigned NOT NULL,
+		url_id INT(10) unsigned NOT NULL,
+		hit_date DATE DEFAULT '0000-00-00' NOT NULL,
+		PRIMARY KEY  (url_id, hit_date))
+		ENGINE = InnoDB
+		$charset_collate;";
 
-$table_3_name = $wpdb->prefix . "trksit_scripts";
-$table_3_sql = "CREATE TABLE $table_3_name (
-	script_id INT(10) unsigned NOT NULL AUTO_INCREMENT,
-	date_created DATE DEFAULT '0000-00-00' NOT NULL,
-	label VARCHAR(255) DEFAULT '' NOT NULL,
-	script TEXT DEFAULT '' NOT NULL,
-	platform VARCHAR(25) DEFAULT 'Google' NOT NULL,
-	script_error tinyint(1) NOT NULL DEFAULT '0',
-	PRIMARY KEY  script_id (script_id))
-	ENGINE = InnoDB
-	$charset_collate;";
+	$table_3_name = $wpdb->prefix . "trksit_scripts";
+	$table_3_sql = "CREATE TABLE $table_3_name (
+		script_id INT(10) unsigned NOT NULL AUTO_INCREMENT,
+		date_created DATE DEFAULT '0000-00-00' NOT NULL,
+		label VARCHAR(255) DEFAULT '' NOT NULL,
+		script TEXT DEFAULT '' NOT NULL,
+		platform VARCHAR(25) DEFAULT 'Google' NOT NULL,
+		script_error tinyint(1) NOT NULL DEFAULT '0',
+		PRIMARY KEY  script_id (script_id))
+		ENGINE = InnoDB
+		$charset_collate;";
 
-$table_4_name = $wpdb->prefix . "trksit_scripts_to_urls";
-$table_4_sql = "CREATE TABLE $table_4_name (
-	assignment_id INT(10) unsigned NOT NULL AUTO_INCREMENT,
-	script_id INT(10) unsigned NOT NULL,
-	url_id INT NOT NULL,
-	PRIMARY KEY  (assignment_id, script_id, url_id))
-	ENGINE = InnoDB
-	$charset_collate;";
+	$table_4_name = $wpdb->prefix . "trksit_scripts_to_urls";
+	$table_4_sql = "CREATE TABLE $table_4_name (
+		assignment_id INT(10) unsigned NOT NULL AUTO_INCREMENT,
+		script_id INT(10) unsigned NOT NULL,
+		url_id INT NOT NULL,
+		PRIMARY KEY  (assignment_id, script_id, url_id))
+		ENGINE = InnoDB
+		$charset_collate;";
 
-update_option('trksit_jquery', 0);
-update_option('trksit_redirect_delay', 500);
-update_option('trksit_token', '');
-update_option('trksit_token_expires', 1);
+	update_option('trksit_jquery', 0);
+	update_option('trksit_redirect_delay', 500);
+	update_option('trksit_token', '');
+	update_option('trksit_token_expires', 1);
 
-require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
-dbDelta( $table_1_sql ); // This is a WordPress function, cool huh?
-dbDelta( $table_2_sql );
-dbDelta( $table_3_sql );
-dbDelta( $table_4_sql );
+	dbDelta( $table_1_sql ); // This is a WordPress function, cool huh?
+	dbDelta( $table_2_sql );
+	dbDelta( $table_3_sql );
+	dbDelta( $table_4_sql );
 
-trksit_enforce_defaults();
+	trksit_enforce_defaults();
+	trksit_repair_domains();
 }
-add_action('admin_init', 'trksit_enforce_defaults');
+//add_action('admin_init', 'trksit_enforce_defaults');
 function trksit_enforce_defaults(){
 	$sources = serialize(array('Social - Facebook','Social - Twitter','Social - Youtube','Social - LinkedIn','Social - Pinterest','Social - Online Community','Social - Blogger Outreach','Content Mktg - Blog','Content Mktg - Resources','Content Mktg - Article Library','Content Mktg - Landing Page','Content Mktg - Website Page','Content Mktg - Slideshare','Content Mktg - Prezi','Email - Promotion','Email - Newsletter','Paid - Facebook ','Paid - Twitter ','Paid - Youtube ','Paid - LinkedIn ','Paid - Other','Paid - Online to Offline ','Paid - Sponsorship ','Paid - Out of Home ','Paid - TV ','Paid - Radio'));
 	$medium = serialize(array('Blog Post','Infographic','Video','Guide','Ebook','Webinar','White Paper','Presentation','Research Study','Paid Search','Display','Banner'));
@@ -127,19 +119,19 @@ function trksit_enforce_defaults(){
 	}
 }
 
-add_action('admin_init', 'trksit_repair_domains');
+//add_action('admin_init', 'trksit_repair_domains');
 function trksit_repair_domains(){
-	if ( !get_option('trksit_domains_upgraded') ) {
+	if ( !get_option('trksit_domains_upgraded') && get_option('trksit_domains') ) {
 		$domains = maybe_unserialize( get_option( 'trksit_domains' ) );
 		if ( is_array($domains) && count($domains) > 0 ) {
 			$new_domains = array();
 
 			foreach ( $domains as $domain ) {
-				$new_domains[] = trksit_getDomains($domain);
+				$new_domains = array_merge($new_domains, trksit_getDomains($domain));
 			}
 
 			if ( is_array($new_domains) && count($new_domains) > 0 ){
-				$new_domains = array_merge($t_domains, $new_domains); // merge the existing with new
+				$new_domains = array_merge($domains, $new_domains); // merge the existing with new
 				$new_domains = array_unique($new_domains); // don't allow duplicates
 				update_option( 'trksit_domains', serialize( $new_domains ) );
 				update_option( 'trksit_domains_upgraded', true );
@@ -201,8 +193,8 @@ function trksit_is_valid_domain_name($domain) {
     return false;
 }
 
-add_action( 'init', 'wp_trksit_validate_domains' );
-function wp_trksit_validate_domains() {
+add_action( 'init', 'wp_trksit_add_new_domain' );
+function wp_trksit_add_new_domain() {
 	if ( isset( $_GET['tab'] ) && $_GET['tab'] == 'domains' && isset( $_POST['domain_submit'] ) ) {
 		if ( $_POST['domain'] != '') {
 			$t_domains = maybe_unserialize( get_option( 'trksit_domains' ) );
@@ -220,7 +212,7 @@ function wp_trksit_validate_domains() {
 	}
 }
 
-function get_plugin_version(){
+function get_plugin_version() {
 	$plugin_data = get_plugin_data( __FILE__ );
 	$plugin_version = $plugin_data['Version'];
 	return $plugin_version;
