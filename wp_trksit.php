@@ -4,7 +4,7 @@ Plugin Name: trks.it for WordPress
 Plugin URI: https://get.trks.it?utm_source=WordPress%20Admin%20Link
 Description: Ever wonder how many people click links that lead to 3rd party sites from your social media platforms? trks.it is a WordPress plugin for tracking social media engagement.
 Author: trks.it
-Version: 1.150325
+Version: 1.150325.1
 Author URI: http://get.trks.it?utm_source=WordPress%20Admin%20Link
  */
 
@@ -105,13 +105,13 @@ function trksit_enforce_defaults(){
 	if(!get_option('trksit_domains')){
 		//$domains = serialize(array(get_option('siteurl')));
 		$siteurl = get_option('siteurl');
-		$domains = serialize(array(getDomain($siteurl)));
+		$domains = serialize( trksit_getDomains($siteurl) );
 		update_option('trksit_domains', $domains);
 	} else {
 		$domains_blank = maybe_unserialize(get_option('trksit_domains'));
 		if($domains_blank[0] == "" || !is_array($domains_blank)){
 			$siteurl = get_option('siteurl');
-			$domains = serialize(array(getDomain($siteurl)));
+			$domains = serialize( trksit_getDomains($siteurl) );
 			update_option('trksit_domains', $domains);
 		}
 	}
@@ -129,28 +129,95 @@ function trksit_enforce_defaults(){
 
 add_action('admin_init', 'trksit_repair_domains');
 function trksit_repair_domains(){
-	if(!get_option('trksit_domains_upgraded')){
-		$domains = maybe_unserialize(get_option('trksit_domains'));
-		$dd = array();
-		foreach($domains as $domain){
-			if(!getDomain($domain)){
-				array_push($dd, $domain);
+	if ( !get_option('trksit_domains_upgraded') ) {
+		$domains = maybe_unserialize( get_option( 'trksit_domains' ) );
+		if ( is_array($domains) && count($domains) > 0 ) {
+			$new_domains = array();
+
+			foreach ( $domains as $domain ) {
+				$new_domains[] = trksit_getDomains($domain);
+			}
+
+			if ( is_array($new_domains) && count($new_domains) > 0 ){
+				$new_domains = array_merge($t_domains, $new_domains); // merge the existing with new
+				$new_domains = array_unique($new_domains); // don't allow duplicates
+				update_option( 'trksit_domains', serialize( $new_domains ) );
+				update_option( 'trksit_domains_upgraded', true );
 			} else {
-				array_push($dd, getDomain($domain));
+				delete_option( 'trksit_domains' );
+				delete_option( 'trksit_domains_upgraded' );
 			}
 		}
-		update_option('trksit_domains', serialize($dd));
-		update_option('trksit_domains_upgraded', true);
 	}
 }
 
-function getDomain($url) {
-  $pieces = parse_url($url);
-  $domain = isset($pieces['host']) ? $pieces['host'] : '';
-  if (preg_match('/(?P<domain>[a-z0-9][a-z0-9\-]{1,63}\.[a-z\.]{2,6})$/i', $domain, $regs)) {
-    return $regs['domain'];
-  }
-  return false;
+function trksit_getDomains($url) { // used for converting a URL OR DOMAIN into a domain
+	// This is pretty messy.  It goes through a few checks to make sure the domain is valid by converting it from/to a url then back to a domain
+	
+	$domain = '';
+
+	if ( filter_var($url, FILTER_VALIDATE_URL) === false ) {
+  		$url = 'http://' . $url;
+  		$url = filter_var($url, FILTER_VALIDATE_URL);
+  		if ( !$url ) return false; // give it one more try before failing
+  		$domain = $url;
+  	}
+
+  	$pieces = parse_url(strtolower($url));
+  	if ( isset($pieces['host']) ) {
+  		$domain = $pieces['host'];
+  	} else {
+  		return false;
+  	}
+
+  	if ( trksit_is_valid_domain_name($domain) ) {
+		$domains = array();
+		if ( isset($pieces['host']) ) {
+			$domains[] = $pieces['host']; // always put the site url first (www.site.com) and secondly the domain (site.com) since they can delete site.com if they wish
+			if ( strlen($pieces['host']) > 5 && substr($pieces['host'], 0, 4) == 'www.' ) {
+				$domains[] = substr($pieces['host'], 4);
+			}
+			return $domains;
+		}
+	}
+	return false;
+}
+
+function trksit_getDomain_from_url($url) {
+	// Used in the redirector to match a destination url with domains we have as first party.  No validation required
+	$pieces = parse_url(strtolower($url));
+	if ( isset($pieces['host']) ) {
+		$domain = $pieces['host'];
+		return $domain;
+	} else {
+		return false;
+	}
+}
+
+function trksit_is_valid_domain_name($domain) {
+    if (preg_match('/(?P<domain>[a-z0-9][a-z0-9\-]{1,63}\.[a-z\.]{2,6})$/i', $domain, $regs)) {
+    	return true;
+    }
+    return false;
+}
+
+add_action( 'init', 'wp_trksit_validate_domains' );
+function wp_trksit_validate_domains() {
+	if ( isset( $_GET['tab'] ) && $_GET['tab'] == 'domains' && isset( $_POST['domain_submit'] ) ) {
+		if ( $_POST['domain'] != '') {
+			$t_domains = maybe_unserialize( get_option( 'trksit_domains' ) );
+			$new_domains = trksit_getDomains($_POST['domain']);
+			if ( is_array($new_domains) && count($new_domains) > 0 ){
+				$new_domains = array_merge($t_domains, $new_domains); // merge the existing with new
+				$new_domains = array_unique($new_domains); // don't allow duplicates
+				update_option( 'trksit_domains', serialize( $new_domains ) );
+			} else {
+				$_SESSION['trksit_error'] = 'Invalid Domain. Example: website.com';
+			}
+		} else {
+			$_SESSION['trksit_error'] = 'Please enter a domain. Example: website.com';
+		}
+	}
 }
 
 function get_plugin_version(){
@@ -884,32 +951,7 @@ function wp_trksit_validate_generate_url(){
 
 }
 
-add_action( 'init', 'wp_trksit_validate_domains' );
-function wp_trksit_validate_domains(){
 
-	if ( isset( $_GET['tab'] ) && $_GET['tab'] == 'domains' && isset( $_POST['domain_submit'] ) ) {
-
-		if ( $_POST['domain'] != '') {
-
-			$t_domains = maybe_unserialize( get_option( 'trksit_domains' ) );
-
-			if(!getDomain($_POST['domain'])){
-				array_push($t_domains, $_POST['domain']);
-			} else {
-				array_push( $t_domains, getDomain($_POST['domain']) );
-			}
-
-			update_option( 'trksit_domains', serialize( $t_domains ) );
-
-		} else {
-
-			$_SESSION['trksit_error'] = 'Invalid Domain. Example: example.com';
-
-		}
-
-	}
-
-}
 
 add_action( 'init', 'wp_trksit_validate_medium' );
 function wp_trksit_validate_medium(){
