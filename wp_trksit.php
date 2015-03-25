@@ -196,7 +196,7 @@ function trksit_is_valid_domain_name($domain) {
     return false;
 }
 
-add_action( 'init', 'wp_trksit_add_new_domain' );
+add_action( 'admin_init', 'wp_trksit_add_new_domain' );
 function wp_trksit_add_new_domain() {
 	if ( isset( $_GET['tab'] ) && $_GET['tab'] == 'domains' && isset( $_POST['domain_submit'] ) ) {
 		if ( $_POST['domain'] != '') {
