@@ -203,7 +203,7 @@ if( $_GET['page'] == 'trksit-settings' ){
 			$form_url = remove_query_arg( array( 'act', 'id', 'edit_nonce','delete_nonce' ), str_replace( '%7E', '~', $_SERVER['REQUEST_URI'] ) );
 			$trksit = new trksit();
 			if( isset( $_GET['edit_nonce'] ) && $_GET['act'] == 'edit'
-				&& wp_verify_nonce( $_GET['edit_nonce'], 'edit_script' ) ){
+				&& wp_verify_nonce( $_GET['edit_nonce'], 'edit_script' ) && is_numeric($_GET['id']) ){
 				$script_details = $trksit->wp_trksit_scriptDetails( $wpdb, $_GET['id'] );
 				$s_label = $script_details[0]->label;
 				$s_platform = $script_details[0]->platform;

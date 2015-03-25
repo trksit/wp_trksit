@@ -483,8 +483,12 @@ class trksit {
 	 *
 	 */
 	function wp_trksit_scriptDetails($wpdb, $id){
-		$query = 'SELECT label, script, platform, script_id FROM ' . $wpdb->prefix . 'trksit_scripts WHERE script_id = ' . intval($id);
-		return $wpdb->get_results($query);
+		if(filter_var($id, FILTER_VALIDATE_INT)){
+			$query = 'SELECT label, script, platform, script_id FROM ' . $wpdb->prefix . 'trksit_scripts WHERE script_id = ' . $id;
+			return $wpdb->get_results($query);
+		} else {
+			return false;
+		}
 	}
 	function wp_trksit_saveCustomScript($wpdb, $post, $update = false){
 		$platform = $post['trksit_script_platform'];
