@@ -86,7 +86,7 @@
 						$party = $domain_party;
 					}
 
-					if( !isset($_COOKIE['original_source']) ){
+					if( !isset($_COOKIE['trksit_original_source']) ){
 						original_cookies(false, true);
 					} else {
 						converting_cookies(false, true);
