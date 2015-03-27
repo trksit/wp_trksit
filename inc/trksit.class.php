@@ -540,6 +540,38 @@ class trksit {
 		return $trksit_confirmation;
 	}
 	/*
+	 * API call to see if API is active
+	 *
+	 * @return boolean
+	 */
+	function wp_trksit_api_is_active(){
+		$url = $this->api.'/apipulse';
+		$headers = array(
+			'Authorization' => 'Bearer ' . get_option('trksit_token'),
+			'Content-Type' => 'aplication/x-www-form-urlencoded'
+		);
+		$request = new WP_Http;
+		$result = $request->request($url, array('method' => 'GET', 'body' => array(), 'headers' => $headers));
+		$error = 'API temporarily offline, please try again later or contact us at webmaster@trks.it if this problem persists.';
+
+		if(is_wp_error($result)){
+			set_transient("trksit_error_message", $error);
+			return false;
+		}
+
+		if($json = json_decode($result['body'])){
+			if($json->error === true){
+				set_transient("trksit_error_message", $error);
+				return false;
+			} else {
+				return true;
+			}
+		} else {
+			set_transient("trksit_error_message", $error);
+			return false;
+		}
+	}
+	/*
 	 * API call to see if current user is active
 	 *
 	 * @return boolean

@@ -129,7 +129,7 @@ function trksit_repair_domains(){
 }
 function trksit_getDomains($url) { // used for converting a URL OR DOMAIN into a domain
 	// This is pretty messy.  It goes through a few checks to make sure the domain is valid by converting it from/to a url then back to a domain
-	
+
 	$domain = '';
 	if ( filter_var($url, FILTER_VALIDATE_URL) === false ) {
   		$url = 'http://' . $url;
@@ -345,18 +345,14 @@ add_action( 'admin_menu', 'trksit_add_pages' );
 function trksit_add_pages() {
 	$svg_menu_icon = 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMjU2IDI1NiIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMjU2IDI1NiIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PGc+PHBhdGggZmlsbD0iIzk5OTk5OSIgZD0iTTE5NC43LDI3LjNjMTMsMCwyMy42LDEwLjYsMjMuNiwyMy42cy0xMC42LDIzLjYtMjMuNiwyMy42Yy0xMywwLTIzLjctMTAuNi0yMy43LTIzLjZTMTgxLjcsMjcuMywxOTQuNywyNy4zIE0xOTQuNywxNy44Yy0xOC40LDAtMzMuMiwxNC44LTMzLjIsMzMuMWMwLDE4LjQsMTQuOCwzMy4xLDMzLjIsMzMuMWMxOC4zLDAsMzMuMS0xNC44LDMzLjEtMzMuMUMyMjcuOSwzMi42LDIxMy4xLDE3LjgsMTk0LjcsMTcuOEwxOTQuNywxNy44eiIvPjxnPjxwYXRoIGZpbGw9IiM5OTk5OTkiIGQ9Ik0xMDAuMSwyNDIuMWMtMSwyLjMtMy4xLDMuOC01LjYsMy45Yy0wLjUsMC0xLDAtMS41LTAuMWMtMy0wLjUtNS4yLTIuOS01LjQtNmwtMy41LTU4LjVsLTU4LjUsMy41Yy0zLjEsMC4yLTUuNy0xLjctNi42LTQuNmMtMC45LTIuOSwwLjMtNiwyLjktNy41TDE0OCw5OS45YzAuOS0wLjYsMS45LTAuOCwyLjktMC45YzEuNy0wLjEsMy40LDAuNCw0LjcsMS43YzIuMiwxLjgsMi44LDQuOCwxLjcsNy40TDEwMC4xLDI0Mi4xeiIvPjwvZz48Zz48cGF0aCBmaWxsPSIjOTk5OTk5IiBkPSJNMTk0LjcsOTUuMmMtMi42LDAtNC43LTIuMS00LjctNC43VjcwLjdjMC0yLjYsMi4xLTQuNyw0LjctNC43YzIuNiwwLDQuNywyLjEsNC43LDQuN3YxOS44QzE5OS41LDkzLjEsMTk3LjMsOTUuMiwxOTQuNyw5NS4yeiIvPjwvZz48Zz48cGF0aCBmaWxsPSIjOTk5OTk5IiBkPSJNMTk0LjcsMzkuM2MtMi42LDAtNC43LTIuMS00LjctNC43VjE0LjdjMC0yLjYsMi4xLTQuNyw0LjctNC43YzIuNiwwLDQuNywyLjEsNC43LDQuN3YxOS44QzE5OS41LDM3LjIsMTk3LjMsMzkuMywxOTQuNywzOS4zeiIvPjwvZz48Zz48cGF0aCBmaWxsPSIjOTk5OTk5IiBkPSJNMjMyLjYsNTcuNGgtMTkuOGMtMi42LDAtNC43LTIuMS00LjctNC43YzAtMi42LDIuMS00LjcsNC43LTQuN2gxOS44YzIuNiwwLDQuNywyLjEsNC43LDQuN0MyMzcuMyw1NS4yLDIzNS4yLDU3LjQsMjMyLjYsNTcuNHoiLz48L2c+PGc+PHBhdGggZmlsbD0iIzk5OTk5OSIgZD0iTTE3Ni42LDU3LjRoLTE5LjhjLTIuNiwwLTQuNy0yLjEtNC43LTQuN2MwLTIuNiwyLjEtNC43LDQuNy00LjdoMTkuOGMyLjYsMCw0LjcsMi4xLDQuNyw0LjdDMTgxLjQsNTUuMiwxNzkuMyw1Ny40LDE3Ni42LDU3LjR6Ii8+PC9nPjwvZz48L3N2Zz4=';
 	$active = false;
+	$trksit = new trksit();
 	if( !get_option( 'trksit_token' ) || time() > get_option( 'trksit_token_expires' ) ){
-		$trksit = new trksit();
 		$trksit->wp_trksit_resetToken();
 	}
 	if( !get_transient( 'trksit_active_user' ) ){
-		$trksit = new trksit();
 		$active = $trksit->wp_trksit_user_is_active();
 		if( is_wp_error( $active ) ){
-			//echo $active->get_error_message();
-		}
-		if( $trksit->wp_trksit_user_is_active() ){		// What??? fix this logic when fixing the API uptime checks
-			$active = true;
+			$active = false;
 		}
 	} else {
 		if( 'active' == get_transient( 'trksit_active_user' ) ){
@@ -364,7 +360,7 @@ function trksit_add_pages() {
 		}
 	}
 	$api_online = true;
-	if ( get_transient( 'trksit_error_message' ) ) {
+	if ( !$trksit->wp_trksit_api_is_active() ) {
 		$api_online = false;
 	}
 	if ( $active ) {
