@@ -806,7 +806,7 @@ function trksit_original_cookies( $party = false, $notgo = false ){
 
 	} else {
 
-		$ga_parse = new GA_Parse( $_COOKIE );
+		$ga_parse = new trksit_GA_Parse( $_COOKIE );
 		$source = ( isset( $_GET['utm_source'] ) ? $_GET['utm_source'] : $ga_parse->campaign_source );
 		$medium = ( isset( $_GET['utm_medium'] ) ? $_GET['utm_medium'] : $ga_parse->campaign_medium );
 		$campaign = ( isset( $_GET['utm_campaign'] ) ? $_GET['utm_campaign'] : $ga_parse->campaign_name );
@@ -844,7 +844,7 @@ function trksit_converting_cookies( $party = false, $notgo = false ){
 
 	} else {
 
-		$ga_parse = new GA_Parse( $_COOKIE );
+		$ga_parse = new trksit_GA_Parse( $_COOKIE );
 		$source = ( isset( $_GET['utm_source'] ) ? $_GET['utm_source'] : $ga_parse->campaign_source );
 		$medium = ( isset( $_GET['utm_medium'] ) ? $_GET['utm_medium'] : $ga_parse->campaign_medium );
 		$campaign = ( isset( $_GET['utm_campaign'] ) ? $_GET['utm_campaign'] : $ga_parse->campaign_name );

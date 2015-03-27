@@ -16,7 +16,7 @@
 //
 ////////////////////////////////////////////////////
 
-class GA_Parse
+class trksit_GA_Parse
 {
 
   var $campaign_source;    		// Campaign Source
