@@ -4,7 +4,7 @@ Plugin Name: trks.it for WordPress
 Plugin URI: https://get.trks.it?utm_source=WordPress%20Admin%20Link
 Description: Ever wonder how many people click links that lead to 3rd party sites from your social media platforms? trks.it is a WordPress plugin for tracking social media engagement.
 Author: trks.it
-Version: 1.150327.1
+Version: 1.150327.2
 Author URI: http://get.trks.it?utm_source=WordPress%20Admin%20Link
  */
 
@@ -76,6 +76,26 @@ function trksit_Install(){
 
 	//trksit_enforce_defaults();
 	//trksit_repair_domains();
+}
+
+// Add settings link on plugin page
+add_filter("plugin_action_links_" . plugin_basename(__FILE__), 'trksit_plugin_settings' );
+function trksit_plugin_settings($links) { 
+  if ( array_key_exists( 'edit', $links ) ) unset( $links['edit'] ); // disable editing
+  array_unshift($links, '<a href="admin.php?page=trksit-settings">Settings</a>'); 
+  return $links; 
+}
+
+add_filter( 'plugin_row_meta', 'trksit_plugin_meta', 10, 2 );
+function trksit_plugin_meta( $links, $file ) {
+	if ( strpos( $file, 'wp_trksit.php' ) !== false ) {
+		$new_links = array(
+					'<a href="https://github.com/trksit/wp_trksit/commits/master" target="_blank">Changelog</a>',
+					'<a href="http://trksit.uservoice.com" target="_blank">Support</a>'
+				);
+		$links = array_merge( $links, $new_links );
+	}
+	return $links;
 }
 
 // TODO: Fix the github updater so that the install function runs from the recently downloaded update, not the old version
