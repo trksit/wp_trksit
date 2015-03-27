@@ -1,9 +1,11 @@
 <?php
-/*attempt to disable gzip compression. WordPress' HTTP API causes known issues when getting back content with varied content-length.*/
-//@http://wordpress.stackexchange.com/questions/10088/how-do-i-troubleshoot-responses-with-wp-http-api
-@ini_set('zlib.output_compression', 'Off');
-@ini_set('output_buffering', 'Off');
-@ini_set('output_handler', '');
+try {
+	/*attempt to disable gzip compression. WordPress' HTTP API causes known issues when getting back content with varied content-length.*/
+	//@http://wordpress.stackexchange.com/questions/10088/how-do-i-troubleshoot-responses-with-wp-http-api
+	@ini_set('zlib.output_compression', 'Off');
+	@ini_set('output_buffering', 'Off');
+	@ini_set('output_handler', '');
+} catch ( Exception $ex ) {}
 
 class trksit {
 	public $imgArray = array();		//Images array
