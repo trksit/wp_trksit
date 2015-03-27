@@ -407,7 +407,8 @@ class trksit {
 
 		//Build the longURL with query string params
 
-		$longURL = get_site_url() . '/index.php?trksitgo=1&url_id=' . $shareURL_ID . '&su=&utm_source='.$postArray['source'].' - trksit&utm_medium='.$postArray['medium'].'&utm_campaign='.$postArray['campaign'].'&utm_content='.$postArray['content'].'&utm_term='.$postArray['term'];
+		// ARSHAM: Why did you remove $domain_party from the utm_source build here? It broke 1st/3rd tracking.  Commit 3f46d19 on 3/25
+		$longURL = get_site_url() . '/index.php?trksitgo=1&url_id=' . $shareURL_ID . '&su=&utm_source='.$domain_party.$postArray['source'].' - trksit&utm_medium='.$postArray['medium'].'&utm_campaign='.$postArray['campaign'].'&utm_content='.$postArray['content'].'&utm_term='.$postArray['term'];
 		//shorten the URL
 		$shortURL = $this->wp_trksit_generateURL($longURL,$postArray);
 		if($shortURL){
