@@ -4,7 +4,7 @@ Plugin Name: trks.it for WordPress
 Plugin URI: https://get.trks.it?utm_source=WordPress%20Admin%20Link
 Description: Ever wonder how many people click links that lead to 3rd party sites from your social media platforms? trks.it is a WordPress plugin for tracking social media engagement.
 Author: trks.it
-Version: 1.150325.2
+Version: 1.150327
 Author URI: http://get.trks.it?utm_source=WordPress%20Admin%20Link
  */
 
@@ -196,8 +196,8 @@ function trksit_is_valid_domain_name($domain) {
     return false;
 }
 
-add_action( 'admin_init', 'wp_trksit_add_new_domain' );
-function wp_trksit_add_new_domain() {
+add_action( 'admin_init', 'trksit_add_new_domain' );
+function trksit_add_new_domain() {
 	if ( isset( $_GET['tab'] ) && $_GET['tab'] == 'domains' && isset( $_POST['domain_submit'] ) ) {
 		if ( $_POST['domain'] != '') {
 			$t_domains = maybe_unserialize( get_option( 'trksit_domains' ) );
@@ -215,7 +215,7 @@ function wp_trksit_add_new_domain() {
 	}
 }
 
-function get_plugin_version() {
+function trksit_get_plugin_version() {
 	$plugin_data = get_plugin_data( __FILE__ );
 	$plugin_version = $plugin_data['Version'];
 	return $plugin_version;
@@ -284,7 +284,7 @@ function trksit_load_scripts() {
 		&& ( $_GET['page'] == 'trksit-dashboard' || $_GET['page'] == 'trksit-settings' || $_GET['page'] == 'trksit-generate' ) ) {
 
 		wp_register_style( 'trksit-bootstrap', plugin_dir_url(__FILE__) . 'css/bootstrap.min.css');
-		wp_register_style( 'trksit-styles', plugin_dir_url(__FILE__) . 'css/main.css', null, get_plugin_version(), null);
+		wp_register_style( 'trksit-styles', plugin_dir_url(__FILE__) . 'css/main.css', null, trksit_get_plugin_version(), null);
 
 		wp_register_script( 'trksit-bootstrap-js', plugin_dir_url(__FILE__).'js/lib/bootstrap.min.js', array('jquery') );
 		wp_register_script( 'trksit-zclip-js', plugin_dir_url(__FILE__) . 'js/lib/jquery.zclip.js', array( 'jquery' ), '1.1.1', true );
@@ -786,7 +786,7 @@ function trksit_parse_query_404() {
 }
 
 /** set original source, medium, campaign cookie */
-function original_cookies( $party = false, $notgo = false ){
+function trksit_original_cookies( $party = false, $notgo = false ){
 
 	if ( isset( $_POST['utmz'] ) ) {
 
@@ -819,12 +819,12 @@ function original_cookies( $party = false, $notgo = false ){
 	setcookie( 'trksit_original_campaign', $campaign, time() + 400000 );
 
 	//set converting source, medium and campaign
-	converting_cookies( $party, $notgo );
+	trksit_converting_cookies( $party, $notgo );
 
 }
 
 /** set converting source, medium, campaign cookie */
-function converting_cookies( $party = false, $notgo = false ){
+function trksit_converting_cookies( $party = false, $notgo = false ){
 
 	if ( isset( $_COOKIE['__utmz'] ) ){
 

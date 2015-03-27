@@ -1,4 +1,7 @@
 <?php
+// This page is deprecated and only used to support SME.  In the future it will be merged into wp_trksit_redirector.php
+ 
+
 if(!isset($_COOKIE['trksit_new'])){
 	setcookie("trks_new", "new_user", time()+900);
 }
