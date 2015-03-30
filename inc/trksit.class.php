@@ -1,9 +1,12 @@
 <?php
-/*attempt to disable gzip compression. WordPress' HTTP API causes known issues when getting back content with varied content-length.*/
-//@http://wordpress.stackexchange.com/questions/10088/how-do-i-troubleshoot-responses-with-wp-http-api
-@ini_set('zlib.output_compression', 'Off');
-@ini_set('output_buffering', 'Off');
-@ini_set('output_handler', '');
+try {
+	/*attempt to disable gzip compression. WordPress' HTTP API causes known issues when getting back content with varied content-length.*/
+	//@http://wordpress.stackexchange.com/questions/10088/how-do-i-troubleshoot-responses-with-wp-http-api
+	@ini_set('zlib.output_compression', 'Off');
+	@ini_set('output_buffering', 'Off');
+	@ini_set('output_handler', '');
+} catch ( Exception $ex ) {}
+
 class trksit {
 	public $imgArray = array();		//Images array
 	public $metaArray = array();	//Meta Tags Array
@@ -354,7 +357,7 @@ class trksit {
 			$domain_party = "1st";
 		}
 		//Build the longURL with query string params
-		$longURL = get_site_url() . '/index.php?trksitgo=1&url_id=' . $shareURL_ID . '&su=&utm_source='.$domain_party.' '.$postArray['source'].' - trksit&utm_medium='.$postArray['medium'].'&utm_campaign='.$postArray['campaign'].'&utm_content='.$postArray['content'].'&utm_term='.$postArray['term'];
+		$longURL = get_site_url() . '/index.php?trksitgo=1&url_id=' . $shareURL_ID . '&su=&utm_source='.$postArray['source'].' - trksit&utm_medium='.$postArray['medium'].'&utm_campaign='.$postArray['campaign'].'&utm_content='.$postArray['content'].'&utm_term='.$postArray['term'];
 		//shorten the URL
 		$shortURL = $this->wp_trksit_generateURL($longURL,$postArray);
 		if($shortURL){

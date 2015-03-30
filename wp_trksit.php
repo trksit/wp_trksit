@@ -4,7 +4,7 @@ Plugin Name: trks.it for WordPress
 Plugin URI: https://get.trks.it?utm_source=WordPress%20Admin%20Link
 Description: Ever wonder how many people click links that lead to 3rd party sites from your social media platforms? trks.it is a WordPress plugin for tracking social media engagement.
 Author: trks.it
-Version: 1.150325.1
+Version: 1.150327.2
 Author URI: http://get.trks.it?utm_source=WordPress%20Admin%20Link
  */
 // Installation Script
@@ -60,20 +60,44 @@ function trksit_Install(){
 		PRIMARY KEY  (assignment_id, script_id, url_id))
 		ENGINE = InnoDB
 		$charset_collate;";
-	update_option('trksit_jquery', 0);
-	update_option('trksit_redirect_delay', 500);
-	update_option('trksit_token', '');
-	update_option('trksit_token_expires', 1);
 	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 	dbDelta( $table_1_sql ); // This is a WordPress function, cool huh?
 	dbDelta( $table_2_sql );
 	dbDelta( $table_3_sql );
 	dbDelta( $table_4_sql );
-	trksit_enforce_defaults();
-	trksit_repair_domains();
+	//trksit_enforce_defaults();
+	//trksit_repair_domains();
 }
-//add_action('admin_init', 'trksit_enforce_defaults');
+
+// Add settings link on plugin page
+add_filter("plugin_action_links_" . plugin_basename(__FILE__), 'trksit_plugin_settings' );
+function trksit_plugin_settings($links) { 
+  if ( array_key_exists( 'edit', $links ) ) unset( $links['edit'] ); // disable editing
+  array_unshift($links, '<a href="admin.php?page=trksit-settings">Settings</a>'); 
+  return $links; 
+}
+
+add_filter( 'plugin_row_meta', 'trksit_plugin_meta', 10, 2 );
+function trksit_plugin_meta( $links, $file ) {
+	if ( strpos( $file, 'wp_trksit.php' ) !== false ) {
+		$new_links = array(
+					'<a href="https://github.com/trksit/wp_trksit/commits/master" target="_blank">Changelog</a>',
+					'<a href="http://trksit.uservoice.com" target="_blank">Support</a>'
+				);
+		$links = array_merge( $links, $new_links );
+	}
+	return $links;
+}
+
+// TODO: Fix the github updater so that the install function runs from the recently downloaded update, not the old version
+add_action('admin_init', 'trksit_enforce_defaults');
 function trksit_enforce_defaults(){
+	// Add options if they do not previously exist
+	add_option('trksit_jquery', 0);
+	add_option('trksit_redirect_delay', 100);
+	add_option('trksit_token', '');
+	add_option('trksit_token_expires', 1);
+
 	$sources = serialize(array('Social - Facebook','Social - Twitter','Social - Youtube','Social - LinkedIn','Social - Pinterest','Social - Online Community','Social - Blogger Outreach','Content Mktg - Blog','Content Mktg - Resources','Content Mktg - Article Library','Content Mktg - Landing Page','Content Mktg - Website Page','Content Mktg - Slideshare','Content Mktg - Prezi','Email - Promotion','Email - Newsletter','Paid - Facebook ','Paid - Twitter ','Paid - Youtube ','Paid - LinkedIn ','Paid - Other','Paid - Online to Offline ','Paid - Sponsorship ','Paid - Out of Home ','Paid - TV ','Paid - Radio'));
 	$medium = serialize(array('Blog Post','Infographic','Video','Guide','Ebook','Webinar','White Paper','Presentation','Research Study','Paid Search','Display','Banner'));
 	if(!get_option('trksit_sources')){
@@ -106,7 +130,8 @@ function trksit_enforce_defaults(){
 		}
 	}
 }
-//add_action('admin_init', 'trksit_repair_domains');
+
+add_action('admin_init', 'trksit_repair_domains');
 function trksit_repair_domains(){
 	if ( !get_option('trksit_domains_upgraded') && get_option('trksit_domains') ) {
 		$domains = maybe_unserialize( get_option( 'trksit_domains' ) );
@@ -171,8 +196,8 @@ function trksit_is_valid_domain_name($domain) {
     }
     return false;
 }
-add_action( 'init', 'wp_trksit_add_new_domain' );
-function wp_trksit_add_new_domain() {
+add_action( 'admin_init', 'trksit_add_new_domain' );
+function trksit_add_new_domain() {
 	if ( isset( $_GET['tab'] ) && $_GET['tab'] == 'domains' && isset( $_POST['domain_submit'] ) ) {
 		if ( $_POST['domain'] != '') {
 			$t_domains = maybe_unserialize( get_option( 'trksit_domains' ) );
@@ -189,7 +214,8 @@ function wp_trksit_add_new_domain() {
 		}
 	}
 }
-function get_plugin_version() {
+
+function trksit_get_plugin_version() {
 	$plugin_data = get_plugin_data( __FILE__ );
 	$plugin_version = $plugin_data['Version'];
 	return $plugin_version;
@@ -240,7 +266,8 @@ function trksit_load_scripts() {
 	if ( isset( $_GET['page'] )
 		&& ( $_GET['page'] == 'trksit-dashboard' || $_GET['page'] == 'trksit-settings' || $_GET['page'] == 'trksit-generate' ) ) {
 		wp_register_style( 'trksit-bootstrap', plugin_dir_url(__FILE__) . 'css/bootstrap.min.css');
-		wp_register_style( 'trksit-styles', plugin_dir_url(__FILE__) . 'css/main.css', null, get_plugin_version(), null);
+		wp_register_style( 'trksit-styles', plugin_dir_url(__FILE__) . 'css/main.css', null, trksit_get_plugin_version(), null);
+
 		wp_register_script( 'trksit-bootstrap-js', plugin_dir_url(__FILE__).'js/lib/bootstrap.min.js', array('jquery') );
 		wp_register_script( 'trksit-zclip-js', plugin_dir_url(__FILE__) . 'js/lib/jquery.zclip.js', array( 'jquery' ), '1.1.1', true );
 		wp_register_script( 'trksit-validation-js', plugin_dir_url(__FILE__) . 'js/lib/jquery.validate.min.js', array( 'jquery' ), '1.11.1' );
@@ -590,7 +617,8 @@ function trksit_parse_query_404() {
 	}
 }
 /** set original source, medium, campaign cookie */
-function original_cookies( $party = false, $notgo = false ){
+function trksit_original_cookies( $party = false, $notgo = false ){
+
 	if ( isset( $_POST['utmz'] ) ) {
 		list( $source, $campaign, $medium ) = explode( '|', $_POST['utmz'] );
 		//source
@@ -603,7 +631,8 @@ function original_cookies( $party = false, $notgo = false ){
 		$medium = explode( '=', $medium );
 		$medium = $medium[1];
 	} else {
-		$ga_parse = new GA_Parse( $_COOKIE );
+
+		$ga_parse = new trksit_GA_Parse( $_COOKIE );
 		$source = ( isset( $_GET['utm_source'] ) ? $_GET['utm_source'] : $ga_parse->campaign_source );
 		$medium = ( isset( $_GET['utm_medium'] ) ? $_GET['utm_medium'] : $ga_parse->campaign_medium );
 		$campaign = ( isset( $_GET['utm_campaign'] ) ? $_GET['utm_campaign'] : $ga_parse->campaign_name );
@@ -613,10 +642,12 @@ function original_cookies( $party = false, $notgo = false ){
 	setcookie( 'trksit_original_medium', $medium, time() + 400000 );
 	setcookie( 'trksit_original_campaign', $campaign, time() + 400000 );
 	//set converting source, medium and campaign
-	converting_cookies( $party, $notgo );
+	trksit_converting_cookies( $party, $notgo );
+
 }
 /** set converting source, medium, campaign cookie */
-function converting_cookies( $party = false, $notgo = false ){
+function trksit_converting_cookies( $party = false, $notgo = false ){
+
 	if ( isset( $_COOKIE['__utmz'] ) ){
 		list( $source, $campaign, $medium ) = explode( '|', $_COOKIE['__utmz'] );
 		//source
@@ -629,7 +660,7 @@ function converting_cookies( $party = false, $notgo = false ){
 		$medium = explode( '=' , $medium );
 		$medium = $medium[1];
 	} else {
-		$ga_parse = new GA_Parse( $_COOKIE );
+		$ga_parse = new trksit_GA_Parse( $_COOKIE );
 		$source = ( isset( $_GET['utm_source'] ) ? $_GET['utm_source'] : $ga_parse->campaign_source );
 		$medium = ( isset( $_GET['utm_medium'] ) ? $_GET['utm_medium'] : $ga_parse->campaign_medium );
 		$campaign = ( isset( $_GET['utm_campaign'] ) ? $_GET['utm_campaign'] : $ga_parse->campaign_name );

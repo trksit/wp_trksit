@@ -71,10 +71,11 @@
 						setcookie('trks_party', $domain_party, time()+400000);
 						$party = $domain_party;
 					}
-					if( !isset($_COOKIE['original_source']) ){
-						original_cookies(false, true);
+
+					if( !isset($_COOKIE['trksit_original_source']) ){
+						trksit_original_cookies(false, true);
 					} else {
-						converting_cookies(false, true);
+						trksit_converting_cookies(false, true);
 					}
 					//Check for transient that is set when a link is not in the database
 					//If found, API call to revert the flag set at trks.it
@@ -167,7 +168,7 @@ if((isset($redirect_lookup) && $redirect_lookup) || $scripterror){
 <!DOCTYPE html>
 <html prefix="og: http://ogp.me/ns#" xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://www.facebook.com/2008/fbml">
 <head>
-	<?php if(!$testing && $redirect == ''): ?>
+	<?php if($redirect == ''): ?>
 		<meta http-equiv="refresh" content="0; url=<?php echo $redirect_lookup[0]->destination_url; ?>">
 	<?php endif; ?>
 	<title><?php if(!$scripterror) { echo $redirect_lookup[0]->meta_title; } else { echo "Script Error"; }?></title>
@@ -351,7 +352,8 @@ if((isset($redirect_lookup) && $redirect_lookup) || $scripterror){
 			}
 		}
 		?>
-	<?php if(!$testing && !$scripterror){ echo $redirect; } ?>
+
+	<?php if(!$scripterror){ echo $redirect; } ?>
 </body>
 </html>
 <?php } ?>
