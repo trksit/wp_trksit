@@ -2,9 +2,9 @@
 if( !empty( $_POST ) || ( isset( $_GET['purge-data'] ) && $_GET['purge-data'] == true ) ){
 	ob_start();
 	echo '<div id="trksit-loading-indicator">
-			<img src="' .plugin_dir_url(__FILE__).'images/loading.gif' . '" alt="Loading" />
-		  </div>';
-	trksit_flush_buffers();
+		<img src="' .plugin_dir_url(__FILE__).'images/loading.gif' . '" alt="Loading" />
+		</div>';
+trksit_flush_buffers();
 }
 if( isset( $_GET['purge-data'] ) && $_GET['purge-data'] == 'true' ){
 	if( isset( $_GET['trksit_purge_nonce'] )
@@ -24,6 +24,23 @@ if( isset( $_GET['purge-data'] ) && $_GET['purge-data'] == 'true' ){
 	} else {
 		die( '<h1>Unauthorized Operation</h1>' );
 	}
+}
+
+if(isset($_POST['script_submit']) && wp_verify_nonce( $_POST['trksit_scripts'], 'trksit_save_scripts' )){
+	$trksit_scripts = array(
+		'google' => array(
+			'id' => esc_html($_POST['trksit_google_id'])
+		),
+		'bing' => array(
+			'id' => esc_html($_POST['trksit_bing_id']),
+			'second_value' => esc_html($_POST['trksit_bing_secondvalue'])
+		),
+		'facebook' => array(
+			'id' => esc_html($_POST['trksit_facebook_id']),
+			'second_value' => esc_html($_POST['trksit_facebook_secondvalue'])
+		)
+	);
+	update_option('trksit_scripts', serialize($trksit_scripts));
 }
 
 $trksit_analytics_id = '';
@@ -82,9 +99,9 @@ if( $_GET['page'] == 'trksit-settings' ){
 			<?php _e( 'Domains' ); ?>
 		</a>
 		<div class="pull-right">
-			<?php
-			if ( strpos( $_SERVER['HTTP_USER_AGENT'], 'Chrome' ) !== false ) :
-			?>
+<?php
+	if ( strpos( $_SERVER['HTTP_USER_AGENT'], 'Chrome' ) !== false ) :
+?>
 				<a href="https://get.trks.it/chrome-extension/" class="nav-tab simple" target="_blank">
 					<img src="<?php echo plugin_dir_url( __FILE__ ).'images/chrome-icon-120x120.png'; ?>" style="height: 15px; width: 15px; display: inline; margin-right: 5px; position: relative; top: 1px;" />
 					<?php _e( 'Chrome Extension' ); ?>
@@ -93,40 +110,40 @@ if( $_GET['page'] == 'trksit-settings' ){
 			<a href="<?php echo WP_TRKSIT_MANAGE_URL; ?>" target="_blank" class="nav-tab simple"><i class="dashicons dashicons-external"></i> Account</a>
 		</div>
 	</h2>
-	<?php
+<?php
 		// START General Settings Panel Output
-	if( ( isset( $_GET['tab'] ) && $_GET['tab'] == 'general' ) || empty( $_GET['tab'] ) ):
-		$api_online = true;
-	?>
+		if( ( isset( $_GET['tab'] ) && $_GET['tab'] == 'general' ) || empty( $_GET['tab'] ) ):
+			$api_online = true;
+?>
 	<form name="trksit_settings_form" id="trksit_settings_form" class="trksit-form" method="post" action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI'] ); ?>">
 
 		<?php if( get_transient( 'trksit_error_message' ) && get_transient( 'trksit_error_message' ) != '' ): ?>
 			<div class="trksit-alert warning">
 				<h4>API temporarily offline</h4>
-				<?php
-				echo '<p><strong>' . get_transient('trksit_error_message') . "</strong></p>";
-				delete_transient('trksit_error_message');
-				$api_online = false;
-				?>
+<?php
+	echo '<p><strong>' . get_transient('trksit_error_message') . "</strong></p>";
+	delete_transient('trksit_error_message');
+	$api_online = false;
+?>
 			</div>
 		<?php elseif( get_transient( 'trksit_active_user' ) && get_transient( 'trksit_active_user' ) == 'inactive' ): ?>
 			<div class="trksit-alert warning">
 				<h4>Plugin not Active</h4>
 				<p>Please <a href="<?php echo WP_TRKSIT_MANAGE_URL; ?>" target="_blank">register here</a> then enter valid API keys</p>
-				<?php
-					if( $status = get_transient( 'trksit_status_messages' ) ){
-						echo '<p><strong>Recent Status Messages</strong></p>';
-						$stats = maybe_unserialize( $status );
-						if( count( $stats ) > 0 ){
-							foreach( $stats as $s ){
-								echo '<p>' . $s->status_msg . ' on '. date( 'M d, Y - g:ia', strtotime( $s->date_created ) ) . '</p>';
-							}
-						}
-						if( get_transient( 'trksit_url_status_msg' ) && get_option( 'trksit_public_api_key' ) ){
-							echo '<p>' . get_transient( 'trksit_url_status_msg' ) . '</p>';
-						}
-					}
-				?>
+<?php
+	if( $status = get_transient( 'trksit_status_messages' ) ){
+		echo '<p><strong>Recent Status Messages</strong></p>';
+		$stats = maybe_unserialize( $status );
+		if( count( $stats ) > 0 ){
+			foreach( $stats as $s ){
+				echo '<p>' . $s->status_msg . ' on '. date( 'M d, Y - g:ia', strtotime( $s->date_created ) ) . '</p>';
+			}
+		}
+		if( get_transient( 'trksit_url_status_msg' ) && get_option( 'trksit_public_api_key' ) ){
+			echo '<p>' . get_transient( 'trksit_url_status_msg' ) . '</p>';
+		}
+	}
+?>
 			</div>
 		<?php endif; ?>
 		<?php if ( $api_online ) : ?>
@@ -192,11 +209,23 @@ if( $_GET['page'] == 'trksit-settings' ){
 		</div>
 		<?php endif; // api_online? ?>
 	</form>
-	<?php
-		endif; // END General Settings Panel Output
-		// START Scripts Panel Output
-		if( isset( $_GET['tab'] ) && $_GET['tab'] == 'scripts' ):
-	?>
+<?php
+	endif; // END General Settings Panel Output
+	// START Scripts Panel Output
+	if( isset( $_GET['tab'] ) && $_GET['tab'] == 'scripts' ):
+		$google_id = '';
+		$bing_id = '';
+		$bing_secondvalue = '';
+		$facebook_id = '';
+		$facebook_secondvalue = '';
+		if($trksit_scripts = maybe_unserialize(get_option('trksit_scripts'))){
+			$google_id = $trksit_scripts['google']['id'];
+			$bing_id = $trksit_scripts['bing']['id'];
+			$bing_secondvalue = $trksit_scripts['bing']['second_value'];
+			$facebook_id = $trksit_scripts['facebook']['id'];
+			$facebook_secondvalue = $trksit_scripts['facebook']['second_value'];
+		}
+?>
 	<div class="trksit_col full">
 		<h2><?php _e( 'Remarketing &amp; Custom Scripts' ); ?></h2>
 		<!-- <p><?php _e( 'Here you can define remarketing lists & custom scripts to be run when a trks.it link is clicked. You can then assign your links with one or more scripts defined below.' ); ?></p> -->
@@ -205,7 +234,7 @@ if( $_GET['page'] == 'trksit-settings' ){
 		</p>
 	</div>
 	<form action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI'] ); ?>" class="trksit-form input-row inline-label" method="post" id="trksit_remarketing_scripts">
-		<?php wp_nonce_field( 'trksit_scripts_settings', 'trksit_scripts' ); ?>
+		<?php wp_nonce_field( 'trksit_save_scripts', 'trksit_scripts' ); ?>
 		<div class="postbox" id="trksit-google">
 			<h3 class="hndle"><span><?php _e( 'Google Remarketing' ); ?></span></h3>
 			<div class="inside">
@@ -219,7 +248,7 @@ if( $_GET['page'] == 'trksit-settings' ){
 							</a>
 					</label><br />
 
-					<input name="trksit_google_id" type="text" id="trksit_google_id" value="" />
+					<input name="trksit_google_id" type="text" id="trksit_google_id" value="<?php echo $google_id; ?>" />
 				</div>
 			</div>
 		</div><!-- #trksit-api-settings.postbox -->
@@ -235,7 +264,7 @@ if( $_GET['page'] == 'trksit-settings' ){
 								<i class="dashicons dashicons-editor-help"></i>
 							</a>
 					</label><br />
-					<input name="trksit_bing_id" type="text" id="trksit_bing_id" value="" />
+					<input name="trksit_bing_id" type="text" id="trksit_bing_id" value="<?php echo $bing_id; ?>" />
 				</div>
 				<div class="input-row">
 					<label for="trksit_bing_secondvalue">
@@ -246,7 +275,7 @@ if( $_GET['page'] == 'trksit-settings' ){
 								<i class="dashicons dashicons-editor-help"></i>
 							</a>
 					</label><br />
-					<input name="trksit_bing_secondvalue" type="text" id="trksit_bing_secondvalue" value="" />
+					<input name="trksit_bing_secondvalue" type="text" id="trksit_bing_secondvalue" value="<?php echo $bing_secondvalue; ?>" />
 				</div>
 			</div>
 		</div>
@@ -262,7 +291,7 @@ if( $_GET['page'] == 'trksit-settings' ){
 								<i class="dashicons dashicons-editor-help"></i>
 							</a>
 					</label><br />
-					<input name="trksit_facebook_id" type="text" id="trksit_facebook_id" value="" />
+					<input name="trksit_facebook_id" type="text" id="trksit_facebook_id" value="<?php echo $facebook_id; ?>" />
 				</div>
 				<div class="input-row">
 					<label for="trksit_facebook_secondvalue">
@@ -273,17 +302,17 @@ if( $_GET['page'] == 'trksit-settings' ){
 								<i class="dashicons dashicons-editor-help"></i>
 							</a>
 					</label><br />
-					<input name="trksit_facebook_secondvalue" type="text" id="trksit_facebook_secondvalue" value="" />
+					<input name="trksit_facebook_secondvalue" type="text" id="trksit_facebook_secondvalue" value="<?php echo $facebook_secondvalue; ?>" />
 				</div>
 			</div>
 		</div>
 		<input type="submit" name="script_submit" class="button button-primary button-large" value="<?php _e( 'Update Options', 'trksit_menu' ) ?>" id="trksit_scripts_update" />
 	</form>
-	<?php
-		endif; // END Scripts Panel Output
-		// START Sources Panel Output
-		if( isset( $_GET['tab'] ) && $_GET['tab'] == 'sources' ):
-	?>
+<?php
+	endif; // END Scripts Panel Output
+	// START Sources Panel Output
+	if( isset( $_GET['tab'] ) && $_GET['tab'] == 'sources' ):
+?>
 	<div class="trksit_col full">
 		<h2>Sources</h2>
 		<p>Here you can add source values to the drop down available when creating a new link.</p>
@@ -291,12 +320,12 @@ if( $_GET['page'] == 'trksit-settings' ){
 			<label for="source" style="width: auto;" class="margin-r">Add New: </label>
 			<input type="text" name="source" id="source" class="margin-r" value="" autofocus="autofocus" style="display: inline-block; width: auto;" />
 			<input type="submit" name="source_submit" id="source_submit" class="button button-primary button-large" value="Add Source" />
-			<?php
-				if( isset( $_SESSION['trksit_error'] ) ){
-					echo '<div class="trksit-alert danger"><p>' . $_SESSION['trksit_error'] . '</p></div>';
-					unset( $_SESSION['trksit_error'] );
-				}
-			?>
+<?php
+		if( isset( $_SESSION['trksit_error'] ) ){
+			echo '<div class="trksit-alert danger"><p>' . $_SESSION['trksit_error'] . '</p></div>';
+			unset( $_SESSION['trksit_error'] );
+		}
+?>
 		</form>
 		<table class="wp-list-table widefat fixed">
 			<thead>
@@ -306,37 +335,37 @@ if( $_GET['page'] == 'trksit-settings' ){
 				</tr>
 			</thead>
 			<tbody>
-			<?php
-				$sources = maybe_unserialize( get_option( 'trksit_sources' ) );
-				sort( $sources );
-				$count_of_sources = count( $sources );
-				for( $i = 0; $i < $count_of_sources; $i++ ):
-					$source_url = wp_nonce_url( str_replace( '%7E', '~', $_SERVER['REQUEST_URI'] ) . '&deletesource=' . $i, 'delete_source', 'ds_nonce' );
-			?>
+<?php
+	$sources = maybe_unserialize( get_option( 'trksit_sources' ) );
+	sort( $sources );
+	$count_of_sources = count( $sources );
+	for( $i = 0; $i < $count_of_sources; $i++ ):
+		$source_url = wp_nonce_url( str_replace( '%7E', '~', $_SERVER['REQUEST_URI'] ) . '&deletesource=' . $i, 'delete_source', 'ds_nonce' );
+?>
 			<tr>
 				<td><?php echo $sources[$i]; ?></td>
 				<td>
-				<?php
-					if( $count_of_sources !== 1 ){
-						echo '<a href="' . $source_url . '" title="Delete this Source" class="danger-text">Delete</a>';
-					} else {
-						echo '<p>You must have at least one (1) source active.</p>
-							  <p>Please add another source before attempting to delete this one.</p>';
-					}
-				?>
+<?php
+	if( $count_of_sources !== 1 ){
+		echo '<a href="' . $source_url . '" title="Delete this Source" class="danger-text">Delete</a>';
+	} else {
+		echo '<p>You must have at least one (1) source active.</p>
+			<p>Please add another source before attempting to delete this one.</p>';
+	}
+?>
 				</td>
 			</tr>
-			<?php
-				endfor; // End table row output
-			?>
+<?php
+	endfor; // End table row output
+?>
 			</tbody>
 		</table>
 	</div>
-	<?php
-		endif; // END Sources Panel Output
-		// START Medium Panel Output
-		if( isset( $_GET['tab'] ) && $_GET['tab'] == 'medium' ):
-	?>
+<?php
+	endif; // END Sources Panel Output
+	// START Medium Panel Output
+	if( isset( $_GET['tab'] ) && $_GET['tab'] == 'medium' ):
+?>
 	<div class="trksit_col full">
 		<h2>Mediums</h2>
 		<p>Here you can add medium values to the drop down available when creating a new link.</p>
@@ -344,12 +373,12 @@ if( $_GET['page'] == 'trksit-settings' ){
 			<label for="source" style="width: auto;" class="margin-r">Add New: </label>
 			<input type="text" name="medium" id="medium" class="margin-r" value="" autofocus="autofocus" style="display: inline-block; width: auto;" />
 			<input type="submit" name="medium_submit" id="medium_submit" class="button button-primary button-large" value="Add Medium" />
-			<?php
-				if( isset( $_SESSION['trksit_error'] ) ){
-					echo '<div class="trksit-alert danger"><p>' . $_SESSION['trksit_error'] . '</p></div>';
-					unset( $_SESSION['trksit_error'] );
-				}
-			?>
+<?php
+		if( isset( $_SESSION['trksit_error'] ) ){
+			echo '<div class="trksit-alert danger"><p>' . $_SESSION['trksit_error'] . '</p></div>';
+			unset( $_SESSION['trksit_error'] );
+		}
+?>
 		</form>
 		<table class="wp-list-table widefat fixed">
 			<thead>
@@ -359,36 +388,36 @@ if( $_GET['page'] == 'trksit-settings' ){
 				</tr>
 			</thead>
 			<tbody>
-				<?php
-					$medium = maybe_unserialize( get_option( 'trksit_medium' ) );
-					$count_of_medium = count( $medium );
-					sort( $medium );
-					for( $i = 0; $i < $count_of_medium; $i++ ):
-						$medium_url = wp_nonce_url( str_replace( '%7E', '~', $_SERVER['REQUEST_URI'] ) . '&deletemedium=' . $i, 'delete_medium', 'dm_nonce' );
-				?>
+<?php
+	$medium = maybe_unserialize( get_option( 'trksit_medium' ) );
+	$count_of_medium = count( $medium );
+	sort( $medium );
+	for( $i = 0; $i < $count_of_medium; $i++ ):
+		$medium_url = wp_nonce_url( str_replace( '%7E', '~', $_SERVER['REQUEST_URI'] ) . '&deletemedium=' . $i, 'delete_medium', 'dm_nonce' );
+?>
 				<tr>
 					<td><?php echo $medium[$i]; ?></td>
 					<td>
-						<?php
-							if( $count_of_medium !== 1 ){
-								echo '<a href="' . $medium_url . '" title="Delete This Medium" class="danger-text">Delete</a>';
-							} else {
-								echo '<p>You must have at least one (1) medium active.</p>
-									  <p>Please add another medium before attempting to delete this one.</p>';
-							}
-						?>
+<?php
+	if( $count_of_medium !== 1 ){
+		echo '<a href="' . $medium_url . '" title="Delete This Medium" class="danger-text">Delete</a>';
+	} else {
+		echo '<p>You must have at least one (1) medium active.</p>
+			<p>Please add another medium before attempting to delete this one.</p>';
+	}
+?>
 					</td>
 				</tr>
-				<?php
-					endfor;
-				?>
+<?php
+endfor;
+?>
 			</tbody>
 		</table>
 	</div>
 <?php
-	endif; // END Medium Panel Output
-	// START Domains Panel Output
-	if( isset( $_GET['tab'] ) && $_GET['tab'] == 'domains' ):
+endif; // END Medium Panel Output
+// START Domains Panel Output
+if( isset( $_GET['tab'] ) && $_GET['tab'] == 'domains' ):
 ?>
 	<div class="trksit_col full">
 		<h2>Domains</h2>
@@ -397,12 +426,12 @@ if( $_GET['page'] == 'trksit-settings' ){
 			<label for="source" style="width: auto;" class="margin-r">Add New: </label>
 			<input type="text" name="domain" id="domain" class="margin-r" value="" autofocus="autofocus" placeholder="http://example.com" style="display: inline-block; width: auto;" />
 			<input type="submit" name="domain_submit" id="domain_submit" class="button button-primary button-large" value="Add Domain" />
-			<?php
-				if( isset( $_SESSION['trksit_error'] ) ){
-					echo '<div class="trksit-alert danger"><p>' . $_SESSION['trksit_error'] . '</p></div>';
-					unset( $_SESSION['trksit_error'] );
-				}
-			?>
+<?php
+	if( isset( $_SESSION['trksit_error'] ) ){
+		echo '<div class="trksit-alert danger"><p>' . $_SESSION['trksit_error'] . '</p></div>';
+		unset( $_SESSION['trksit_error'] );
+	}
+?>
 		</form>
 		<table class="wp-list-table widefat fixed">
 			<thead>
@@ -412,30 +441,30 @@ if( $_GET['page'] == 'trksit-settings' ){
 				</tr>
 			</thead>
 			<tbody>
-				<?php
-					$domains = maybe_unserialize( get_option( 'trksit_domains' ) );
-					for( $i = 0; $i < count( $domains ); $i++ ):
-						$domain_url = wp_nonce_url( str_replace( '%7E', '~', $_SERVER['REQUEST_URI'] ) . '&deletedomain=' . $i, 'delete_domain', 'dd_nonce' );
-				?>
+<?php
+$domains = maybe_unserialize( get_option( 'trksit_domains' ) );
+for( $i = 0; $i < count( $domains ); $i++ ):
+	$domain_url = wp_nonce_url( str_replace( '%7E', '~', $_SERVER['REQUEST_URI'] ) . '&deletedomain=' . $i, 'delete_domain', 'dd_nonce' );
+?>
 				<tr>
 					<td><?php echo $domains[$i]; ?></td>
 					<td>
-						<?php
-							if( $i > 0 ){
-								echo '<a href="' . $domain_url . '" class="danger-text" title="Delete this Domain">Delete</a>';
-							}
-						?>
+<?php
+if( $i > 0 ){
+	echo '<a href="' . $domain_url . '" class="danger-text" title="Delete this Domain">Delete</a>';
+}
+?>
 					</td>
 				</tr>
-				<?php
-					endfor;
-				?>
+<?php
+endfor;
+?>
 			</tbody>
 		</table>
 	</div>
-	<?php
-		endif; // END Domains Panel Output
-	?>
+<?php
+endif; // END Domains Panel Output
+?>
 <style>
 	#trksit-loading-indicator {
 		display: none;
