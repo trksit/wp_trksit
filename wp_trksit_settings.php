@@ -70,15 +70,15 @@ if( $_GET['page'] == 'trksit-settings' ){
 			$trksit_redirect_delay = $_POST['trksit_redirect_delay'];
 		}
 	}
-	if( ( isset( $_POST['trksit_page'] ) && $_POST['trksit_page'] == 'add_script' )
-		&& ( !empty( $_POST ) && check_admin_referer( 'trksit_save_settings', 'trksit_add_script' ) ) ) {
-		$trksit = new trksit();
-		if( $_POST['script-id'] == '' ){
-			$trksit_confirmation = $trksit->wp_trksit_saveCustomScript( $wpdb, $_POST, false );
-		} else {
-			$trksit_confirmation = $trksit->wp_trksit_saveCustomScript( $wpdb, $_POST, true );
-		}
-	}
+	//if( ( isset( $_POST['trksit_page'] ) && $_POST['trksit_page'] == 'add_script' )
+		//&& ( !empty( $_POST ) && check_admin_referer( 'trksit_save_settings', 'trksit_add_script' ) ) ) {
+		//$trksit = new trksit();
+		//if( $_POST['script-id'] == '' ){
+			//$trksit_confirmation = $trksit->wp_trksit_saveCustomScript( $wpdb, $_POST, false );
+		//} else {
+			//$trksit_confirmation = $trksit->wp_trksit_saveCustomScript( $wpdb, $_POST, true );
+		//}
+	//}
 ?>
 <div class="wrap" id="trksit-wrap">
 	<h2 style="display: inline-block;"><?php echo __( 'trks.it Settings', 'trksit_menu' ); ?></h2> <?php echo WP_TKSIT_SUPPORT_BTN; ?>
