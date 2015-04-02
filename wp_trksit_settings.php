@@ -196,165 +196,89 @@ if( $_GET['page'] == 'trksit-settings' ){
 		endif; // END General Settings Panel Output
 		// START Scripts Panel Output
 		if( isset( $_GET['tab'] ) && $_GET['tab'] == 'scripts' ):
-			$s_label = '';
-			$s_platform = '';
-			$s_script = '';
-			$s_sid = '';
-			$form_url = remove_query_arg( array( 'act', 'id', 'edit_nonce','delete_nonce' ), str_replace( '%7E', '~', $_SERVER['REQUEST_URI'] ) );
-			$trksit = new trksit();
-			if( isset( $_GET['edit_nonce'] ) && $_GET['act'] == 'edit'
-				&& wp_verify_nonce( $_GET['edit_nonce'], 'edit_script' ) && is_numeric($_GET['id']) ){
-				$script_details = $trksit->wp_trksit_scriptDetails( $wpdb, $_GET['id'] );
-				$s_label = $script_details[0]->label;
-				$s_platform = $script_details[0]->platform;
-				$s_script = stripslashes( htmlspecialchars_decode( $script_details[0]->script ) );
-				$s_sid = $script_details[0]->script_id;
-				echo "<script>jQuery(window).load(function(){ jQuery('#add-script-window').modal('show'); });</script>";
-			}
-			if( isset( $_GET['delete_nonce'] ) && $_GET['act'] == 'delete'
-				&& wp_verify_nonce( $_GET['delete_nonce'], 'delete_script' ) ){
-				$trksit->wp_trksit_deleteScript( $wpdb, $_GET['id'] );
-			}
 	?>
 	<div class="trksit_col full">
 		<h2><?php _e( 'Remarketing &amp; Custom Scripts' ); ?></h2>
-		<p><?php _e( 'Here you can define remarketing lists & custom scripts to be run when a trks.it link is clicked. You can then assign your links with one or more scripts defined below.' ); ?></p>
-		<table class="wp-list-table widefat fixed">
-			<thead>
-				<tr>
-					<th width="120"><?php _e( 'Date Created' ); ?></th>
-					<th><?php _e( 'Label' ); ?></th>
-					<th><?php _e( 'Platform' ); ?></th>
-					<th><?php _e( 'URL\'s Attached' ); ?></th>
-					<th width="100"><?php _e( 'Edit / Delete' ); ?></th>
-				</tr>
-			</thead>
-			<tbody>
-			<?php
-				$footnote = '';
-				$table_data = $wpdb->get_results( "SELECT * FROM " . $wpdb->prefix . "trksit_scripts ORDER BY date_created DESC, script_id DESC" );
-				if( count( $table_data ) ):
-					foreach( $table_data as $table_row ):
-						$q = "SELECT url_id FROM " . $wpdb->prefix . "trksit_scripts_to_urls WHERE script_id = " . $table_row->script_id;
-						$times_used = $wpdb->get_results( $q );
-						$used = count( $times_used );
-						$datetime = strtotime( $table_row->date_created );
-						$date_created = date( 'F j, Y', $datetime );
-						$edit_url = wp_nonce_url( admin_url( 'admin.php?page=trksit-settings&tab=scripts&act=edit&id=' . $table_row->script_id ), 'edit_script', 'edit_nonce' );
-						$delete_url = wp_nonce_url( admin_url( 'admin.php?page=trksit-settings&tab=scripts&act=delete&id=' . $table_row->script_id ), 'delete_script', 'delete_nonce' );
-			?>
-				<tr <?php if( $table_row->script_error ) { echo 'class="error-script"'; } ?>>
-					<td><?php echo $date_created; ?></td>
-					<td>
-						<?php
-							echo stripslashes( $table_row->label );
-							if( $table_row->script_error ) {
-								$url = '/index.php?trksitgo=1&url_id=scripterror&testing=scripterror&scriptid=' . $table_row->script_id;
-								$url = wp_nonce_url( $url, 'script_error_' . $table_row->script_id, 'script_error_nonce' );
-								echo ' * &nbsp; <a href="' . $url . '" class="script_debug" target="_blank">[execute]</a>';
-								$footnote = '<p style="color: #a94442; float: left; padding-top: 20px;">'
-									. '<span style="float: left;">*</span>'
-									. '<span style="float: left; padding-left: 10px;">'
-									. 'Scripts in red indicate an error has occured in its execution<br />'
-									. 'Click [execute] with console open to see error.</span></p>';
-							}
-						?>
-					</td>
-					<td><?php echo $table_row->platform; ?></td>
-					<td><?php echo $used; ?></td>
-					<td>
-					   <a href="<?php echo $edit_url; ?>">Edit</a> |
-					   <a href="<?php echo $delete_url; ?>" class="danger-text" onclick="return confirm( 'Are you sure? This can not be undone.' );">Delete</a>
-					</td>
-				</tr>
-			<?php
-					endforeach; // End table row loop
-				else: // If there aren't any custom scripts created - prompt the user to create one
-			?>
-				<tr>
-					<td colspan="5" style="padding:20px;">
-						<?php _e( 'You haven\'t created a custom script yet, ' ); ?><a href="#" data-target="#add-script-window" role="button" data-toggle="modal"><?php _e( 'Add a script now!' ); ?></a>
-					</td>
-				</tr>
-			<?php
-				endif; // End table row output
-			?>
-			</tbody>
-			<tfoot>
-				<tr>
-					<th><?php _e( 'Date Created' ); ?></th>
-					<th><?php _e( 'Label' ); ?></th>
-					<th><?php _e( 'Platform' ); ?></th>
-					<th><?php _e( 'URL\'s Attached' ); ?></th>
-					<th><?php _e( 'Edit / Delete' ); ?></th>
-				</tr>
-			</tfoot>
-		</table>
-		<?php echo $footnote; ?>
-		<button data-target="#add-script-window" role="button" id="add-script" class="button button-primary button-large" data-toggle="modal"><?php _e( '+ Add New Script' ); ?></button>
+		<!-- <p><?php _e( 'Here you can define remarketing lists & custom scripts to be run when a trks.it link is clicked. You can then assign your links with one or more scripts defined below.' ); ?></p> -->
+		<p>
+<?php _e( 'Here you can enter you IDs for various popular remarketing and custom scripts. You can then assign your links with one or more of these defined scripts below.'); ?>
+		</p>
 	</div>
-	<!-- Add Script Modal -->
-	<div class="modal fade" id="add-script-window" tabindex="-1" role="dialog" aria-labelledby="add-script-window-label" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h4 class="add-script-window-label"><?php _e( 'Add a New Custom Script' ); ?></h4>
+	<form action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI'] ); ?>" class="trksit-form input-row inline-label" method="post" id="trksit_remarketing_scripts">
+		<?php wp_nonce_field( 'trksit_scripts_settings', 'trksit_scripts' ); ?>
+		<div class="postbox" id="trksit-google">
+			<h3 class="hndle"><span><?php _e( 'Google Remarketing' ); ?></span></h3>
+			<div class="inside">
+				<div class="input-row">
+					<label for="trksit_google_id">
+						<?php _e( 'Google Remarketing ID:' ); ?>
+							<a class="trksit-help" data-toggle="popover"
+								data-content="<?php _e( 'Provided by Google (UA-XXXXXXX-X)' ); ?>"
+								data-original-title="<?php _e("Google Remarketing ID"); ?>">
+								<i class="dashicons dashicons-editor-help"></i>
+							</a>
+					</label><br />
+
+					<input name="trksit_google_id" type="text" id="trksit_google_id" value="" />
 				</div>
-				<form name="trksit_add_script_form" id="trksit_add_script_form" class="trksit-form" method="post" action="<?php echo $form_url; ?>">
-					<div class="modal-body">
-						<div class="input-row">
-							<label for="trksit_script_label" class="control-label">
-								<?php _e( 'Script Label:' ); ?>
-								<a class="trksit-help" data-toggle="popover" data-content="<?php _e( 'Enter a label that will allow you to easily identify this script.' ); ?>" data-original-title="<?php _e( 'Script Label' ); ?>"><i class="dashicons dashicons-editor-help"></i></a>
-							</label>
-							<input name="trksit_script_label" type="text" id="trksit_script_label" value="<?php echo $s_label; ?>" required="required" />
-						</div>
-						<div class="input-row">
-							<label for="trksit_script_platform" class="control-label">
-								<?php _e( 'Platform' ); ?>
-								<a class="trksit-help" data-toggle="popover" data-content="<?php _e( 'What is this script for? Google? Bing? Facebook? etc...' ); ?>" data-original-title="<?php _e( 'Platform' ); ?>"><i class="dashicons dashicons-editor-help"></i></a>
-							</label>
-							<select name="trksit_script_platform" id="trksit_script_platform" required="required">
-								<option value="">--Please choose a platform--</option>
-								<option value="google" <?php if ( $s_platform == 'google' ) { echo 'selected="selected"'; } ?>>Google Remarketing</option>
-								<option value="bing" <?php if ( $s_platform == 'bing' ) { echo 'selected="selected"'; } ?>>Bing</option>
-								<option value="facebook" <?php if ( $s_platform == 'facebook' ) { echo 'selected="selected"'; } ?>>Facebook</option>
-								<option value="custom" <?php if ( $s_platform == 'custom' ) { echo 'selected="selected"'; } ?>>Custom</option>
-								<?php
-									$custom_opts = get_option( 'trksit_script_platforms' );
-									$co = maybe_unserialize( $custom_opts );
-									foreach( $co as $c ){
-										echo '<option value="' . $c . '"';
-											if( $s_platform == $c ){
-												echo ' selected="selected" ';
-											}
-										echo '>' . $c . '</option>';
-									}
-								?>
-								<option value="other" id="other">Other</option>
-							</select>
-							<input type="text" name="trksit_script_platform_other" id="trksit_script_platform_other" value="" placeholder="Add platform..." class="margin-t" style="display: none;" />
-						</div>
-						<div class="input-row no-margin-b">
-							<label for="trksit_script" class="control-label">
-								<?php _e( 'Custom Script' ); ?>
-								<a class="trksit-help" data-toggle="popover" data-content="<?php _e( 'Use this field to write your custom script. Make sure everything works!' ); ?>" data-original-title="<?php _e( 'Custom Script' ); ?>"><i class="dashicons dashicons-editor-help"></i></a>
-							</label>
-							<textarea name="trksit_script" id="trksit_script" class="code-input" required="required"><?php echo $s_script; ?></textarea>
-						</div>
-						<input type="hidden" name="trksit_page" value="add_script" />
-						<?php wp_nonce_field( 'trksit_save_settings', 'trksit_add_script' ); ?>
-						<input type="hidden" name="script-id" id="script-id" value="<?php echo $s_sid; ?>" />
-					</div>
-					<div class="modal-footer">
-						<button class="button button-large margin-r" id="script_cancel" data-dismiss="modal" data-url="<?php echo $form_url; ?>" aria-hidden="true"><?php _e( 'Close' ); ?></button>
-					    <button type="submit" name="Submit" class="button button-primary button-large"><?php _e( 'Save Script' ); ?></button>
-					</div>
-				</form>
+			</div>
+		</div><!-- #trksit-api-settings.postbox -->
+		<div class="postbox" id="trksit-bing">
+			<h3 class="hndle"><span><?php _e( 'Bing Remarketing' ); ?></span></h3>
+			<div class="inside">
+				<div class="input-row">
+					<label for="trksit_bing_id">
+						<?php _e( 'Bing Remarketing ID:' ); ?>
+							<a class="trksit-help" data-toggle="popover"
+								data-content="<?php _e( 'Provided by Bing (XXXXXX-XXXXX)' ); ?>"
+								data-original-title="<?php _e("Bing Remarketing ID"); ?>">
+								<i class="dashicons dashicons-editor-help"></i>
+							</a>
+					</label><br />
+					<input name="trksit_bing_id" type="text" id="trksit_bing_id" value="" />
+				</div>
+				<div class="input-row">
+					<label for="trksit_bing_secondvalue">
+						<?php _e( 'Bing Second Value:' ); ?>
+							<a class="trksit-help" data-toggle="popover"
+								data-content="<?php _e( 'Some other value, found here: ...' ); ?>"
+								data-original-title="<?php _e("Bing Second Value"); ?>">
+								<i class="dashicons dashicons-editor-help"></i>
+							</a>
+					</label><br />
+					<input name="trksit_bing_secondvalue" type="text" id="trksit_bing_secondvalue" value="" />
+				</div>
 			</div>
 		</div>
-	</div><!-- #add-script-modal -->
+		<div class="postbox" id="trksit-facebook">
+			<h3 class="hndle"><span><?php _e( 'Facebook Remarketing' ); ?></span></h3>
+			<div class="inside">
+				<div class="input-row">
+					<label for="trksit_facebook_id">
+						<?php _e( 'Facebook Remarketing ID:' ); ?>
+							<a class="trksit-help" data-toggle="popover"
+								data-content="<?php _e( 'Provided by Facebook: (XXXX-XXXX)' ); ?>"
+								data-original-title="<?php _e("Facebook Remarketing ID"); ?>">
+								<i class="dashicons dashicons-editor-help"></i>
+							</a>
+					</label><br />
+					<input name="trksit_facebook_id" type="text" id="trksit_facebook_id" value="" />
+				</div>
+				<div class="input-row">
+					<label for="trksit_facebook_secondvalue">
+						<?php _e( 'Facebook Second Value:' ); ?>
+							<a class="trksit-help" data-toggle="popover"
+								data-content="<?php _e( 'Other value, found here: ...' ); ?>"
+								data-original-title="<?php _e("Facebook Second Value"); ?>">
+								<i class="dashicons dashicons-editor-help"></i>
+							</a>
+					</label><br />
+					<input name="trksit_facebook_secondvalue" type="text" id="trksit_facebook_secondvalue" value="" />
+				</div>
+			</div>
+		</div>
+		<input type="submit" name="script_submit" class="button button-primary button-large" value="<?php _e( 'Update Options', 'trksit_menu' ) ?>" id="trksit_scripts_update" />
+	</form>
 	<?php
 		endif; // END Scripts Panel Output
 		// START Sources Panel Output
