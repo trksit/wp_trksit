@@ -263,7 +263,8 @@ if( $_GET['page'] == 'trksit-settings' ){
 				</div>
 			</div>
 		</div><!-- #trksit-api-settings.postbox -->
-		<input type="submit" name="script_submit" class="button button-primary button-large" value="<?php _e( 'Update Options', 'trksit_menu' ) ?>" id="trksit_scripts_update" />
+		<input type="submit" name="script_submit" class="button button-primary button-large" value="<?php _e( 'Update Options', 'trksit_menu' ) ?>" id="trksit_scripts_update" style="margin-right: 40px;" />
+		<a href="/wp-admin/admin.php?page=trksit-settings&tab=scripts&act=add" id="add-script" class="button button-primary button-large">+ Add New Script</a>
 	</form>
 <?php
 	endif; // END Scripts Panel Output
