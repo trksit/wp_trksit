@@ -27,12 +27,12 @@ if( isset( $_GET['purge-data'] ) && $_GET['purge-data'] == 'true' ){
 }
 
 if(isset($_POST['script_submit']) && wp_verify_nonce( $_POST['trksit_scripts'], 'trksit_save_scripts' )){
-	$trksit_scripts = array(
-		'google' => esc_html($_POST['trksit_google_id']),
-		'bing' => esc_html($_POST['trksit_bing_id']),
-		'facebook' => esc_html($_POST['trksit_facebook_id'])
-	);
-	update_option('trksit_script_ids', serialize($trksit_scripts));
+	//$trksit_scripts = array(
+		//'google' => esc_html($_POST['trksit_google_id']),
+		//'bing' => esc_html($_POST['trksit_bing_id']),
+		//'facebook' => esc_html($_POST['trksit_facebook_id'])
+	//);
+	//update_option('trksit_script_ids', serialize($trksit_scripts));
 }
 
 $trksit_analytics_id = '';
@@ -205,16 +205,6 @@ if( $_GET['page'] == 'trksit-settings' ){
 	endif; // END General Settings Panel Output
 	// START Scripts Panel Output
 	if( isset( $_GET['tab'] ) && $_GET['tab'] == 'scripts' ):
-		$google_id = '';
-		$bing_id = '';
-		$bing_secondvalue = '';
-		$facebook_id = '';
-		$facebook_secondvalue = '';
-		if($trksit_scripts = maybe_unserialize(get_option('trksit_script_ids'))){
-			$google_id = $trksit_scripts['google'];
-			$bing_id = $trksit_scripts['bing'];
-			$facebook_id = $trksit_scripts['facebook'];
-		}
 ?>
 	<div class="trksit_col full">
 		<h2><?php _e( 'Remarketing &amp; Custom Scripts' ); ?></h2>
@@ -223,49 +213,58 @@ if( $_GET['page'] == 'trksit-settings' ){
 <?php _e( 'Here you can enter you IDs for various popular remarketing and custom scripts. You can then assign your links with one or more of these defined scripts below.'); ?>
 		</p>
 	</div>
-	<form action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI'] ); ?>" class="trksit-form input-row inline-label" method="post" id="trksit_remarketing_scripts">
+<?php if(isset($_GET['act']) && $_GET['act'] == 'add'): ?>
+<form action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI'] ); ?>" class="trksit-form input-row inline-label" method="post" id="trksit_remarketing_scripts">
 		<?php wp_nonce_field( 'trksit_save_scripts', 'trksit_scripts' ); ?>
 		<div class="postbox" id="trksit-google">
-			<h3 class="hndle"><span><?php _e( 'Platform Remarketing IDs' ); ?></span></h3>
+			<h3 class="hndle"><span><?php _e( 'Add Script' ); ?></span></h3>
 			<div class="inside">
 				<div class="input-row">
-					<label for="trksit_google_id">
-						<?php _e( 'Google Remarketing ID:' ); ?>
-							<a class="trksit-help" data-toggle="popover"
-								data-content="<?php _e( 'Provided by Google (UA-XXXXXXX-X)' ); ?>"
-								data-original-title="<?php _e("Google Remarketing ID"); ?>">
-								<i class="dashicons dashicons-editor-help"></i>
-							</a>
-					</label><br />
-					<input name="trksit_google_id" type="text" id="trksit_google_id" value="<?php echo $google_id; ?>" />
+					<label for="script_name"><?php _e( 'Script Name' ); ?></label><br />
+					<input name="script_name" type="text" id="script_name" value="" placeholder="<?php _e('My Tracking Script'); ?>" />
 				</div>
 				<div class="input-row">
-					<label for="trksit_bing_id">
-						<?php _e( 'Bing Remarketing ID:' ); ?>
-							<a class="trksit-help" data-toggle="popover"
-								data-content="<?php _e( 'Provided by Bing (XXXXXX-XXXXX)' ); ?>"
-								data-original-title="<?php _e("Bing Remarketing ID"); ?>">
-								<i class="dashicons dashicons-editor-help"></i>
-							</a>
-					</label><br />
-					<input name="trksit_bing_id" type="text" id="trksit_bing_id" value="<?php echo $bing_id; ?>" />
+				<label for="platform"><?php _e('Platform'); ?></label><br />
+					<select name="platform" id="platform">
+						<option value="" data-script-fields=""><?php _e('--Select Platform--'); ?></option>
+						<option value="Google Adwords Remarketing" data-script-fields="google-adwords-remarketing"><?php _e('Google Adwords Remarketing'); ?></option>
+						<option value="AdRoll" data-script-fields="adroll"><?php _e('AdRoll'); ?></option>
+						<option value="Facebook" data-script-fields="facebook"><?php _e('Facebook'); ?></option>
+					</select>
 				</div>
-				<div class="input-row">
-					<label for="trksit_facebook_id">
-						<?php _e( 'Facebook Remarketing ID:' ); ?>
-							<a class="trksit-help" data-toggle="popover"
-								data-content="<?php _e( 'Provided by Facebook: (XXXX-XXXX)' ); ?>"
-								data-original-title="<?php _e("Facebook Remarketing ID"); ?>">
-								<i class="dashicons dashicons-editor-help"></i>
-							</a>
-					</label><br />
-					<input name="trksit_facebook_id" type="text" id="trksit_facebook_id" value="<?php echo $facebook_id; ?>" />
+				<div class="input-row platform-specific" id="google-adwords-remarketing" style="display: none;">
+					<p><label for="adwords-remarketing-conversion-id">Conversion ID (google_conversion_id)</label><br />
+					<input type="text" class="form-control" id="adwords-remarketing-conversion-id" /></p>
+
+					<p><label for="adwords-remarketing-conversion-label">Conversion Label (optional)</label><br />
+					<input type="text" class="form-control" id="adwords-remarketing-conversion-label" /></p>
 				</div>
+
+				<div class="input-row platform-specific" id="adroll" style="display: none;">
+					<p><label for="adroll-adv-id">Advertisable ID (adroll_adv_id)</label><br />
+					<input type="text" class="form-control" id="adroll-adv-id" /></p>
+
+					<p><label for="adroll-pixel-id">Pixel ID (adroll_pix_id)</label><br />
+					<input type="text" class="form-control" id="adroll-pixel-id" /></p>
+
+					<p><label for="adroll-conversion-value">Conversion Value (optional)</label><br />
+					<input type="text" class="form-control" id="adroll-conversion-value" /></p>
+
+					<p><label for="adroll-segment-name">Segment Name (optional)</label><br />
+					<input type="text" class="form-control" id="adroll-segment-name" /></p>
+				</div>
+				<div class="input-row platform-specific" id="facebook" style="display: none;">
+					<p><label for="facebook-pixel-id">Pixel ID (addPixelId)</label><br />
+					<input type="text" class="form-control" id="facebook-pixel-id" /></p>
+				</div>
+
+				<button type="submit" class="button button-primary button-large">Submit</button>
 			</div>
-		</div><!-- #trksit-api-settings.postbox -->
-		<input type="submit" name="script_submit" class="button button-primary button-large" value="<?php _e( 'Update Options', 'trksit_menu' ) ?>" id="trksit_scripts_update" style="margin-right: 40px;" />
-		<a href="/wp-admin/admin.php?page=trksit-settings&tab=scripts&act=add" id="add-script" class="button button-primary button-large">+ Add New Script</a>
+		</div>
 	</form>
+<?php else: ?>
+	<a href="/wp-admin/admin.php?page=trksit-settings&tab=scripts&act=add" id="add-script" class="button button-primary button-large">+ Add New Script</a>
+<?php endif; ?>
 	<table class="wp-list-table widefat fixed">
 			<thead>
 				<tr>

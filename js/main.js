@@ -171,6 +171,16 @@ jQuery( document ).ready( function( $ ){
 			$( '#trksit_script_platform_other' ).show();
 		}
 	});
+
+$('#platform').change( function( e ) {
+        $( '.platform-specific' ).hide();
+        scriptFields = $(this).find(':selected').data( 'script-fields' );
+        if ( scriptFields != '' ) {
+            $( '#' + scriptFields ).show();
+        } else {
+            $( '.platform-specific' ).hide();
+        }
+    });
 });
 //Flash detect plugin
 //
