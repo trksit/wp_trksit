@@ -28,19 +28,11 @@ if( isset( $_GET['purge-data'] ) && $_GET['purge-data'] == 'true' ){
 
 if(isset($_POST['script_submit']) && wp_verify_nonce( $_POST['trksit_scripts'], 'trksit_save_scripts' )){
 	$trksit_scripts = array(
-		'google' => array(
-			'id' => esc_html($_POST['trksit_google_id'])
-		),
-		'bing' => array(
-			'id' => esc_html($_POST['trksit_bing_id']),
-			'second_value' => esc_html($_POST['trksit_bing_secondvalue'])
-		),
-		'facebook' => array(
-			'id' => esc_html($_POST['trksit_facebook_id']),
-			'second_value' => esc_html($_POST['trksit_facebook_secondvalue'])
-		)
+		'google' => esc_html($_POST['trksit_google_id']),
+		'bing' => esc_html($_POST['trksit_bing_id']),
+		'facebook' => esc_html($_POST['trksit_facebook_id'])
 	);
-	update_option('trksit_scripts', serialize($trksit_scripts));
+	update_option('trksit_script_ids', serialize($trksit_scripts));
 }
 
 $trksit_analytics_id = '';
@@ -218,12 +210,10 @@ if( $_GET['page'] == 'trksit-settings' ){
 		$bing_secondvalue = '';
 		$facebook_id = '';
 		$facebook_secondvalue = '';
-		if($trksit_scripts = maybe_unserialize(get_option('trksit_scripts'))){
-			$google_id = $trksit_scripts['google']['id'];
-			$bing_id = $trksit_scripts['bing']['id'];
-			$bing_secondvalue = $trksit_scripts['bing']['second_value'];
-			$facebook_id = $trksit_scripts['facebook']['id'];
-			$facebook_secondvalue = $trksit_scripts['facebook']['second_value'];
+		if($trksit_scripts = maybe_unserialize(get_option('trksit_script_ids'))){
+			$google_id = $trksit_scripts['google'];
+			$bing_id = $trksit_scripts['bing'];
+			$facebook_id = $trksit_scripts['facebook'];
 		}
 ?>
 	<div class="trksit_col full">
@@ -236,7 +226,7 @@ if( $_GET['page'] == 'trksit-settings' ){
 	<form action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI'] ); ?>" class="trksit-form input-row inline-label" method="post" id="trksit_remarketing_scripts">
 		<?php wp_nonce_field( 'trksit_save_scripts', 'trksit_scripts' ); ?>
 		<div class="postbox" id="trksit-google">
-			<h3 class="hndle"><span><?php _e( 'Google Remarketing' ); ?></span></h3>
+			<h3 class="hndle"><span><?php _e( 'Platform Remarketing IDs' ); ?></span></h3>
 			<div class="inside">
 				<div class="input-row">
 					<label for="trksit_google_id">
@@ -247,14 +237,8 @@ if( $_GET['page'] == 'trksit-settings' ){
 								<i class="dashicons dashicons-editor-help"></i>
 							</a>
 					</label><br />
-
 					<input name="trksit_google_id" type="text" id="trksit_google_id" value="<?php echo $google_id; ?>" />
 				</div>
-			</div>
-		</div><!-- #trksit-api-settings.postbox -->
-		<div class="postbox" id="trksit-bing">
-			<h3 class="hndle"><span><?php _e( 'Bing Remarketing' ); ?></span></h3>
-			<div class="inside">
 				<div class="input-row">
 					<label for="trksit_bing_id">
 						<?php _e( 'Bing Remarketing ID:' ); ?>
@@ -267,22 +251,6 @@ if( $_GET['page'] == 'trksit-settings' ){
 					<input name="trksit_bing_id" type="text" id="trksit_bing_id" value="<?php echo $bing_id; ?>" />
 				</div>
 				<div class="input-row">
-					<label for="trksit_bing_secondvalue">
-						<?php _e( 'Bing Second Value:' ); ?>
-							<a class="trksit-help" data-toggle="popover"
-								data-content="<?php _e( 'Some other value, found here: ...' ); ?>"
-								data-original-title="<?php _e("Bing Second Value"); ?>">
-								<i class="dashicons dashicons-editor-help"></i>
-							</a>
-					</label><br />
-					<input name="trksit_bing_secondvalue" type="text" id="trksit_bing_secondvalue" value="<?php echo $bing_secondvalue; ?>" />
-				</div>
-			</div>
-		</div>
-		<div class="postbox" id="trksit-facebook">
-			<h3 class="hndle"><span><?php _e( 'Facebook Remarketing' ); ?></span></h3>
-			<div class="inside">
-				<div class="input-row">
 					<label for="trksit_facebook_id">
 						<?php _e( 'Facebook Remarketing ID:' ); ?>
 							<a class="trksit-help" data-toggle="popover"
@@ -293,19 +261,8 @@ if( $_GET['page'] == 'trksit-settings' ){
 					</label><br />
 					<input name="trksit_facebook_id" type="text" id="trksit_facebook_id" value="<?php echo $facebook_id; ?>" />
 				</div>
-				<div class="input-row">
-					<label for="trksit_facebook_secondvalue">
-						<?php _e( 'Facebook Second Value:' ); ?>
-							<a class="trksit-help" data-toggle="popover"
-								data-content="<?php _e( 'Other value, found here: ...' ); ?>"
-								data-original-title="<?php _e("Facebook Second Value"); ?>">
-								<i class="dashicons dashicons-editor-help"></i>
-							</a>
-					</label><br />
-					<input name="trksit_facebook_secondvalue" type="text" id="trksit_facebook_secondvalue" value="<?php echo $facebook_secondvalue; ?>" />
-				</div>
 			</div>
-		</div>
+		</div><!-- #trksit-api-settings.postbox -->
 		<input type="submit" name="script_submit" class="button button-primary button-large" value="<?php _e( 'Update Options', 'trksit_menu' ) ?>" id="trksit_scripts_update" />
 	</form>
 <?php
