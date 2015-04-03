@@ -266,6 +266,44 @@ if( $_GET['page'] == 'trksit-settings' ){
 		<input type="submit" name="script_submit" class="button button-primary button-large" value="<?php _e( 'Update Options', 'trksit_menu' ) ?>" id="trksit_scripts_update" style="margin-right: 40px;" />
 		<a href="/wp-admin/admin.php?page=trksit-settings&tab=scripts&act=add" id="add-script" class="button button-primary button-large">+ Add New Script</a>
 	</form>
+	<table class="wp-list-table widefat fixed">
+			<thead>
+				<tr>
+					<th>Script Name</th>
+					<th>Script Platform</th>
+					<th>Links Attached</th>
+					<th width="100">Edit/Delete</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Conference Follow Up</td>
+					<td>Google</td>
+					<td>3</td>
+					<td><a href="#" class="edit-link">Edit</a> / <a href="#" class="danger-text" onclick="return confirm( 'Are you sure? This can not be undone.' );">Delete</a>
+				</tr>
+				<tr>
+					<td>Spring Discounts</td>
+					<td>Bing</td>
+					<td>3</td>
+					<td><a href="#" class="edit-link">Edit</a> / <a href="#" class="danger-text" onclick="return confirm( 'Are you sure? This can not be undone.' );">Delete</a>
+				</tr>
+				<tr>
+					<td>Spring Discounts</td>
+					<td>Facebook</td>
+					<td>3</td>
+					<td><a href="#" class="edit-link">Edit</a> / <a href="#" class="danger-text" onclick="return confirm( 'Are you sure? This can not be undone.' );">Delete</a>
+				</tr>
+			</tbody>
+			<tfoot>
+				<tr>
+					<th>Script Name</th>
+					<th>Script Platform</th>
+					<th>Links Attached</th>
+					<th>Edit/Delete</th>
+				</tr>
+			</tfoot>
+		</table>
 <?php
 	endif; // END Scripts Panel Output
 	// START Sources Panel Output
