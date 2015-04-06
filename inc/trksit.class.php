@@ -503,17 +503,17 @@ class trksit {
 		$trksit_conf_fail = '<div class="alert alert-danger" style="margin: 30px 0 0 0;">'
 			. __('Script did not save please try again') . '</div>';
 		$specific = array(
-			'Google Adwords Remarketing' => array(
+			'google' => array(
 				'id' => $_POST['adwords-remarketing-conversion-id'],
 				'label' => $_POST['adwords-remarketing-conversion-label'],
 			),
-			'AdRoll' => array(
+			'adroll' => array(
 				'id' => $_POST['adroll-adv-id'],
 				'pixel_id' => $_POST['adroll-pixel-id'],
 				'conversion_value' => $_POST['adroll-conversion-value'],
 				'segment_name' => $_POST['adroll-segment-name']
 			),
-			'Facebook' => array(
+			'facebook' => array(
 				'pixel_id' => $_POST['facebook-pixel-id']
 			)
 		);

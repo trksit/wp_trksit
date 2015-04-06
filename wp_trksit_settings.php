@@ -206,49 +206,121 @@ if( $_GET['page'] == 'trksit-settings' ){
 		</p>
 	</div>
 <?php if(isset($_GET['act']) && $_GET['act'] == 'add'): ?>
+<?php
+		$show = 'google';
+		$date_created = '';
+		$name = '';
+		$platform = '';
+		$google_id = '';
+		$google_label = '';
+		$adroll_id = '';
+		$adroll_pixelid = '';
+		$adroll_conversion = '';
+		$adroll_segment = '';
+		$facebook_pixel = '';
+		$script_id = '';
+		if(isset($_GET['id']) &&  wp_verify_nonce( $_GET['edit_nonce'], 'edit_script' )){
+			if(filter_var($_GET['id'], FILTER_VALIDATE_INT)){
+				$script_id = $_GET['id'];
+				$result = $wpdb->get_row($wpdb->prepare("SELECT * FROM " . $wpdb->prefix . "trksit_remarketing WHERE id = %s", $script_id));
+				$date_created = $result->date_created;
+				$name = $result->name;
+				$platform = $result->platform;
+				$specific = maybe_unserialize($result->platform_specific);
+				if($result->platform == "Google Adwords Remarketing"){
+					$google_id = $specific['google']['id'];
+					$google_label = $specific['google']['label'];
+				} else if($result->platform == "AdRoll"){
+					$show = 'adroll';
+					$adroll_id = $specific['adroll']['id'];
+					$adroll_pixelid = $specific['adroll']['pixel_id'];
+					$adroll_conversion = $specific['adroll']['conversion_value'];
+					$adroll_segment = $specific['adroll']['segment_name'];
+				} else {
+					$show = 'facebook';
+					$facebook_pixel = $specific['facebook']['pixel_id'];
+				}
+			}
+		}
+?>
 <form action="/wp-admin/admin.php?page=trksit-settings&tab=scripts" class="trksit-form input-row inline-label" method="post" id="trksit_remarketing_scripts">
 		<?php wp_nonce_field( 'trksit_save_scripts', 'trksit_scripts' ); ?>
-		<input type="hidden" name="script-id" value-"" />
+		<input type="hidden" name="script-id" value-"<?php echo $script_id; ?>" />
 		<div class="postbox" id="trksit-google">
 			<h3 class="hndle"><span><?php _e( 'Add Script' ); ?></span></h3>
 			<div class="inside">
 				<div class="input-row">
 					<label for="script_name"><?php _e( 'Script Name' ); ?></label><br />
-					<input name="script_name" type="text" id="script_name" value="" placeholder="<?php _e('My Tracking Script'); ?>" />
+					<input name="script_name" type="text" id="script_name" value="<?php echo $name; ?>" placeholder="<?php _e('My Tracking Script'); ?>" />
 				</div>
 				<div class="input-row">
 				<label for="platform"><?php _e('Platform'); ?></label><br />
 					<select name="platform" id="platform">
 						<option value="" data-script-fields=""><?php _e('--Select Platform--'); ?></option>
-						<option value="Google Adwords Remarketing" data-script-fields="google-adwords-remarketing"><?php _e('Google Adwords Remarketing'); ?></option>
-						<option value="AdRoll" data-script-fields="adroll"><?php _e('AdRoll'); ?></option>
-						<option value="Facebook" data-script-fields="facebook"><?php _e('Facebook'); ?></option>
+						<option <?php if($platform == 'Google Adwords Remarketing') echo "selected='selected'"; ?> value="Google Adwords Remarketing" data-script-fields="google-adwords-remarketing"><?php _e('Google Adwords Remarketing'); ?></option>
+						<option <?php if($platform == "AdRoll") echo "selected='selected'"; ?> value="AdRoll" data-script-fields="adroll"><?php _e('AdRoll'); ?></option>
+						<option <?php if($platform == "Facebook") echo "selected='selected'"; ?> value="Facebook" data-script-fields="facebook"><?php _e('Facebook'); ?></option>
 					</select>
 				</div>
-				<div class="input-row platform-specific" id="google-adwords-remarketing" style="display: none;">
+				<div class="input-row platform-specific" id="google-adwords-remarketing"  <?php if($show != 'google') echo 'style="display: none;"'; ?>>
 					<p><label for="adwords-remarketing-conversion-id">Conversion ID (google_conversion_id)</label><br />
-					<input type="text" class="form-control" id="adwords-remarketing-conversion-id" name="adwords-remarketing-conversion-id" /></p>
+					<input type="text"
+						class="form-control"
+						id="adwords-remarketing-conversion-id"
+						name="adwords-remarketing-conversion-id"
+						value="<?php echo $google_id; ?>"
+					/></p>
 
 					<p><label for="adwords-remarketing-conversion-label">Conversion Label (optional)</label><br />
-					<input type="text" class="form-control" id="adwords-remarketing-conversion-label" name="adwords-remarketing-conversion-label" /></p>
+					<input type="text"
+						class="form-control"
+						id="adwords-remarketing-conversion-label"
+						name="adwords-remarketing-conversion-label"
+						value="<?php echo $google_label; ?>"
+					/></p>
 				</div>
 
-				<div class="input-row platform-specific" id="adroll" style="display: none;">
+				<div class="input-row platform-specific" id="adroll" <?php if($show != 'adroll') echo 'style="display: none;"'; ?>>
 					<p><label for="adroll-adv-id">Advertisable ID (adroll_adv_id)</label><br />
-					<input type="text" class="form-control" id="adroll-adv-id" name="adroll-adv-id" /></p>
+					<input type="text"
+						class="form-control"
+						id="adroll-adv-id"
+						name="adroll-adv-id"
+						value="<?php echo $adroll_id; ?>"
+					/></p>
 
 					<p><label for="adroll-pixel-id">Pixel ID (adroll_pix_id)</label><br />
-					<input type="text" class="form-control" id="adroll-pixel-id" name="adroll-pixel-id" /></p>
+					<input type="text"
+						class="form-control"
+						id="adroll-pixel-id"
+						name="adroll-pixel-id"
+						value="<?php echo $adroll_pixelid; ?>"
+					/></p>
 
 					<p><label for="adroll-conversion-value">Conversion Value (optional)</label><br />
-					<input type="text" class="form-control" id="adroll-conversion-value" name="adroll-conversion-value" /></p>
+					<input type="text"
+						class="form-control"
+						id="adroll-conversion-value"
+						name="adroll-conversion-value"
+						value="<?php echo $adroll_conversion; ?>"
+					/></p>
 
 					<p><label for="adroll-segment-name">Segment Name (optional)</label><br />
-					<input type="text" class="form-control" id="adroll-segment-name" name="adroll-segment-name" /></p>
+					<input type="text"
+						class="form-control"
+						id="adroll-segment-name"
+						name="adroll-segment-name"
+						value="<?php echo $adroll_segment; ?>"
+					/></p>
 				</div>
-				<div class="input-row platform-specific" id="facebook" style="display: none;">
+				<div class="input-row platform-specific" id="facebook"  <?php if($show != 'facebook') echo 'style="display: none;"'; ?>>
 					<p><label for="facebook-pixel-id">Pixel ID (addPixelId)</label><br />
-					<input type="text" class="form-control" id="facebook-pixel-id" name="facebook-pixel-id" /></p>
+					<input type="text"
+						class="form-control"
+						id="facebook-pixel-id"
+						name="facebook-pixel-id"
+						value="<?php echo $facebook_pixel; ?>"
+					/></p>
 				</div>
 
 				<button type="submit" class="button button-primary button-large" name="script_submit" id="script_submit">Submit</button>
@@ -259,7 +331,7 @@ if( $_GET['page'] == 'trksit-settings' ){
 	<a href="/wp-admin/admin.php?page=trksit-settings&tab=scripts&act=add" id="add-script" class="button button-primary button-large">+ Add New Script</a>
 <?php endif; ?>
 <?php
-	$scripts = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . "trksit_remarketing");
+		$scripts = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . "trksit_remarketing");
 ?>
 	<table class="wp-list-table widefat fixed">
 			<thead>
@@ -271,12 +343,16 @@ if( $_GET['page'] == 'trksit-settings' ){
 				</tr>
 			</thead>
 			<tbody>
-<?php foreach($scripts as $s): ?>
+<?php
+	foreach($scripts as $s):
+		$edit_url = wp_nonce_url( admin_url( 'admin.php?page=trksit-settings&tab=scripts&act=add&id=' . $s->id ), 'edit_script', 'edit_nonce' );
+		$delete_url = wp_nonce_url( admin_url( 'admin.php?page=trksit-settings&tab=scripts&act=delete&id=' . $s->id ), 'delete_script', 'delete_nonce' );
+?>
 				<tr>
 				<td><?php echo $s->name; ?></td>
 				<td><?php echo $s->platform; ?></td>
 					<td>0</td>
-					<td><a href="#" class="edit-link">Edit</a> / <a href="#" class="danger-text" onclick="return confirm( 'Are you sure? This can not be undone.' );">Delete</a>
+					<td><a href="<?php echo $edit_url; ?>" class="edit-link">Edit</a> / <a href="<?php echo $delete_url; ?>'" class="danger-text" onclick="return confirm( 'Are you sure? This can not be undone.' );">Delete</a>
 				</tr>
 <?php endforeach; ?>
 			</tbody>
