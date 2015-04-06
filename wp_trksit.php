@@ -60,11 +60,30 @@ function trksit_Install(){
 		PRIMARY KEY  (assignment_id, script_id, url_id))
 		ENGINE = InnoDB
 		$charset_collate;";
+	$table_5_name = $wpdb->prefix . "trksit_remarketing";
+	$table_5_sql = "CREATE TABLE `".$table_5_name."` (
+		`id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+		`date_created` datetime NOT NULL,
+		`name` varchar(128) NOT NULL DEFAULT '',
+		`platform` varchar(128) NOT NULL DEFAULT '',
+		`platform_specific` text NOT NULL,
+		`script_error` tinyint(1) NOT NULL DEFAULT '0',
+		PRIMARY KEY (`id`)
+	) ENGINE=InnoDB DEFAULT CHARSET=latin1;";
+	$table_6_name = $wpdb->prefix . "trksit_remarketing_to_urls";
+	$table_6_sql = "CREATE TABLE `".$table_6_name."` (
+		`id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+		`remarketing_id` int(11) DEFAULT NULL,
+		`url_id` int(11) DEFAULT NULL,
+		PRIMARY KEY (`id`)
+	) ENGINE=InnoDB DEFAULT CHARSET=latin1;";
 	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 	dbDelta( $table_1_sql ); // This is a WordPress function, cool huh?
 	dbDelta( $table_2_sql );
 	dbDelta( $table_3_sql );
 	dbDelta( $table_4_sql );
+	dbDelta( $table_5_sql );
+	dbDelta( $table_6_sql );
 	//trksit_enforce_defaults();
 	//trksit_repair_domains();
 }

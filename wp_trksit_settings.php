@@ -27,12 +27,12 @@ if( isset( $_GET['purge-data'] ) && $_GET['purge-data'] == 'true' ){
 }
 
 if(isset($_POST['script_submit']) && wp_verify_nonce( $_POST['trksit_scripts'], 'trksit_save_scripts' )){
-	//$trksit_scripts = array(
-		//'google' => esc_html($_POST['trksit_google_id']),
-		//'bing' => esc_html($_POST['trksit_bing_id']),
-		//'facebook' => esc_html($_POST['trksit_facebook_id'])
-	//);
-	//update_option('trksit_script_ids', serialize($trksit_scripts));
+	$trksit = new trksit();
+	if( $_POST['script-id'] == '' ){
+		$trksit_confirmation = $trksit->wp_trksit_saveCustomScript( $wpdb, $_POST, false );
+	} else {
+		$trksit_confirmation = $trksit->wp_trksit_saveCustomScript( $wpdb, $_POST, true );
+	}
 }
 
 $trksit_analytics_id = '';
@@ -62,15 +62,6 @@ if( $_GET['page'] == 'trksit-settings' ){
 			$trksit_redirect_delay = $_POST['trksit_redirect_delay'];
 		}
 	}
-	//if( ( isset( $_POST['trksit_page'] ) && $_POST['trksit_page'] == 'add_script' )
-		//&& ( !empty( $_POST ) && check_admin_referer( 'trksit_save_settings', 'trksit_add_script' ) ) ) {
-		//$trksit = new trksit();
-		//if( $_POST['script-id'] == '' ){
-			//$trksit_confirmation = $trksit->wp_trksit_saveCustomScript( $wpdb, $_POST, false );
-		//} else {
-			//$trksit_confirmation = $trksit->wp_trksit_saveCustomScript( $wpdb, $_POST, true );
-		//}
-	//}
 ?>
 <div class="wrap" id="trksit-wrap">
 	<h2 style="display: inline-block;"><?php echo __( 'trks.it Settings', 'trksit_menu' ); ?></h2> <?php echo WP_TKSIT_SUPPORT_BTN; ?>
@@ -216,6 +207,7 @@ if( $_GET['page'] == 'trksit-settings' ){
 <?php if(isset($_GET['act']) && $_GET['act'] == 'add'): ?>
 <form action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI'] ); ?>" class="trksit-form input-row inline-label" method="post" id="trksit_remarketing_scripts">
 		<?php wp_nonce_field( 'trksit_save_scripts', 'trksit_scripts' ); ?>
+		<input type="hidden" name="script-id" value-"" />
 		<div class="postbox" id="trksit-google">
 			<h3 class="hndle"><span><?php _e( 'Add Script' ); ?></span></h3>
 			<div class="inside">

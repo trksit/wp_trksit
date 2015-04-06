@@ -494,7 +494,7 @@ class trksit {
 		}
 	}
 	function wp_trksit_saveCustomScript($wpdb, $post, $update = false){
-		$platform = $post['trksit_script_platform'];
+		/*$platform = $post['trksit_script_platform'];
 		if($post['trksit_script_platform_other'] != ""){
 			$platform = $post['trksit_script_platform_other'];
 			if($opt = get_option('trksit_script_platforms')){
@@ -540,7 +540,7 @@ class trksit {
 				$trksit_confirmation = $trks_conf_fail;
 			}
 		}
-		return $trksit_confirmation;
+		return $trksit_confirmation; */
 	}
 	/*
 	 * API call to see if API is active
