@@ -28,11 +28,12 @@ if( isset( $_GET['purge-data'] ) && $_GET['purge-data'] == 'true' ){
 
 if(isset($_POST['script_submit']) && wp_verify_nonce( $_POST['trksit_scripts'], 'trksit_save_scripts' )){
 	$trksit = new trksit();
-	if( $_POST['script-id'] == '' ){
+	if($_POST['script-id'] == ''){
 		$trksit_confirmation = $trksit->wp_trksit_saveCustomScript( $wpdb, $_POST, false );
 	} else {
 		$trksit_confirmation = $trksit->wp_trksit_saveCustomScript( $wpdb, $_POST, true );
 	}
+	echo $trksit_confirmation;
 }
 
 $trksit_analytics_id = '';
@@ -205,7 +206,7 @@ if( $_GET['page'] == 'trksit-settings' ){
 		</p>
 	</div>
 <?php if(isset($_GET['act']) && $_GET['act'] == 'add'): ?>
-<form action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI'] ); ?>" class="trksit-form input-row inline-label" method="post" id="trksit_remarketing_scripts">
+<form action="/wp-admin/admin.php?page=trksit-settings&tab=scripts" class="trksit-form input-row inline-label" method="post" id="trksit_remarketing_scripts">
 		<?php wp_nonce_field( 'trksit_save_scripts', 'trksit_scripts' ); ?>
 		<input type="hidden" name="script-id" value-"" />
 		<div class="postbox" id="trksit-google">
@@ -226,37 +227,40 @@ if( $_GET['page'] == 'trksit-settings' ){
 				</div>
 				<div class="input-row platform-specific" id="google-adwords-remarketing" style="display: none;">
 					<p><label for="adwords-remarketing-conversion-id">Conversion ID (google_conversion_id)</label><br />
-					<input type="text" class="form-control" id="adwords-remarketing-conversion-id" /></p>
+					<input type="text" class="form-control" id="adwords-remarketing-conversion-id" name="adwords-remarketing-conversion-id" /></p>
 
 					<p><label for="adwords-remarketing-conversion-label">Conversion Label (optional)</label><br />
-					<input type="text" class="form-control" id="adwords-remarketing-conversion-label" /></p>
+					<input type="text" class="form-control" id="adwords-remarketing-conversion-label" name="adwords-remarketing-conversion-label" /></p>
 				</div>
 
 				<div class="input-row platform-specific" id="adroll" style="display: none;">
 					<p><label for="adroll-adv-id">Advertisable ID (adroll_adv_id)</label><br />
-					<input type="text" class="form-control" id="adroll-adv-id" /></p>
+					<input type="text" class="form-control" id="adroll-adv-id" name="adroll-adv-id" /></p>
 
 					<p><label for="adroll-pixel-id">Pixel ID (adroll_pix_id)</label><br />
-					<input type="text" class="form-control" id="adroll-pixel-id" /></p>
+					<input type="text" class="form-control" id="adroll-pixel-id" name="adroll-pixel-id" /></p>
 
 					<p><label for="adroll-conversion-value">Conversion Value (optional)</label><br />
-					<input type="text" class="form-control" id="adroll-conversion-value" /></p>
+					<input type="text" class="form-control" id="adroll-conversion-value" name="adroll-conversion-value" /></p>
 
 					<p><label for="adroll-segment-name">Segment Name (optional)</label><br />
-					<input type="text" class="form-control" id="adroll-segment-name" /></p>
+					<input type="text" class="form-control" id="adroll-segment-name" name="adroll-segment-name" /></p>
 				</div>
 				<div class="input-row platform-specific" id="facebook" style="display: none;">
 					<p><label for="facebook-pixel-id">Pixel ID (addPixelId)</label><br />
-					<input type="text" class="form-control" id="facebook-pixel-id" /></p>
+					<input type="text" class="form-control" id="facebook-pixel-id" name="facebook-pixel-id" /></p>
 				</div>
 
-				<button type="submit" class="button button-primary button-large">Submit</button>
+				<button type="submit" class="button button-primary button-large" name="script_submit" id="script_submit">Submit</button>
 			</div>
 		</div>
 	</form>
 <?php else: ?>
 	<a href="/wp-admin/admin.php?page=trksit-settings&tab=scripts&act=add" id="add-script" class="button button-primary button-large">+ Add New Script</a>
 <?php endif; ?>
+<?php
+	$scripts = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . "trksit_remarketing");
+?>
 	<table class="wp-list-table widefat fixed">
 			<thead>
 				<tr>
@@ -267,24 +271,14 @@ if( $_GET['page'] == 'trksit-settings' ){
 				</tr>
 			</thead>
 			<tbody>
+<?php foreach($scripts as $s): ?>
 				<tr>
-					<td>Conference Follow Up</td>
-					<td>Google</td>
-					<td>3</td>
+				<td><?php echo $s->name; ?></td>
+				<td><?php echo $s->platform; ?></td>
+					<td>0</td>
 					<td><a href="#" class="edit-link">Edit</a> / <a href="#" class="danger-text" onclick="return confirm( 'Are you sure? This can not be undone.' );">Delete</a>
 				</tr>
-				<tr>
-					<td>Spring Discounts</td>
-					<td>Bing</td>
-					<td>3</td>
-					<td><a href="#" class="edit-link">Edit</a> / <a href="#" class="danger-text" onclick="return confirm( 'Are you sure? This can not be undone.' );">Delete</a>
-				</tr>
-				<tr>
-					<td>Spring Discounts</td>
-					<td>Facebook</td>
-					<td>3</td>
-					<td><a href="#" class="edit-link">Edit</a> / <a href="#" class="danger-text" onclick="return confirm( 'Are you sure? This can not be undone.' );">Delete</a>
-				</tr>
+<?php endforeach; ?>
 			</tbody>
 			<tfoot>
 				<tr>

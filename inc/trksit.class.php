@@ -493,54 +493,49 @@ class trksit {
 			return false;
 		}
 	}
+
 	function wp_trksit_saveCustomScript($wpdb, $post, $update = false){
-		/*$platform = $post['trksit_script_platform'];
-		if($post['trksit_script_platform_other'] != ""){
-			$platform = $post['trksit_script_platform_other'];
-			if($opt = get_option('trksit_script_platforms')){
-				$o = maybe_unserialize($opt);
-				if(!in_array($post['trksit_script_platform_other'], $o)){
-					$o[] = $post['trksit_script_platform_other'];
-					$ser_o = serialize($o);
-					update_option('trksit_script_platforms', $ser_o);
-				}
-			} else {
-				$p = serialize(array($post['trksit_script_platform_other']));
-				update_option('trksit_script_platforms', $p);
-			}
-		}
-		$trksit_replace = array('http://', 'https://');
-		$trksit_replacements = array('//', '//');
-		$trksit_script_label = $post['trksit_script_label'];
-		$trksit_script = htmlspecialchars(str_replace($trksit_replace, $trksit_replacements, $post['trksit_script']));
-		$trksit_platform = $platform;
-		$trksit_id = $post['script-id'];
-		$trksit_confirmation = '<div class="alert alert-success" style="margin:30px 0px 0px 0px;">' . __('Script successfully added') . '</div>';
-		$trksit_update = '<div class="alert alert-success" style="margin:30px 0px 0px 0px;">' . __('Script successfully updated') . '</div>';
-		$trksit_conf_fail = '<div class="alert alert-danger" style="margin: 30px 0 0 0;">' . __('Script did not save please try again') . '</div>';
-		$fields = array(
-			'date_created' => date('Y-m-d'),
-			'label' => $trksit_script_label,
-			'script' => $trksit_script,
-			'platform' => $trksit_platform
+		$table = $wpdb->prefix . "trksit_remarketing";
+		$trksit_confirmation = '<div class="alert alert-success" style="margin:30px 0px 0px 0px;">'
+			. __('Script successfully added') . '</div>';
+		$trksit_update = '<div class="alert alert-success" style="margin:30px 0px 0px 0px;">'
+			. __('Script successfully updated') . '</div>';
+		$trksit_conf_fail = '<div class="alert alert-danger" style="margin: 30px 0 0 0;">'
+			. __('Script did not save please try again') . '</div>';
+		$specific = array(
+			'Google Adwords Remarketing' => array(
+				'id' => $_POST['adwords-remarketing-conversion-id'],
+				'label' => $_POST['adwords-remarketing-conversion-label'],
+			),
+			'AdRoll' => array(
+				'id' => $_POST['adroll-adv-id'],
+				'pixel_id' => $_POST['adroll-pixel-id'],
+				'conversion_value' => $_POST['adroll-conversion-value'],
+				'segment_name' => $_POST['adroll-segment-name']
+			),
+			'Facebook' => array(
+				'pixel_id' => $_POST['facebook-pixel-id']
+			)
 		);
-		$values = array('%s','%s','%s','%s');
+		$values = array(
+			'date_created' => current_time('mysql', 1),
+			'name' => $_POST['script_name'],
+			'platform' => $_POST['platform'],
+			'platform_specific' => serialize($specific)
+		);
+		file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/log1.txt', print_r($values, true), FILE_APPEND);
 		if($update){
-			$fields['script_error'] = 0;
-			array_push($values, '%s');
-			$upd = $wpdb->update($wpdb->prefix . 'trksit_scripts', $fields, array('script_id' => $trksit_id), $values);
-			if(!$upd){
-				$trksit_confirmation = $trksit_conf_fail;
-			} else {
-				$trksit_confirmation = $trksit_update;
-			}
+			//
 		} else {
-			$wpdb->insert($wpdb->prefix . 'trksit_scripts', $fields, $values);
+			// $wpdb->insert escapes all input to protect against injection
+			// http://codex.wordpress.org/Data_Validation#Database
+			$wpdb->insert($table, $values);
 			if(!$wpdb->insert_id){
 				$trksit_confirmation = $trks_conf_fail;
 			}
 		}
-		return $trksit_confirmation; */
+		return $trksit_confirmation;
+
 	}
 	/*
 	 * API call to see if API is active
