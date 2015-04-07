@@ -504,28 +504,32 @@ class trksit {
 			. __('Script did not save please try again') . '</div>';
 		$specific = array(
 			'google' => array(
-				'id' => $_POST['adwords-remarketing-conversion-id'],
-				'label' => $_POST['adwords-remarketing-conversion-label'],
+				'id' => $post['adwords-remarketing-conversion-id'],
+				'label' => $post['adwords-remarketing-conversion-label'],
 			),
 			'adroll' => array(
-				'id' => $_POST['adroll-adv-id'],
-				'pixel_id' => $_POST['adroll-pixel-id'],
-				'conversion_value' => $_POST['adroll-conversion-value'],
-				'segment_name' => $_POST['adroll-segment-name']
+				'id' => $post['adroll-adv-id'],
+				'pixel_id' => $post['adroll-pixel-id'],
+				'conversion_value' => $post['adroll-conversion-value'],
+				'segment_name' => $post['adroll-segment-name']
 			),
 			'facebook' => array(
-				'pixel_id' => $_POST['facebook-pixel-id']
+				'pixel_id' => $post['facebook-pixel-id']
 			)
 		);
 		$values = array(
 			'date_created' => current_time('mysql', 1),
-			'name' => $_POST['script_name'],
-			'platform' => $_POST['platform'],
+			'name' => $post['script_name'],
+			'platform' => $post['platform'],
 			'platform_specific' => serialize($specific)
 		);
-		file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/log1.txt', print_r($values, true), FILE_APPEND);
 		if($update){
-			//
+			unset($values['date_created']);
+			if($wpdb->update($table, $values, array('id' => $post['script-id']))){
+				$trksit_confirmation = $trksit_update;
+			} else {
+				$trksit_confirmation = $trksit_conf_fail;
+			}
 		} else {
 			// $wpdb->insert escapes all input to protect against injection
 			// http://codex.wordpress.org/Data_Validation#Database

@@ -245,7 +245,7 @@ if( $_GET['page'] == 'trksit-settings' ){
 ?>
 <form action="/wp-admin/admin.php?page=trksit-settings&tab=scripts" class="trksit-form input-row inline-label" method="post" id="trksit_remarketing_scripts">
 		<?php wp_nonce_field( 'trksit_save_scripts', 'trksit_scripts' ); ?>
-		<input type="hidden" name="script-id" value-"<?php echo $script_id; ?>" />
+		<input type="hidden" name="script-id" value="<?php echo $script_id; ?>" />
 		<div class="postbox" id="trksit-google">
 			<h3 class="hndle"><span><?php _e( 'Add Script' ); ?></span></h3>
 			<div class="inside">
