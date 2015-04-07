@@ -350,12 +350,13 @@ if( $_GET['page'] == 'trksit-settings' ){
 		$delete_url = wp_nonce_url( admin_url( 'admin.php?page=trksit-settings&tab=scripts&deletescript=' . $s->id ), 'delete_remarketing', 'drm_nonce' );
 		$datetime = strtotime( $s->date_created );
 		$date_created = date( 'F j, Y', $datetime );
+		$attached = $wpdb->get_results($wpdb->prepare("SELECT * FROM " . $wpdb->prefix . "trksit_remarketing_to_urls WHERE remarketing_id = %s", $s->id));
 ?>
 				<tr>
 				<td><?php echo $date_created; ?></td>
 				<td><?php echo $s->name; ?></td>
 				<td><?php echo $s->platform; ?></td>
-					<td>0</td>
+				<td><?php echo count($attached); ?></td>
 					<td><a href="<?php echo $edit_url; ?>" class="edit-link">Edit</a> / <a href="<?php echo $delete_url; ?>" class="danger-text" onclick="return confirm( 'Are you sure? This can not be undone.' );">Delete</a>
 				</tr>
 <?php endforeach; ?>
