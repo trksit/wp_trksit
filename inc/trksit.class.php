@@ -390,20 +390,20 @@ class trksit {
 	 *
 	 */
 	private function wp_trksit_saveScripts($wpdb, $mainArray, $id){
-		$wpdb->delete($wpdb->prefix . 'trksit_scripts_to_urls', array('url_id' => $id));
+		//$wpdb->delete($wpdb->prefix . 'trksit_remarketing_to_urls', array('url_id' => $id));
 		$script_count = 0;
-		if(isset($mainArray['trksit_scripts'])){
-			$script_count = count($mainArray['trksit_scripts']);
+		if(isset($mainArray['trksit_remarketing'])){
+			$script_count = count($mainArray['trksit_remarketing']);
 		}
 		$scripts_array = array();
 		for( $i = 1; $i <= $script_count; $i++ ){
 			$scripts_array[] = array(
-				'script_id' => $mainArray['trksit_scripts'][$i - 1],
+				'remarketing_id' => $mainArray['trksit_remarketing'][$i - 1],
 				'url_id' => $id
 			);
 		}
 		foreach ( $scripts_array as $script ){
-			$wpdb->insert( $wpdb->prefix . 'trksit_scripts_to_urls', $script, array('%d', '%d') );
+			$wpdb->insert( $wpdb->prefix . 'trksit_remarketing_to_urls', $script, array('%d', '%d') );
 		}
 	}
 	/*

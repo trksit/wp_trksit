@@ -336,9 +336,10 @@ if( $_GET['page'] == 'trksit-settings' ){
 	<table class="wp-list-table widefat fixed">
 			<thead>
 				<tr>
+					<th width="120">Date Created</th>
 					<th>Script Name</th>
-					<th>Script Platform</th>
-					<th>Links Attached</th>
+					<th width="300">Script Platform</th>
+					<th width="130">Links Attached</th>
 					<th width="100">Edit/Delete</th>
 				</tr>
 			</thead>
@@ -347,8 +348,11 @@ if( $_GET['page'] == 'trksit-settings' ){
 	foreach($scripts as $s):
 		$edit_url = wp_nonce_url( admin_url( 'admin.php?page=trksit-settings&tab=scripts&act=add&id=' . $s->id ), 'edit_script', 'edit_nonce' );
 		$delete_url = wp_nonce_url( admin_url( 'admin.php?page=trksit-settings&tab=scripts&deletescript=' . $s->id ), 'delete_remarketing', 'drm_nonce' );
+		$datetime = strtotime( $s->date_created );
+		$date_created = date( 'F j, Y', $datetime );
 ?>
 				<tr>
+				<td><?php echo $date_created; ?></td>
 				<td><?php echo $s->name; ?></td>
 				<td><?php echo $s->platform; ?></td>
 					<td>0</td>
@@ -358,6 +362,7 @@ if( $_GET['page'] == 'trksit-settings' ){
 			</tbody>
 			<tfoot>
 				<tr>
+					<th>Date Created</th>
 					<th>Script Name</th>
 					<th>Script Platform</th>
 					<th>Links Attached</th>

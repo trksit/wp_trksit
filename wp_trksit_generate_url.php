@@ -186,13 +186,13 @@
 							<h3 class="hndle"><span><?php _e( 'Attach Remarketing & Custom Scripts' ); ?></span></h3>
 							<div class="inside">
 								<?php
-									$scripts = $wpdb->get_results( "SELECT * FROM " . $wpdb->prefix . "trksit_scripts WHERE script_error != 1 ORDER BY date_created DESC, label DESC" );
+									$scripts = $wpdb->get_results( "SELECT * FROM " . $wpdb->prefix . "trksit_remarketing WHERE script_error != 1 ORDER BY date_created DESC, name DESC" );
 									if ( count( $scripts ) ) {
 										$count = 1;
 										echo '<ul class="list-unstyled">';
 										foreach ( $scripts as $script ) {
 											$even_odd = ($count&1 ? 'odd' : 'even');
-											echo '<li><label class="checkbox ' . $even_odd . '"><input type="checkbox" name="trksit_scripts[]" value="' . $script->script_id . '">' . stripslashes( $script->label ) . '</label></li>';
+											echo '<li><label class="checkbox ' . $even_odd . '"><input type="checkbox" name="trksit_remarketing[]" value="' . $script->id . '">' . stripslashes( $script->name ) . '</label></li>';
 											$count++;
 										}
 										echo '</ul>';
