@@ -228,7 +228,7 @@ if((isset($redirect_lookup) && $redirect_lookup) || $scripterror){
 				//		pushing a custom variable & event to Google Analytics to track this clicked link
 				setTimeout(function(){
 				_gaq.push(['_setCustomVar', 1, 'trksit', '<?php echo $party; ?>', 1]);
-				_gaq.push(['_trackEvent', 'trksit', 'Clicked <?php echo $domain_party; ?> Party', '<?php echo $surl . " - " . $redirect_lookup[0]->destination_url; ?>'], 0, true);
+				_gaq.push(['_trackEvent', 'trksit', 'Clicked <?php echo $domain_party; ?> Party', '<?php echo $surl . " - " . $redirect_lookup[0]->destination_url; ?>', 0, true]);
 				}, delay);
 				(function() {
 					var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;

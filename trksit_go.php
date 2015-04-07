@@ -255,7 +255,7 @@ return "";
 //		pushing a custom variable & event to Google Analytics to track this clicked link
 setTimeout(function(){
 	_gaq.push(['_setCustomVar', 1, 'trks.it', '<?php echo $redirect_lookup[0]->destination_url; ?>', 1]);
-	_gaq.push(['_trackEvent', 'trks.it', 'Clicked Link', '<?php echo $redirect_lookup[0]->destination_url; ?>'], 0, true);
+	_gaq.push(['_trackEvent', 'trks.it', 'Clicked Link', '<?php echo $redirect_lookup[0]->destination_url; ?>', 0, true]);
 }, delay);
 
 (function() {
