@@ -147,19 +147,22 @@ if ( ( isset( $_GET['view'] ) && $_GET['view'] == 'link-detail' ) && is_numeric(
 						<h3 class="hndle"><span><?php _e( 'Attached Scripts' ); ?></span></h3>
 						<div class="inside">
 						<?php
-							$active_scripts = $wpdb->get_results( "SELECT script_id FROM " . $wpdb->prefix . "trksit_scripts_to_urls WHERE url_id=" . $url_details[0]->url_id );
+							$active_scripts = $wpdb->get_results( "SELECT remarketing_id FROM " . $wpdb->prefix . "trksit_remarketing_to_urls WHERE url_id=" . $url_details[0]->url_id );
 							$active_scripts_array = array();
 							foreach ( $active_scripts as $active_script ) {
-								$active_scripts_array[] = $active_script->script_id;
+								$active_scripts_array[] = $active_script->remarketing_id;
 							}
-							$scripts = $wpdb->get_results( "SELECT * FROM " . $wpdb->prefix . "trksit_scripts order by label" );
+							$scripts = $wpdb->get_results( "SELECT * FROM " . $wpdb->prefix . "trksit_remarketing order by id DESC" );
 							if ( count( $scripts ) ) {
 								$count = 1;
 								echo '<ul class="list-unstyled">';
 								foreach ( $scripts as $script ) {
 									$even_odd = ( $count&1 ? 'odd' : 'even' );
-									$checked = ( in_array( $script->script_id, $active_scripts_array ) ) ? ' checked' :  '';
-									echo '<li><label class="checkbox ' . $even_odd . '"><input type="checkbox" name="trksit_scripts[]" value="' . $script->script_id . '"' . $checked . ' disabled />' . stripslashes( $script->label ) . '</label></li>';
+									$checked = '';
+									if(in_array( $script->id, $active_scripts_array ) ){
+										$checked = " checked";
+									}
+									echo '<li><label class="checkbox ' . $even_odd . '"><input type="checkbox" name="trksit_scripts[]" value="' . $script->id . '"' . $checked . ' disabled />' . stripslashes( $script->name ) . '</label></li>';
 									$count++;
 								}
 								echo '</ul>';
