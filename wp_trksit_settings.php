@@ -346,13 +346,13 @@ if( $_GET['page'] == 'trksit-settings' ){
 <?php
 	foreach($scripts as $s):
 		$edit_url = wp_nonce_url( admin_url( 'admin.php?page=trksit-settings&tab=scripts&act=add&id=' . $s->id ), 'edit_script', 'edit_nonce' );
-		$delete_url = wp_nonce_url( admin_url( 'admin.php?page=trksit-settings&tab=scripts&act=delete&id=' . $s->id ), 'delete_script', 'delete_nonce' );
+		$delete_url = wp_nonce_url( admin_url( 'admin.php?page=trksit-settings&tab=scripts&deletescript=' . $s->id ), 'delete_remarketing', 'drm_nonce' );
 ?>
 				<tr>
 				<td><?php echo $s->name; ?></td>
 				<td><?php echo $s->platform; ?></td>
 					<td>0</td>
-					<td><a href="<?php echo $edit_url; ?>" class="edit-link">Edit</a> / <a href="<?php echo $delete_url; ?>'" class="danger-text" onclick="return confirm( 'Are you sure? This can not be undone.' );">Delete</a>
+					<td><a href="<?php echo $edit_url; ?>" class="edit-link">Edit</a> / <a href="<?php echo $delete_url; ?>" class="danger-text" onclick="return confirm( 'Are you sure? This can not be undone.' );">Delete</a>
 				</tr>
 <?php endforeach; ?>
 			</tbody>

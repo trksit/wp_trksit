@@ -625,6 +625,12 @@ function trksit_delete_source_redirect(){
 		$url = remove_query_arg( array( 'dm_nonce', 'deletemedium' ), str_replace( '%7E', '~', $_SERVER['REQUEST_URI'] ) );
 		wp_redirect( $url );
 	}
+	if(isset($_GET['deletescript']) && filter_var($_GET['deletescript'], FILTER_VALIDATE_INT) && wp_verify_nonce($_GET['drm_nonce'], 'delete_remarketing')){
+		global $wpdb;
+		$wpdb->delete($wpdb->prefix . "trksit_remarketing", array('id' => $_GET['deletescript']));
+		$url = remove_query_arg(array('drm_nonce', 'deletescript'));
+		wp_redirect($url);
+	}
 }
 /** cleaner way to force 404 */
 add_action( 'wp', 'trksit_parse_query_404' );
