@@ -12,6 +12,7 @@
 		echo '<script type="text/javascript">setTimeout(function(){window.location.href = "'.$four04.'"},0);</script>';
 		echo '<meta http-equiv="refresh" content="2; url='.$four04.'">';
 	}
+	include( plugin_dir_path( __FILE__ ) . 'inc/trksit_remarketing_scripts.php' );
 	//Getting options
 	$analytics_id = get_option('trksit_analytics_id');
 	$redirect_delay = get_option('trksit_redirect_delay');
@@ -21,7 +22,7 @@
 	//$api_signature = get_option('trksit_public_api_key');
 	//KILL NEXT LINE TO SECURE
 	//$_GET['api_signature'] = 'testing12345678';
-	
+
 	$testing = false;	// SET TO TRUE TO DISABLE REDIRECT!!!
 	$scripterror = false;
 	$script_id = null;
@@ -103,6 +104,19 @@
 							$script_results['id'] = $single_script[0]->script_id;
 							$script_results['error'] = $single_script[0]->script_error;
 							array_push($script_array, $script_results);
+						}
+
+						$remarketing_to_url = $wpdb->get_results($wpdb->prepare("SELECT * FROM " . $wpdb->prefix . "trksit_remarketing_to_urls WHERE url_id = %s", $url_id));
+						$remarketing_array = array();
+						if(count($remarketing_to_url) > 0){
+							foreach($remarketing_to_url as $r){
+								$ra = array();
+								$single = $wpdb->get_row($wpdb->prepare("SELECT * FROM " . $wpdb->prefix . "trksit_remarketing WHERE id = %s", $r->remarketing_id));
+								$specific = maybe_unserialize($single->platform_specific);
+								$ra['platform'] = $single->platform;
+								$ra['specific'] = $specific;
+								array_push($remarketing_array, $ra);
+							}
 						}
 					}
 					//Do not increment hit counter if testing link or debugging javascript
@@ -330,6 +344,19 @@ if((isset($redirect_lookup) && $redirect_lookup) || $scripterror){
 						echo '}  </script>';
 					}
 				}
+			}
+			foreach($remarketing_array as $rem){
+				if($rem['platform'] == "Google Adwords Remarketing"){
+					$output = str_replace('{{: google_id :}}', $rem['specific']['google']['id'], $google_remarketing);
+				} else if($rem['platform'] == 'AdRoll'){
+					$output = str_replace('{{: adroll_id :}}', $rem['specific']['adroll']['id'], $adroll_remarketing);
+					$output = str_replace('{{: adroll_pixel :}}', $rem['specific']['adroll']['pixel_id'], $adroll_remarketing);
+				} else if($rem['platform'] == 'Facebook'){
+					$output = str_replace('{{: facebook_pixel :}}', $rem['specific']['facebook']['pixel_id'], $facebook_remarketing);
+				} else {
+					$output = '';
+				}
+				echo $output;
 			}
 		} else {
 			//scrit execute/debug only outputs the script being debugged
