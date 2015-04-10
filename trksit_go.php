@@ -338,7 +338,7 @@ setTimeout(function(){
 			if($script['error'] == 0) {
 				$script_out = stripslashes(htmlspecialchars_decode($script['script']));
 				$script_out = stripslashes($script_out);
-				if(strpos($script_out, '<script>') !== false){
+				if(strpos($script_out, '<script') !== false){
 					echo $script_out;
 				} else {
 					echo '<script> try{ ';
@@ -356,7 +356,7 @@ setTimeout(function(){
 		if($error_script){
 			$script_out = stripslashes(htmlspecialchars_decode($error_script[0]->script));
 			$script_out = stripslashes($script_out);
-			if(strpos($script_out, '<script>') !== false){
+			if(strpos($script_out, '<script') !== false){
 				echo $script_out;
 			} else {
 				echo '<script> try { ';

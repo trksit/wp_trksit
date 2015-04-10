@@ -320,7 +320,7 @@ if((isset($redirect_lookup) && $redirect_lookup) || $scripterror){
 				if($script['error'] == 0) {
 					$script_out = stripslashes(htmlspecialchars_decode($script['script']));
 					$script_out = stripslashes($script_out);
-					if(strpos($script_out, '<script>') !== false){
+					if(strpos($script_out, '<script') !== false){
 						echo $script_out;
 					} else {
 						echo '<script> try{ ';
@@ -332,13 +332,13 @@ if((isset($redirect_lookup) && $redirect_lookup) || $scripterror){
 				}
 			}
 		} else {
-			//scrit execute/debug only outputs the script being debugged
+			//script execute/debug only outputs the script being debugged
 			$error_script = $wpdb->get_results("SELECT script FROM "
 				. $wpdb->prefix . "trksit_scripts WHERE script_id=" . $script_id . " LIMIT 1");
 			if($error_script){
 				$script_out = stripslashes(htmlspecialchars_decode($error_script[0]->script));
 				$script_out = stripslashes($script_out);
-				if(strpos($script_out, '<script>') !== false){
+				if(strpos($script_out, '<script') !== false){
 					echo $script_out;
 				} else {
 					echo '<script> try { ';
