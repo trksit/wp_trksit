@@ -372,10 +372,10 @@ setTimeout(function(){
 	
 	?>
 
+	<script>
 	//In catch block, ajax call to set error flags
 	//if a script produces an error
 	//emails site admin
-	<script>
 	var ajaxurl = "wp-admin/admin-ajax.php";
 	function handle_error(error, id){
 		var dd = {
