@@ -227,29 +227,29 @@ if((isset($redirect_lookup) && $redirect_lookup) || $scripterror){
 						c_end = document.cookie.indexOf(";", c_start);
 						if (c_end == -1) c_end = document.cookie.length;
 						return unescape(document.cookie.substring(c_start, c_end));
-}
-}
-return "";
-}
-</script>
+					}				
+				}
+				return "";
+			}
+			</script>
 
 
 
-			<script type="text/javascript">
+<script type="text/javascript">
 			//		always set the GA account
-			var _gaq = _gaq || [];
-	_gaq.push(['_setAccount', '<?php echo $analytics_id; ?>']);
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', '<?php echo $analytics_id; ?>']);
 
-	//REQUIRED FOR LOCAL DEVELOPMENT
-	//		_gaq.push(['_setDomainName', 'none']);
-	//		_gaq.push(['_setAllowLinker', true]);
+//REQUIRED FOR LOCAL DEVELOPMENT
+//		_gaq.push(['_setDomainName', 'none']);
+//		_gaq.push(['_setAllowLinker', true]);
 
-	// 		if they haven't been here.. push an event to set their GA cookies
-	var delay = 0;
-	if(!getCookie("trks_new")){
-		// Fire an event to set it
-		_gaq.push(['_trackEvent', 'trks.it', 'New Visitor', '<?php echo $redirect_lookup[0]->destination_url; ?>', 0, true]);
-		delay = 100;
+// 		if they haven't been here.. push an event to set their GA cookies
+var delay = 0;
+if(!getCookie("trks_new")){
+	// Fire an event to set it
+	_gaq.push(['_trackEvent', 'trks.it', 'New Visitor', '<?php echo $redirect_lookup[0]->destination_url; ?>', 0, true]);
+	delay = 100;
 }
 
 //		pushing a custom variable & event to Google Analytics to track this clicked link
@@ -370,7 +370,7 @@ setTimeout(function(){
 		}
 	}
 	
-	echo 'var ajaxurl = "wp-admin/admin-ajax.php"'; ?>
+	?>
 
 	//In catch block, ajax call to set error flags
 	//if a script produces an error
